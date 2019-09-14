@@ -15,7 +15,6 @@
     "@typescript-eslint/eslint-plugin": "^2.2.0",
     "@typescript-eslint/parser": "^2.2.0",
     "eslint": "^6.4.0",
-    "i": "^0.3.6",
     "jest": "^24.9.0",
     "npm": "^6.11.3",
     "ts-jest": "^24.1.0",
