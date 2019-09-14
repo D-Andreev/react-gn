@@ -26,6 +26,9 @@ jobs:
           name: yarn install
           command: yarn install
       - run:
+          name: Build JS
+          command: yarn build
+      - run:
           name: Test
           command: yarn test
 workflows:
