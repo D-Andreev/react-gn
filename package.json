@@ -2,8 +2,11 @@
   "name": "react-sdk",
   "version": "1.0.0",
   "dependencies": {},
+  "bin": {
+    "react-sdk": "./dist/index.js"
+  },
   "scripts": {
-    "build": "npm run build-ts && npm run lint",
+    "build": "npm run build-ts",
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
     "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\"",

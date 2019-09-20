@@ -1,5 +1,7 @@
 import ICommand from './interfaces/ICommand';
 
 export default class UnknownCommand implements ICommand {
-    execute(): void {}
+    execute(): void {
+        console.log('HELP');
+    }
 }
