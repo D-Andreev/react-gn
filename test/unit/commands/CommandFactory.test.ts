@@ -32,10 +32,10 @@ describe('CommandFactory', () => {
             });
         });
 
-        describe('when command is unknown', () => {
+        describe('when main command is unknown', () => {
             it('returns unknown command', () => {
                 const command: ICommand = commandFactory
-                    .createCommand([COMMAND_NODE_PATH, COMMAND_FILE_PATH, 'invalid-command']);
+                    .createCommand([COMMAND_NODE_PATH, COMMAND_FILE_PATH, 'invalid-main-command']);
                 expect(command instanceof UnknownCommand).toBeTruthy();
             });
         });
