@@ -13,13 +13,9 @@ export const COMMAND_FLAG = {
 export const ALLOWED_FLAGS = ['--js', '--ts'];
 
 export const ERROR = {
-    INVALID_APP_NAME: 'InvalidAppName',
-    INVALID_COMMAND: 'InvalidCommand',
+    INVALID_OUTPUT: 'InvalidOutput',
 };
 
-export const SERVICE_IDENTIFIER = {
-    IStorage: Symbol.for('IStorage'),
-    ICommand: Symbol.for('ICommand'),
-    IJsAppCommand: Symbol.for('IJsAppCommand'),
-    ITsAppCommand: Symbol.for('ITsAppCommand'),
+export const OUTPUT_TYPE = {
+    NORMAL: 'normal',
 };
