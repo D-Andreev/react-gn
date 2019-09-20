@@ -33,7 +33,7 @@ jobs:
           command: yarn lint
       - run:
           name: Test
-          command: yarn test
+          command: yarn test-ci
 workflows:
   version: 2
   build_and_test:
