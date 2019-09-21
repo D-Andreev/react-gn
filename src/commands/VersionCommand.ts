@@ -26,7 +26,7 @@ export default class VersionCommand implements ICommand {
             try {
                 json = JSON.parse(res);
             } catch (e) {
-                return done(e);
+                return done(new Error('Could not parse package.json'));
             }
 
             this.userInterface.showOutput([
