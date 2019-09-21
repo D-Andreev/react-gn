@@ -1,20 +1,27 @@
 import IStorage from './interfaces/IStorage';
+import ErrnoException = NodeJS.ErrnoException;
 
 export default class Storage implements IStorage {
-    create(): void {
+    private readonly fs: typeof import('fs');
 
+    constructor(fs: typeof import('fs')) {
+        this.fs = fs;
     }
 
-    read(): void {
-
+    create(path: string, content: string, done: (err: ErrnoException) => {}): void {
+        this.fs.writeFile(path, content, done);
     }
 
-    update(): void {
-
+    read(path: string, done: (err: ErrnoException) => {}): void {
+        this.fs.readFile(path, done);
     }
 
-    delete(): void {
+    update(path: string, content: string, done: (err: ErrnoException) => {}): void {
+        this.create(path, content, done);
+    }
 
+    delete(path: string, done: (err: ErrnoException) => {}): void {
+        this.fs.unlink(path, done);
     }
 
 }

@@ -1,6 +1,6 @@
 export default interface IStorage {
-    create(): void;
-    read(): void;
-    update(): void;
-    delete(): void;
+    create(path: string, content: string, done: Function): void;
+    read(path: string, done: Function): void;
+    update(path: string, content: string, done: Function): void;
+    delete(path: string, done: Function): void;
 }
