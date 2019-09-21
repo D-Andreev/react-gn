@@ -8,7 +8,8 @@ export const COMMAND = {
 export const COMMAND_FLAG = {
     JS: '--js',
     TS: '--ts',
-    HELP: '--help'
+    HELP: '--help',
+    VERSION: '--version',
 };
 
 export const MAIN_COMMANDS = ['init', 'create'];

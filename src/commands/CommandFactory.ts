@@ -9,6 +9,7 @@ import Cli from '../user-interface/Cli';
 import IUserInterface from '../user-interface/interfaces/IUserInterface';
 import ILanguageTypeMap from './interfaces/ILanguageTypeMap';
 import Flag from './Flag';
+import VersionCommand from './VersionCommand';
 
 export default class CommandFactory implements ICommandFactory{
     private readonly storage: IStorage;
@@ -74,6 +75,11 @@ export default class CommandFactory implements ICommandFactory{
             return unknownCommand;
         }
         if (commandArguments[2] === COMMAND_FLAG.HELP) {
+            command.execute(done);
+            return command;
+        }
+        if (commandArguments[2] === COMMAND_FLAG.VERSION) {
+            command = new VersionCommand(this.storage, userInterface);
             command.execute(done);
             return command;
         }
