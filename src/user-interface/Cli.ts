@@ -1,7 +1,7 @@
 import IUserInterface from './interfaces/IUserInterface';
 import {ERROR, OUTPUT_TYPE} from '../constants';
 import Output from '../commands/Output';
-import {FgWhite} from './colors';
+import {FgBlue, FgGreen, FgWhite} from './colors';
 
 export default class Cli implements IUserInterface {
     private readonly console: Console;
@@ -11,6 +11,8 @@ export default class Cli implements IUserInterface {
         this.console = console;
         this.colorsMap = {
             [OUTPUT_TYPE.NORMAL]: FgWhite,
+            [OUTPUT_TYPE.INFO]: FgBlue,
+            [OUTPUT_TYPE.SUCCESS]: FgGreen,
         };
     }
 
@@ -21,7 +23,8 @@ export default class Cli implements IUserInterface {
 
         output.forEach((line: Output) => {
             const color: string = this.colorsMap[line.type] || this.colorsMap[OUTPUT_TYPE.NORMAL];
-            this.console.log(line.contents, color);
+            console.log('', color);
+            this.console.log(line.contents);
         });
         done();
     }

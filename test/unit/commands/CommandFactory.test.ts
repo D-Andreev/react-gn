@@ -8,6 +8,8 @@ import MockStorage from '../../mock/MockStorage';
 import {ICommandFactory} from '../../../src/commands/interfaces/ICommandFactory';
 import {COMMAND_FILE_PATH, COMMAND_NODE_PATH} from '../../constants';
 
+function noop() {}
+
 describe('CommandFactory', () => {
     let commandFactory: ICommandFactory;
 
@@ -18,8 +20,7 @@ describe('CommandFactory', () => {
     describe('when I use the create command', () => {
         describe('when react-sdk name is not provided', () => {
            it('returns unknown command', () => {
-               const command: ICommand = commandFactory.createCommand([]);
-               console.log(command)
+               const command: ICommand = commandFactory.createCommand([], noop);
                expect(command instanceof UnknownCommand).toBeTruthy();
            });
         });
@@ -27,7 +28,7 @@ describe('CommandFactory', () => {
         describe('when command is not provided', () => {
             it('returns unknown command', () => {
                 const command: ICommand = commandFactory
-                    .createCommand([COMMAND_NODE_PATH, COMMAND_FILE_PATH]);
+                    .createCommand([COMMAND_NODE_PATH, COMMAND_FILE_PATH], noop);
                 expect(command instanceof UnknownCommand).toBeTruthy();
             });
         });
@@ -35,7 +36,8 @@ describe('CommandFactory', () => {
         describe('when main command is unknown', () => {
             it('returns unknown command', () => {
                 const command: ICommand = commandFactory
-                    .createCommand([COMMAND_NODE_PATH, COMMAND_FILE_PATH, 'invalid-main-command']);
+                    .createCommand(
+                        [COMMAND_NODE_PATH, COMMAND_FILE_PATH, 'invalid-main-command'], noop);
                 expect(command instanceof UnknownCommand).toBeTruthy();
             });
         });
@@ -46,7 +48,7 @@ describe('CommandFactory', () => {
                     COMMAND_NODE_PATH,
                     COMMAND_FILE_PATH,
                     COMMAND.INIT
-                ]);
+                ], noop);
                 expect(command instanceof UnknownCommand).toBeTruthy();
             });
         });
@@ -59,7 +61,7 @@ describe('CommandFactory', () => {
                         COMMAND_FILE_PATH,
                         COMMAND.INIT,
                         'test-app'
-                    ]);
+                    ], noop);
                 expect(command instanceof JsAppCommand).toBeTruthy();
             });
         });
@@ -72,7 +74,7 @@ describe('CommandFactory', () => {
                         COMMAND_FILE_PATH,
                         COMMAND.INIT,
                         'test-app', '--js'
-                    ]);
+                    ], noop);
                 expect(command instanceof JsAppCommand).toBeTruthy();
             });
         });
@@ -86,7 +88,7 @@ describe('CommandFactory', () => {
                         COMMAND.INIT,
                         'test-app',
                         '--ts'
-                    ]);
+                    ], noop);
                 expect(command instanceof TsAppCommand).toBeTruthy();
             });
         });
@@ -101,7 +103,7 @@ describe('CommandFactory', () => {
                         'test-app',
                         '--unknown-flag',
                         'some-value'
-                    ]);
+                    ], noop);
                 // @ts-ignore
                 console.log(command.flags);
                 // @ts-ignore
@@ -122,7 +124,7 @@ describe('CommandFactory', () => {
                         'some-value',
                         'some-other-value',
                         '--other-unknown-flag'
-                    ]);
+                    ], noop);
                 // @ts-ignore
                 expect(command.flags).toEqual([{name: '--ts', value: ''}]);
             });
@@ -142,7 +144,7 @@ describe('CommandFactory', () => {
                         'some-other-value',
                         '--other-unknown-flag',
                         '--config'
-                    ]);
+                    ], noop);
                 // @ts-ignore
                 expect(command.flags).toEqual([{name: '--ts', value: ''}, {name: '--config', value: ''}]);
             });
@@ -163,12 +165,39 @@ describe('CommandFactory', () => {
                         '--other-unknown-flag',
                         '--config',
                         './path/to/config',
-                    ]);
+                    ], noop);
                 // @ts-ignore
                 expect(command.flags).toEqual([
                     {name: '--ts', value: ''},
                     {name: '--config', value: './path/to/config'}
                 ]);
+            });
+        });
+
+        describe('when I pass --help', () => {
+            it('shows the help', () => {
+                const command: ICommand = commandFactory
+                    .createCommand([
+                        COMMAND_NODE_PATH,
+                        COMMAND_FILE_PATH,
+                        '--help'
+                    ], noop);
+                expect(command instanceof UnknownCommand).toBeTruthy();
+            });
+        });
+
+        describe('when I pass main command and then --help', () => {
+            it('executes only main command', () => {
+                const command: ICommand = commandFactory
+                    .createCommand([
+                        COMMAND_NODE_PATH,
+                        COMMAND_FILE_PATH,
+                        COMMAND.INIT,
+                        'myApp',
+                        '--ts',
+                        '--help'
+                    ], noop);
+                expect(command instanceof TsAppCommand).toBeTruthy();
             });
         });
     });

@@ -65,13 +65,17 @@ export default class CommandFactory implements ICommandFactory{
         this.storage = storage;
     }
 
-    createCommand(commandArguments: string[]): ICommand {
+    createCommand(commandArguments: string[], done: Function): ICommand {
         const userInterface = new Cli(console);
         const unknownCommand: ICommand = new UnknownCommand(userInterface);
         let command = unknownCommand;
 
         if (!commandArguments.length) {
             return unknownCommand;
+        }
+        if (commandArguments[2] === COMMAND_FLAG.HELP) {
+            command.execute(done);
+            return command;
         }
 
         const languageTypeMap: ILanguageTypeMap = {
@@ -91,6 +95,7 @@ export default class CommandFactory implements ICommandFactory{
                 command = unknownCommand;
         }
 
+        command.execute(done);
         return command;
     }
 }

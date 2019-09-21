@@ -1,3 +1,3 @@
 export default interface ICommand {
-    execute(): void;
+    execute(done: Function): void;
 };
