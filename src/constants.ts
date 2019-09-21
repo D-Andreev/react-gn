@@ -10,7 +10,11 @@ export const COMMAND_FLAG = {
     TS: '--ts',
 };
 
-export const ALLOWED_FLAGS = ['--js', '--ts'];
+export const ALLOWED_FLAGS = ['--js', '--ts', '--config'];
+
+export const FLAGS_MIN_INDEX = 3;
+
+export const FLAG_INDICATOR = '--';
 
 export const ERROR = {
     INVALID_OUTPUT: 'InvalidOutput',

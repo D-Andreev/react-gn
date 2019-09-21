@@ -90,5 +90,86 @@ describe('CommandFactory', () => {
                 expect(command instanceof TsAppCommand).toBeTruthy();
             });
         });
+
+        describe('when unknown flags are passed', () => {
+            it('omits the unknown flags', () => {
+                const command: ICommand = commandFactory
+                    .createCommand([
+                        COMMAND_NODE_PATH,
+                        COMMAND_FILE_PATH,
+                        COMMAND.INIT,
+                        'test-app',
+                        '--unknown-flag',
+                        'some-value'
+                    ]);
+                // @ts-ignore
+                console.log(command.flags);
+                // @ts-ignore
+                expect(command.flags).toEqual([]);
+            });
+        });
+
+        describe('when unknown flags are mixed with valid flags', () => {
+            it('omits the unknown flags', () => {
+                const command: ICommand = commandFactory
+                    .createCommand([
+                        COMMAND_NODE_PATH,
+                        COMMAND_FILE_PATH,
+                        COMMAND.INIT,
+                        'test-app',
+                        '--ts',
+                        '--unknown-flag',
+                        'some-value',
+                        'some-other-value',
+                        '--other-unknown-flag'
+                    ]);
+                // @ts-ignore
+                expect(command.flags).toEqual([{name: '--ts', value: ''}]);
+            });
+        });
+
+        describe('when I pass config flag with no file path', () => {
+            it('sets the flag with no value', () => {
+                const command: ICommand = commandFactory
+                    .createCommand([
+                        COMMAND_NODE_PATH,
+                        COMMAND_FILE_PATH,
+                        COMMAND.INIT,
+                        'test-app',
+                        '--ts',
+                        '--unknown-flag',
+                        'some-value',
+                        'some-other-value',
+                        '--other-unknown-flag',
+                        '--config'
+                    ]);
+                // @ts-ignore
+                expect(command.flags).toEqual([{name: '--ts', value: ''}, {name: '--config', value: ''}]);
+            });
+        });
+
+        describe('when I pass config flag with file path', () => {
+            it('sets the flag with no value', () => {
+                const command: ICommand = commandFactory
+                    .createCommand([
+                        COMMAND_NODE_PATH,
+                        COMMAND_FILE_PATH,
+                        COMMAND.INIT,
+                        'test-app',
+                        '--ts',
+                        '--unknown-flag',
+                        'some-value',
+                        'some-other-value',
+                        '--other-unknown-flag',
+                        '--config',
+                        './path/to/config',
+                    ]);
+                // @ts-ignore
+                expect(command.flags).toEqual([
+                    {name: '--ts', value: ''},
+                    {name: '--config', value: './path/to/config'}
+                ]);
+            });
+        });
     });
 });

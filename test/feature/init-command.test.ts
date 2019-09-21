@@ -49,5 +49,23 @@ describe('init command', () => {
                 expect(result.toString()).toContain('TS APP COMMAND');
             });
         });
+
+        describe('when I enter --unknown-flag some-value --ts some-other-unknown-flag some-other-value', () => {
+            it('omits the unknown flags', () => {
+                const command =
+                    `${SDK_NAME} init myAPp --unknown-flag some-value --ts some-other-unknown-flag some-other-value`;
+                const result = execSync(command);
+                expect(result.toString()).toContain('TS APP COMMAND');
+            });
+        });
+
+        describe('when I enter multiple language types', () => {
+            it('considers only the first one', () => {
+                const command = SDK_NAME +
+                    ' init myAPp --unknown-flag some-value --ts --js some-other-unknown-flag -js some-other-value';
+                const result = execSync(command);
+                expect(result.toString()).toContain('TS APP COMMAND');
+            });
+        });
     });
 });
