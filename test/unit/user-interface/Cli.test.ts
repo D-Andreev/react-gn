@@ -29,9 +29,8 @@ describe('Cli', () => {
                     output.push({contents: 'test' + i, type: OUTPUT_TYPE.NORMAL});
                 }
                 cli.showOutput(output, done);
-                for (let i = 0; i < 3; i++) {
-                    expect(global.console.log).toHaveBeenNthCalledWith(i + 1, output[i].contents, FgWhite)
-                }
+                expect(global.console.log).toHaveBeenNthCalledWith(1, '', FgWhite);
+                expect(global.console.log).toHaveBeenNthCalledWith(2, output[0].contents);
 
                 expect(done).toHaveBeenCalledWith();
             });

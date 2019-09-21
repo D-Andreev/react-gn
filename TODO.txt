@@ -1,0 +1,2 @@
+- use cra
+- show loading message
