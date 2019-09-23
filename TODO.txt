@@ -1,12 +1,18 @@
-- use cra???
-- Get File structure from existing app? (Traverse fs) or by config.
-
-- Config service
-  - Generate config based on flags
-
 - Init command
-  - Template for js app with CRA
-  - Template for ts app with CRA
-  - Get config and create file structure based on that
-  - Generate files based on file structure result
+    Prerequisites:
+    - Initialize Config
+    - Implement Cra (Communication with CRA)
+        - createApp()
+    - AppReader
+        - constructor(storage)
+        - getFileStructure(path)
 
+    Work:
+    - if (withCra is true)
+        - Generate base app with cra
+    - if (withCra is true)
+        - Generate ejected app
+
+    - Read file structure from files
+    - Apply all options from config and set in file structure
+    - Generate files based on file structure

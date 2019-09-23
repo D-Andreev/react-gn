@@ -3,4 +3,5 @@ export default interface IStorage {
     read(path: string, done: Function): void;
     update(path: string, content: string, done: Function): void;
     delete(path: string, done: Function): void;
+    directoryExists(path: string, done: Function): void;
 }
