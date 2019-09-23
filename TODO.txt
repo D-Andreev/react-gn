@@ -1,2 +1,12 @@
-- use cra
-- show loading message
+- use cra???
+- Get File structure from existing app? (Traverse fs) or by config.
+
+- Config service
+  - Generate config based on flags
+
+- Init command
+  - Template for js app with CRA
+  - Template for ts app with CRA
+  - Get config and create file structure based on that
+  - Generate files based on file structure result
+
