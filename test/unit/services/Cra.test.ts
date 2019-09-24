@@ -48,20 +48,20 @@ describe('Cra', () => {
                 cra.createApp('test', './invalid-path');
             });
         });
-    });
 
-    describe('when target dir exists', () => {
-        beforeEach(() => {
-            storage.directoryExists = jest.fn((path: string, cb: Function) => {
-                cb();
+        describe('when target dir exists', () => {
+            beforeEach(() => {
+                storage.directoryExists = jest.fn((path: string, cb: Function) => {
+                    cb();
+                });
             });
-        });
 
-        it('executes the command', (done) => {
-            cra.createApp('test', './');
-            const expectedCommand = 'cd ./ && create-react-app';
-            expect(childProcess.spawn).toHaveBeenCalledWith(expectedCommand, ['test'], {shell: true});
-            done();
+            it('executes the command', (done) => {
+                cra.createApp('test', './');
+                const expectedCommand = 'cd ./ && create-react-app';
+                expect(childProcess.spawn).toHaveBeenCalledWith(expectedCommand, ['test'], {shell: true});
+                done();
+            });
         });
     });
 });
