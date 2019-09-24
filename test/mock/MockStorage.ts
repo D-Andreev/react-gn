@@ -12,4 +12,7 @@ export default class MockStorage implements IStorage {
 
     update(): void {
     }
+
+    directoryExists(path: string, done: Function): void {
+    }
 }

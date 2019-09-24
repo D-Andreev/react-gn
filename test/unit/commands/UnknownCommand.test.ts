@@ -2,8 +2,6 @@ import UnknownCommand from '../../../src/commands/UnknownCommand';
 import Cli from '../../../src/user-interface/Cli';
 import IUserInterface from '../../../src/user-interface/interfaces/IUserInterface';
 
-jest.mock('fs');
-
 describe('UnknownCommand', () => {
     let unknownCommand: UnknownCommand;
     let userInterface: IUserInterface;
