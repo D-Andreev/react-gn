@@ -15,48 +15,53 @@ describe('Cra', () => {
 
     beforeEach(() => {
         storage = new MockStorage();
-        storage.directoryExists = jest.fn((path: string, done: Function) => {
-             done(new Error('not found'));
-        });
-        spawn = jest.fn((command: string, args: string[], opts: any) => {
+        spawn = jest.fn(() => {
             class MockSpawn extends EventEmitter {
+                stderr: any;
+                stdout: any;
+
                 constructor() {
                     super();
+                    this.stderr = process.stderr;
+                    this.stderr.setEncoding = () => {};
+                    this.stdout = process.stderr;
+                    this.stdout.setEncoding = () => {};
                 }
             }
 
-            const mockSpawn = new MockSpawn();
-
-            return mockSpawn;
+            return new MockSpawn();
         });
+        childProcess.spawn = spawn;
         cra = new Cra(storage, childProcess);
     });
 
     describe('createApp', () => {
-        describe('when target dir exists', () => {
+        describe('when target dir does not exists', () => {
             it('yields error', (done) => {
+                storage.directoryExists = jest.fn((path: string, cb: Function) => {
+                    cb(new Error('not found'));
+                });
                 cra.on(CRA_EVENT.INIT_ERROR, (err: any) => {
-                    done(err);
+                    expect(err.message).toEqual('not found');
+                    done();
                 });
                 cra.createApp('test', './invalid-path');
             });
         });
-
-        describe('when directory exists', () => {
-            it('executes the command', (done) => {
-                cra.on(CRA_EVENT.INIT_ERROR, (err: any) => {
-                    done(err);
-                });
-                cra.on(CRA_EVENT.INIT_DATA, (data: string) => {
-                    console.log('data', data);
-                });
-                cra.on(CRA_EVENT.INIT_CLOSE, (code: number) => {
-                    expect(code).toEqual(0);
-                    done();
-                });
-                cra.createApp('test', './');
-            });
-        });
     });
 
+    describe('when target dir exists', () => {
+        beforeEach(() => {
+            storage.directoryExists = jest.fn((path: string, cb: Function) => {
+                cb();
+            });
+        });
+
+        it('executes the command', (done) => {
+            cra.createApp('test', './');
+            const expectedCommand = 'cd ./ && create-react-app';
+            expect(childProcess.spawn).toHaveBeenCalledWith(expectedCommand, ['test'], {shell: true});
+            done();
+        });
+    });
 });

@@ -23,7 +23,7 @@ export default class Cra extends EventEmitter implements ICra {
             }
 
             const {spawn} = this.childProcess;
-            const command: string = `cd ${path} && create-react-app`;
+            const command = `cd ${path} && create-react-app`;
             const child: ChildProcessWithoutNullStreams = spawn(command, [name], {shell: true});
             child.stderr.setEncoding('utf8');
             child.stderr.on('data', (err: Error) => {
