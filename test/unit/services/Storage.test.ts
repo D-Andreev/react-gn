@@ -21,6 +21,10 @@ describe('Storage', () => {
         fs.readFile = jest.fn((path: string, cb: any) => {
             cb(null);
         });
+        // @ts-ignore
+        fs.access = jest.fn((path: string, cb: any) => {
+            cb(null);
+        });
     });
 
     describe('create', () => {
@@ -60,6 +64,16 @@ describe('Storage', () => {
                 done();
             };
             storage.delete('./path/to/file', cb);
+        });
+    });
+
+    describe('directoryExists', () => {
+        it('calls fs function with args', (done) => {
+            const cb = () => {
+                expect(fs.access).toHaveBeenCalledWith('./path/to/file', cb);
+                done();
+            };
+            storage.directoryExists('./path/to/file', cb);
         });
     });
 });

@@ -24,4 +24,7 @@ export default class Storage implements IStorage {
         this.fs.unlink(path, done);
     }
 
+    directoryExists(path: string, done: (err: ErrnoException) => {}): void {
+        this.fs.access(path, done);
+    }
 }
