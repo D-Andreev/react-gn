@@ -3,7 +3,7 @@
     - Initialize Config
     - Implement Cra (Communication with CRA)
         - createApp()
-    - AppReader
+    - Implement scanDirectory
         - constructor(storage)
         - getFileStructure(path)
 
