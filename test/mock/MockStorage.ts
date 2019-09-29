@@ -15,4 +15,8 @@ export default class MockStorage implements IStorage {
 
     directoryExists(): void {
     }
+
+    scanDirectory(): void {
+
+    }
 }
