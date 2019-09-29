@@ -1,3 +1,4 @@
+import readline from 'readline';
 import UnknownCommand from '../../../src/commands/UnknownCommand';
 import Cli from '../../../src/user-interface/Cli';
 import IUserInterface from '../../../src/user-interface/interfaces/IUserInterface';
@@ -7,7 +8,7 @@ describe('UnknownCommand', () => {
     let userInterface: IUserInterface;
 
     beforeEach(() => {
-        userInterface = new Cli(console);
+        userInterface = new Cli(console, readline);
         unknownCommand = new UnknownCommand(userInterface);
     });
 

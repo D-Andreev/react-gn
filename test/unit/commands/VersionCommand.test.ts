@@ -1,3 +1,4 @@
+import readline from 'readline';
 import VersionCommand from '../../../src/commands/VersionCommand';
 import Cli from '../../../src/user-interface/Cli';
 import IUserInterface from '../../../src/user-interface/interfaces/IUserInterface';
@@ -10,7 +11,7 @@ describe('VersionCommand', () => {
     let mockStorage: any;
 
     beforeEach(() => {
-        userInterface = new Cli(console);
+        userInterface = new Cli(console, readline);
         mockStorage = new MockStorage();
         versionCommand = new VersionCommand(mockStorage, userInterface);
     });
