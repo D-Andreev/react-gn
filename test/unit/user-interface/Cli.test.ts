@@ -1,3 +1,4 @@
+import readline from 'readline';
 import Cli from '../../../src/user-interface/Cli';
 import IUserInterface from '../../../src/user-interface/interfaces/IUserInterface';
 import {ERROR, OUTPUT_TYPE} from '../../../src/constants';
@@ -10,7 +11,7 @@ describe('Cli', () => {
     beforeEach(() => {
         // @ts-ignore
         global.console = {log: jest.fn()};
-        cli = new Cli(global.console);
+        cli = new Cli(global.console, readline);
         done = jest.fn();
     });
 
@@ -33,6 +34,60 @@ describe('Cli', () => {
                 expect(global.console.log).toHaveBeenNthCalledWith(2, output[0].contents);
 
                 expect(done).toHaveBeenCalledWith();
+            });
+        });
+    });
+
+    describe('askQuestion', () => {
+        describe('when answer is affirmative', () => {
+            let question: string;
+            beforeEach(() => {
+                question = 'Are you sure?';
+                // @ts-ignore
+                readline.createInterface = jest.fn(() => {
+                    return {
+                        question: jest.fn((q: string, cb: Function) => {
+                            cb('y');
+                        }),
+                        close: jest.fn(),
+                    }
+                });
+            });
+
+            it('yields the answer', (done) => {
+                const cb = (err: any, answer: string) => {
+                    expect(err).toBeFalsy();
+                    expect(answer).toEqual('y');
+                    done();
+                };
+
+                cli.askQuestion(question, cb);
+            });
+        });
+
+        describe('when answer is negative', () => {
+            let question: string;
+            beforeEach(() => {
+                question = 'Are you sure?';
+                // @ts-ignore
+                readline.createInterface = jest.fn(() => {
+                    return {
+                        question: jest.fn((q: string, cb: Function) => {
+                            cb('n');
+                        }),
+                        close: jest.fn(),
+                    }
+                });
+            });
+
+            it('yields the answer', (done) => {
+                const cb = (err: any, answer: string) => {
+                    expect(err).toBeFalsy();
+                    expect(answer).toEqual('n');
+                    done();
+                };
+
+                cli.askQuestion(question, cb);
             });
         });
     });
