@@ -56,10 +56,57 @@ describe('Cra', () => {
                 });
             });
 
+            describe('when arguments are empty', () => {
+                it('executes the command with arguments', (done) => {
+                    cra.createApp('test', './');
+                    const expectedCommand = 'cd ./ && create-react-app';
+                    const args = ['test'];
+                    expect(childProcess.spawn).toHaveBeenCalledWith(expectedCommand, args, {shell: true});
+                    done();
+                });
+            });
+
+            describe('when arguments are not empty', () => {
+                it('executes the command with arguments', (done) => {
+                    cra.createApp('test', './', ['--typescript']);
+                    const expectedCommand = 'cd ./ && create-react-app';
+                    const args = ['test', '--typescript'];
+                    expect(childProcess.spawn).toHaveBeenCalledWith(expectedCommand, args, {shell: true});
+                    done();
+                });
+            });
+        });
+    });
+
+    describe('ejectApp', () => {
+        describe('when path is not valid', () => {
+            beforeEach(() => {
+                storage.directoryExists = jest.fn((path: string, cb: Function) => {
+                    cb(new Error('not found'));
+                });
+            });
+
+            it('yields error', (done) => {
+                cra.on(CRA_EVENT.EJECT_ERROR, (err: any) => {
+                    expect(err.message).toEqual('not found');
+                    done();
+                });
+                cra.ejectApp('./invalid-path');
+            });
+        });
+
+        describe('when path is valid', () => {
+            beforeEach(() => {
+                storage.directoryExists = jest.fn((path: string, cb: Function) => {
+                    cb();
+                });
+            });
+
             it('executes the command', (done) => {
-                cra.createApp('test', './');
-                const expectedCommand = 'cd ./ && create-react-app';
-                expect(childProcess.spawn).toHaveBeenCalledWith(expectedCommand, ['test'], {shell: true});
+                cra.ejectApp('./path/to/app');
+                const expectedCommand = 'cd ./path/to/app && npm run eject';
+                const args = ['-y'];
+                expect(childProcess.spawn).toHaveBeenCalledWith(expectedCommand, args, {shell: true});
                 done();
             });
         });

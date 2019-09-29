@@ -1,3 +1,4 @@
+import readline from 'readline';
 import ICommand from './interfaces/ICommand';
 import {ALLOWED_FLAGS, COMMAND, COMMAND_FLAG, FLAG_INDICATOR, FLAGS_MIN_INDEX} from '../constants';
 import TsAppCommand from './TsAppCommand';
@@ -67,7 +68,7 @@ export default class CommandFactory implements ICommandFactory{
     }
 
     createCommand(commandArguments: string[], done: Function): ICommand {
-        const userInterface = new Cli(console);
+        const userInterface = new Cli(console, readline);
         const unknownCommand: ICommand = new UnknownCommand(userInterface);
         let command = unknownCommand;
 

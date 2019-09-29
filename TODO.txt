@@ -6,13 +6,18 @@
     - Implement scanDirectory
         - constructor(storage)
         - getFileStructure(path)
+    - Implement Cli.askQuestion
+    - Make Cra.createApp accept flags
+    - Make Cra.ejectApp
+
 
     Work:
+    - Check target dir
+        - If it's not empty ask for confirmation
+    - Generate base app with cra
     - if (withCra is true)
-        - Generate base app with cra
-    - if (withCra is true)
-        - Generate ejected app
-
-    - Read file structure from files
+        - Ejected app
+    - Get file structure with scanDirectory
     - Apply all options from config and set in file structure
-    - Generate files based on file structure
+    - Modify files based on file structure
+
