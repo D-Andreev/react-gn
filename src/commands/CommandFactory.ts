@@ -1,10 +1,10 @@
 import readline from 'readline';
 import ICommand from './interfaces/ICommand';
 import {ALLOWED_FLAGS, COMMAND, COMMAND_FLAG, FLAG_INDICATOR, FLAGS_MIN_INDEX} from '../constants';
-import TsAppCommand from './TsAppCommand';
+import TsAppCommand from './init-app/TsAppCommand';
 import UnknownCommand from './UnknownCommand';
 import IStorage from '../services/interfaces/IStorage';
-import JsAppCommand from './JsAppCommand';
+import JsAppCommand from './init-app/JsAppCommand';
 import {ICommandFactory} from './interfaces/ICommandFactory';
 import Cli from '../user-interface/Cli';
 import IUserInterface from '../user-interface/interfaces/IUserInterface';

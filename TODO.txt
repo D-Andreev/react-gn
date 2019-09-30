@@ -10,7 +10,6 @@
     - Make Cra.createApp accept flags
     - Make Cra.ejectApp
 
-
     Work:
     - Check target dir
         - If it's not empty ask for confirmation
