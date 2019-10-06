@@ -65,3 +65,6 @@ typings/
 
 # dist
 dist/
+
+# files generated from tests
+src/react-app-env.d.ts

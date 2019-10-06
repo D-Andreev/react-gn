@@ -2,7 +2,10 @@
   "name": "react-sdk",
   "version": "1.0.0",
   "dependencies": {
-    "create-react-app": "^3.1.2"
+    "create-react-app": "^3.1.2",
+    "react": "16.10.2",
+    "react-dom": "16.10.2",
+    "react-scripts": "3.2.0"
   },
   "bin": {
     "react-sdk": "./dist/index.js"
@@ -14,6 +17,8 @@
     "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\"",
     "test": "jest --forceExit --coverage --verbose",
     "test-ci": "sudo npm link && yarn test",
+    "test-unit": "jest --forceExit --coverage --verbose ./test/unit/",
+    "test-feature": "jest --forceExit --coverage --verbose ./test/feature/",
     "watch-test": "npm run test -- --watchAll"
   },
   "devDependencies": {

@@ -2,8 +2,19 @@ import { execSync } from 'child_process';
 import {ASCII_ART, SDK_NAME} from '../../src/constants';
 
 describe('help command', () => {
+    let appName: string;
+
     beforeAll(() => {
+        appName = `${Date.now()}my-app`;
         execSync('yarn build');
+    });
+
+    afterAll(() => {
+        execSync(`rm -rf ./${appName}`);
+    });
+
+    beforeEach(() => {
+        execSync(`rm -rf ./${appName}`);
     });
 
     describe('when I enter help command', () => {
@@ -12,15 +23,6 @@ describe('help command', () => {
                 ' --help';
             const result = execSync(command);
             expect(result.toString()).toContain(ASCII_ART.HELP);
-        });
-    });
-
-    describe('when I enter main command and help', () => {
-        it('executes the command and does not show the help', () => {
-            const command = SDK_NAME +
-                ' init myApp --js --help';
-            const result = execSync(command);
-            expect(result.toString()).toContain('JS APP COMMAND');
         });
     });
 });
