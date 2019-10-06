@@ -2,7 +2,7 @@
   "name": "react-sdk",
   "version": "1.0.0",
   "dependencies": {
-    "create-react-app": "^3.1.2",
+    "create-react-app": "^3.1.2"
   },
   "bin": {
     "react-sdk": "./dist/index.js"
