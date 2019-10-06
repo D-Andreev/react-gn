@@ -1,19 +1,21 @@
 import readline from 'readline';
 import ICommand from './interfaces/ICommand';
 import {ALLOWED_FLAGS, COMMAND, COMMAND_FLAG, FLAG_INDICATOR, FLAGS_MIN_INDEX} from '../constants';
-import TsAppCommand from './init-app/TsAppCommand';
+import TsAppCommand from './init/TsAppCommand';
 import UnknownCommand from './UnknownCommand';
 import IStorage from '../services/interfaces/IStorage';
-import JsAppCommand from './init-app/JsAppCommand';
+import JsAppCommand from './init/JsAppCommand';
 import {ICommandFactory} from './interfaces/ICommandFactory';
 import Cli from '../user-interface/Cli';
 import IUserInterface from '../user-interface/interfaces/IUserInterface';
 import ILanguageTypeMap from './interfaces/ILanguageTypeMap';
 import Flag from './Flag';
 import VersionCommand from './VersionCommand';
+import ICra from '../services/interfaces/ICra';
 
 export default class CommandFactory implements ICommandFactory{
     private readonly storage: IStorage;
+    private readonly cra: ICra;
 
     private static isFlagName(arg: string): boolean {
         return arg.indexOf(FLAG_INDICATOR) !== -1;
@@ -59,12 +61,13 @@ export default class CommandFactory implements ICommandFactory{
         const languageType: string = CommandFactory.getLanguageTypeFlag(commandArguments, languageTypeMap);
 
         return new languageTypeMap[languageType](
-            this.storage, userInterface, appName, flags
+            this.storage, userInterface, this.cra, appName, flags, process.cwd()
         );
     }
 
-    constructor(storage: IStorage) {
+    constructor(storage: IStorage, cra: ICra) {
         this.storage = storage;
+        this.cra = cra;
     }
 
     createCommand(commandArguments: string[], done: Function): ICommand {

@@ -49,6 +49,7 @@ export const OUTPUT_TYPE = {
     NORMAL: 'normal',
     INFO: 'info',
     SUCCESS: 'success',
+    ERROR: 'error'
 };
 
 export const DEFAULT_CONFIG = {

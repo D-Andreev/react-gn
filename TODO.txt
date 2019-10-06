@@ -1,18 +1,17 @@
 - Init command
     Prerequisites:
-    - Initialize Config
-    - Implement Cra (Communication with CRA)
+    - Initialize Config done
+    - Implement Cra (Communication with CRA) done
         - createApp()
-    - Implement scanDirectory
+    - Implement scanDirectory done
         - constructor(storage)
         - getFileStructure(path)
-    - Implement Cli.askQuestion
-    - Make Cra.createApp accept flags
-    - Make Cra.ejectApp
+    - Implement Cli.askQuestion done
+    - Make Cra.createApp accept flags done
+    - Make Cra.ejectApp done
+    - saveFileStructure(fileStructure, done)
 
     Work:
-    - Check target dir
-        - If it's not empty ask for confirmation
     - Generate base app with cra
     - if (withCra is true)
         - Ejected app
@@ -20,3 +19,8 @@
     - Apply all options from config and set in file structure
     - Modify files based on file structure
 
+
+
+
+Other shit
+ - Make flags with getter/setter

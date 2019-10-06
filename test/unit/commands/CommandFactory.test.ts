@@ -1,20 +1,28 @@
+import childProcess from 'child_process';
 import CommandFactory from '../../../src/commands/CommandFactory';
 import ICommand from '../../../src/commands/interfaces/ICommand';
 import {COMMAND} from '../../../src/constants';
-import JsAppCommand from '../../../src/commands/init-app/JsAppCommand';
-import TsAppCommand from '../../../src/commands/init-app/TsAppCommand';
+import JsAppCommand from '../../../src/commands/init/JsAppCommand';
+import TsAppCommand from '../../../src/commands/init/TsAppCommand';
 import UnknownCommand from '../../../src/commands/UnknownCommand';
 import MockStorage from '../../mock/MockStorage';
 import {ICommandFactory} from '../../../src/commands/interfaces/ICommandFactory';
 import {COMMAND_FILE_PATH, COMMAND_NODE_PATH} from '../../constants';
+import ICra from '../../../src/services/interfaces/ICra';
+import IStorage from '../../../src/services/interfaces/IStorage';
+import Cra from '../../../src/services/Cra';
 
 function noop() {}
+jest.mock('child_process');
 
 describe('CommandFactory', () => {
     let commandFactory: ICommandFactory;
+    let cra: ICra;
 
     beforeEach(() => {
-        commandFactory = new CommandFactory(new MockStorage());
+        const storage: IStorage = new MockStorage();
+        cra = new Cra(storage, childProcess);
+        commandFactory = new CommandFactory(storage, cra);
     });
 
     describe('when I use the create command', () => {
