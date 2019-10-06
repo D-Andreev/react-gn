@@ -10,10 +10,12 @@ export const COMMAND_FLAG = {
     TS: '--ts',
     HELP: '--help',
     VERSION: '--version',
+    CONFIG: '--config',
+    EJECTED: '--ejected'
 };
 
 export const MAIN_COMMANDS = ['init', 'create'];
-export const ALLOWED_FLAGS = ['--js', '--ts', '--config', '--withCra', '--ejected'];
+export const ALLOWED_FLAGS = ['--js', '--ts', '--config', '--ejected'];
 
 export const ALLOWED_FLAGS_DESCRIPTIONS: {[flag: string]: string} = {
     '--help': 'Shows the help.',
@@ -49,11 +51,11 @@ export const OUTPUT_TYPE = {
     NORMAL: 'normal',
     INFO: 'info',
     SUCCESS: 'success',
+    ERROR: 'error'
 };
 
 export const DEFAULT_CONFIG = {
     language: 'js',
-    withCra: true,
     ejected: false,
 };
 

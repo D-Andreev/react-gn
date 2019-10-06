@@ -8,7 +8,7 @@ export default class Storage implements IStorage {
 
     private walk(path: string, done: Function) {
         let results: string[] = [];
-        this.fs.readdir(path, (err: Error, list: string[]) => {
+        this.fs.readdir(path, (err: ErrnoException | null, list: string[]) => {
             if (err) {
                 return done(err);
             }
@@ -19,7 +19,7 @@ export default class Storage implements IStorage {
             list.forEach((file: string) => {
                 file = this.path.resolve(path, file);
 
-                this.fs.stat(file, (err: Error, stat: Stats) => {
+                this.fs.stat(file, (err: ErrnoException | null, stat: Stats) => {
                     if (stat && stat.isDirectory()) {
                         this.walk(file, (err: Error, res: string[]) => {
                             results = results.concat(res);
@@ -43,28 +43,28 @@ export default class Storage implements IStorage {
         this.path = path;
     }
 
-    create(path: string, content: string, done: (err: ErrnoException) => {}): void {
+    create(path: string, content: string, done: (err: ErrnoException | null) => {}): void {
         this.fs.writeFile(path, content, done);
     }
 
-    read(path: string, done: (err: ErrnoException) => {}): void {
+    read(path: string, done: (err: ErrnoException | null) => {}): void {
         this.fs.readFile(path, done);
     }
 
-    update(path: string, content: string, done: (err: ErrnoException) => {}): void {
+    update(path: string, content: string, done: (err: ErrnoException | null) => {}): void {
         this.create(path, content, done);
     }
 
-    delete(path: string, done: (err: ErrnoException) => {}): void {
+    delete(path: string, done: (err: ErrnoException | null) => {}): void {
         this.fs.unlink(path, done);
     }
 
-    directoryExists(path: string, done: (err: ErrnoException) => {}): void {
+    directoryExists(path: string, done: (err: ErrnoException | null) => {}): void {
         this.fs.access(path, done);
     }
 
     scanDirectory(path: string, done: Function): void {
-        this.directoryExists(path, (err: ErrnoException) => {
+        this.directoryExists(path, (err: ErrnoException | null) => {
             if (err) {
                 return done(err);
             }
