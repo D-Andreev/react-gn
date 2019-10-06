@@ -1,4 +1,4 @@
-import {ChildProcessWithoutNullStreams} from 'child_process';
+import {ChildProcessWithoutNullStreams, execSync} from 'child_process';
 import ICra from './interfaces/ICra';
 import EventEmitter from 'events';
 import {CRA_EVENT} from '../constants';
@@ -19,6 +19,8 @@ export default class Cra extends EventEmitter implements ICra {
         child.stderr.on('data', onError);
         child.stdout.on('data', onData);
         child.on('close', onClose);
+
+        return child;
     }
 
     constructor(storage: IStorage, childProcess: typeof import('child_process')) {
@@ -58,19 +60,25 @@ export default class Cra extends EventEmitter implements ICra {
                 this.emit(CRA_EVENT.EJECT_ERROR, err);
                 return;
             }
-
             const command = `cd ${path} && npm run eject`;
             const commandArguments = ['-y'];
+            let ejected = false;
             const onError: Listener = (err: Error) => {
                 this.emit(CRA_EVENT.EJECT_ERROR, err);
             };
             const onData: Listener = (data: Buffer) => {
-                this.emit(CRA_EVENT.EJECT_DATA, data.toString());
+                const output = data.toString();
+                if (output.indexOf('Are you sure you want to eject? This action is permanent.') !== -1 && !ejected) {
+                    ejected = true;
+                    child.stdin.write('y\n');
+                }
+                this.emit(CRA_EVENT.EJECT_DATA, output);
             };
             const onClose: Listener = (code: number) => {
                 this.emit(CRA_EVENT.EJECT_CLOSE, code);
             };
-            this.spawnChild(command, commandArguments, onError, onData, onClose);
+            const child: ChildProcessWithoutNullStreams =
+                this.spawnChild(command, commandArguments, onError, onData, onClose);
         })
     }
 }

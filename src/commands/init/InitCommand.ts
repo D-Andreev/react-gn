@@ -51,7 +51,7 @@ export default class InitCommand implements IInitCommand {
     }
 
     ejectApp(path: string, done: Function): void {
-        this.cra.ejectApp(this.path);
+        this.cra.ejectApp(path);
         this.cra.on(CRA_EVENT.EJECT_ERROR, (err: ErrorEvent) => {
             const output: Output[] = [new Output(err.toString(), OUTPUT_TYPE.ERROR)];
             this.userInterface.showOutput(output, noop);
