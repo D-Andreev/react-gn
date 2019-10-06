@@ -68,7 +68,7 @@ export default class Cra extends EventEmitter implements ICra {
             };
             const onData: Listener = (data: Buffer) => {
                 const output = data.toString();
-                if (output.indexOf('Are you sure you want to eject? This action is permanent.') !== -1 && !ejected) {
+                if (output.indexOf('Are you sure you want to eject? This action is permanent.') !== -1) {
                     ejected = true;
                     child.stdin.write('y\n');
                 }
