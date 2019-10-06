@@ -4,8 +4,6 @@ import Flag from '../Flag';
 import ICra from '../../services/interfaces/ICra';
 import InitCommand from './InitCommand';
 import ICommand from '../interfaces/ICommand';
-import {COMMAND_FLAG, CRA_EVENT, OUTPUT_TYPE} from '../../constants';
-import Output from '../Output';
 
 export default class JsAppCommand extends InitCommand implements ICommand {
 

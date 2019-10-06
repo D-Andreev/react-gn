@@ -4,7 +4,6 @@ import IStorage from '../../../src/services/interfaces/IStorage';
 import IUserInterface from '../../../src/user-interface/interfaces/IUserInterface';
 import ICra from '../../../src/services/interfaces/ICra';
 import MockStorage from '../../mock/MockStorage';
-import Output from '../../../src/commands/Output';
 import Flag from '../../../src/commands/Flag';
 import IInitCommand from '../../../src/commands/interfaces/IInitCommand';
 
@@ -20,25 +19,25 @@ describe('InitCommand', () => {
     beforeEach(() => {
         storage = new MockStorage();
         userInterface = new class implements IUserInterface {
-            askQuestion(question: string, done: Function): void {
+            askQuestion(): void {
             }
 
-            showOutput(output: Output[], done: Function): void {
+            showOutput(): void {
             }
         };
         cra = new class implements ICra {
-            createApp(name: string, path: string, args?: string[]): any {
+            createApp(): any {
                 return new EventEmitter();
             }
 
-            ejectApp(path: string): void {
+            ejectApp(): void {
             }
 
-            emit(event: string, ...args: any[]): boolean {
+            emit(): boolean {
                 return false;
             }
 
-            on(event: string, listener: Function): this {
+            on(): this {
                 return this;
             }
         };
