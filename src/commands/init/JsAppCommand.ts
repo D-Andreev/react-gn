@@ -27,19 +27,17 @@ export default class JsAppCommand extends InitCommand implements ICommand {
 
     execute(done: Function): void {
         this.initApp([], (err: Error) => {
-            console.log('ASD', err, this.flags);
             if (err) {
                 return done(err);
             }
             const ejectFlag: Flag | undefined = this.flags.find((flag: Flag) => {
                 return flag.name === COMMAND_FLAG.EJECTED;
             });
-            console.log('dddd', ejectFlag, path.join(this.path, this.appName), this.appName);
             if (ejectFlag) {
                  this.ejectApp(path.join(this.path, this.appName), done);
             } else {
                 done();
             }
-        })
+        });
     }
 }
