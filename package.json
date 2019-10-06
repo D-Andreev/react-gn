@@ -1,22 +1,32 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "es6",
-    "noImplicitAny": true,
-    "moduleResolution": "node",
-    "sourceMap": true,
-    "outDir": "dist",
-    "baseUrl": ".",
-    "paths": {
-      "*": [
-        "node_modules/*",
-        "src/types/*"
-      ]
-    }
+  "name": "react-sdk",
+  "version": "1.0.0",
+  "dependencies": {
+    "create-react-app": "^3.1.2",
   },
-  "include": [
-    "src/**/*"
-  ]
+  "bin": {
+    "react-sdk": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "npm run build-ts",
+    "build-ts": "tsc",
+    "watch-ts": "tsc -w",
+    "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\"",
+    "test": "jest --forceExit --coverage --verbose",
+    "test-ci": "sudo npm link && yarn test",
+    "test-unit": "jest --forceExit --coverage --verbose ./test/unit/",
+    "test-feature": "jest --forceExit --coverage --verbose ./test/feature/",
+    "watch-test": "npm run test -- --watchAll"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.18",
+    "@types/node": "^12.7.5",
+    "@typescript-eslint/eslint-plugin": "^2.2.0",
+    "@typescript-eslint/parser": "^2.2.0",
+    "eslint": "^6.4.0",
+    "jest": "^24.9.0",
+    "npm": "^6.11.3",
+    "ts-jest": "^24.1.0",
+    "typescript": "^3.6.3"
+  }
 }
