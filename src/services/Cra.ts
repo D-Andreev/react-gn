@@ -61,19 +61,13 @@ export default class Cra extends EventEmitter implements ICra {
                 this.emit(CRA_EVENT.EJECT_ERROR, err);
                 return;
             }
-            const command = `cd ${path} && npm run eject`;
+            const command = `cd ${path} && echo yes | npm run eject`;
             const commandArguments = ['-y'];
-            let ejected = false;
             const onError: Listener = (err: Error) => {
                 this.emit(CRA_EVENT.EJECT_ERROR, err);
             };
             const onData: Listener = (data: Buffer) => {
-                const output = data.toString();
-                if (output.indexOf('Are you sure you want to eject? This action is permanent.') !== -1) {
-                    ejected = true;
-                    child.stdin.write(`y${EOL}`);
-                }
-                this.emit(CRA_EVENT.EJECT_DATA, output);
+                this.emit(CRA_EVENT.EJECT_DATA, data.toString());
             };
             const onClose: Listener = (code: number) => {
                 this.emit(CRA_EVENT.EJECT_CLOSE, code);
