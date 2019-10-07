@@ -1,6 +1,13 @@
 import readline from 'readline';
 import ICommand from './interfaces/ICommand';
-import {ALLOWED_FLAGS, COMMAND, COMMAND_FLAG, FLAG_INDICATOR, FLAGS_MIN_INDEX} from '../constants';
+import {
+    ALLOWED_FLAGS,
+    ALLOWED_LANGUAGE_TYPE_FLAGS,
+    COMMAND,
+    COMMAND_FLAG,
+    FLAG_INDICATOR,
+    FLAGS_MIN_INDEX
+} from '../constants';
 import TsAppCommand from './init/TsAppCommand';
 import UnknownCommand from './UnknownCommand';
 import IStorage from '../services/interfaces/IStorage';
@@ -44,7 +51,7 @@ export default class CommandFactory implements ICommandFactory{
 
     private static getLanguageTypeFlag(commandArguments: string[], languageTypeMap: ILanguageTypeMap): string {
         const intersection: string[] = commandArguments
-            .filter(arg => ALLOWED_FLAGS.indexOf(arg) !== -1);
+            .filter(arg => ALLOWED_LANGUAGE_TYPE_FLAGS.indexOf(arg) !== -1);
 
         if (intersection && intersection.length > 0 && languageTypeMap.hasOwnProperty(intersection[0])) {
             return intersection[0];

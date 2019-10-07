@@ -16,6 +16,7 @@ export const COMMAND_FLAG = {
 
 export const MAIN_COMMANDS = ['init', 'create'];
 export const ALLOWED_FLAGS = ['--js', '--ts', '--config', '--ejected'];
+export const ALLOWED_LANGUAGE_TYPE_FLAGS = ['--js', '--ts'];
 
 export const ALLOWED_FLAGS_DESCRIPTIONS: {[flag: string]: string} = {
     '--help': 'Shows the help.',
