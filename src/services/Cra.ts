@@ -1,4 +1,5 @@
-import {ChildProcessWithoutNullStreams, execSync} from 'child_process';
+import {ChildProcessWithoutNullStreams} from 'child_process';
+import {EOL} from 'os';
 import ICra from './interfaces/ICra';
 import EventEmitter from 'events';
 import {CRA_EVENT} from '../constants';
@@ -70,7 +71,7 @@ export default class Cra extends EventEmitter implements ICra {
                 const output = data.toString();
                 if (output.indexOf('Are you sure you want to eject? This action is permanent.') !== -1) {
                     ejected = true;
-                    child.stdin.write('y\n');
+                    child.stdin.write(`y${EOL}`);
                 }
                 this.emit(CRA_EVENT.EJECT_DATA, output);
             };

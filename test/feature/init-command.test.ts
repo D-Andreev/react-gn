@@ -132,6 +132,9 @@ describe('init command', () => {
             beforeAll(() => {
                 appName = `${Date.now()}my-app`;
             });
+            afterAll(() => {
+                execSync(`rm -rf ./${appName}`);
+            });
 
             it('it ejects the app', () => {
                 const command =
@@ -147,6 +150,9 @@ describe('init command', () => {
             let appName: string;
             beforeAll(() => {
                 appName = `${Date.now()}my-app`;
+            });
+            afterAll(() => {
+                execSync(`rm -rf ./${appName}`);
             });
 
             it('it builds a ts app and ejects it', () => {
