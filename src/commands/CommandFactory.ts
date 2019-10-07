@@ -58,7 +58,6 @@ export default class CommandFactory implements ICommandFactory{
     ): ICommand {
         const appName: string = commandArguments[3];
         const flags: Flag[] = CommandFactory.parseFlags(commandArguments);
-        console.log('flags', flags);
         const languageType: string = CommandFactory.getLanguageTypeFlag(commandArguments, languageTypeMap);
 
         return new languageTypeMap[languageType](
