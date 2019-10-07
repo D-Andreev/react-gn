@@ -104,9 +104,8 @@ describe('Cra', () => {
 
             it('executes the command', (done) => {
                 cra.ejectApp('./path/to/app');
-                const expectedCommand = 'cd ./path/to/app && npm run eject';
-                const args = ['-y'];
-                expect(childProcess.spawn).toHaveBeenCalledWith(expectedCommand, args, {shell: true});
+                const expectedCommand = 'cd ./path/to/app && echo yes | npm run eject';
+                expect(childProcess.spawn).toHaveBeenCalledWith(expectedCommand, [], {shell: true});
                 done();
             });
         });

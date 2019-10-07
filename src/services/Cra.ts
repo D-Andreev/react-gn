@@ -62,7 +62,6 @@ export default class Cra extends EventEmitter implements ICra {
                 return;
             }
             const command = `cd ${path} && echo yes | npm run eject`;
-            const commandArguments = ['-y'];
             const onError: Listener = (err: Error) => {
                 this.emit(CRA_EVENT.EJECT_ERROR, err);
             };
@@ -73,7 +72,7 @@ export default class Cra extends EventEmitter implements ICra {
                 this.emit(CRA_EVENT.EJECT_CLOSE, code);
             };
             const child: ChildProcessWithoutNullStreams =
-                this.spawnChild(command, commandArguments, onError, onData, onClose);
+                this.spawnChild(command, [], onError, onData, onClose);
         })
     }
 }
