@@ -2,6 +2,14 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import {ASCII_ART, SDK_NAME} from '../../src/constants';
 
+function createApp(appName: string, flags?: string): any {
+    return execSync(`${SDK_NAME} init ${appName}${flags ? ' ' + flags : ''}`);
+}
+
+function deleteApp(appName: string) {
+    execSync(`rm -rf ./${appName}`);
+}
+
 describe('init command', () => {
     let appName: string;
     beforeAll(() => {
@@ -10,11 +18,11 @@ describe('init command', () => {
     });
 
     afterAll(() => {
-        execSync(`rm -rf ./${appName}`);
+        deleteApp(appName);
     });
 
     beforeEach(() => {
-        execSync(`rm -rf ./${appName}`);
+        deleteApp(appName);
     });
 
     describe('when I enter incorrect package name', () => {
@@ -46,11 +54,11 @@ describe('init command', () => {
                 appName = `${Date.now()}my-app`;
             });
             afterAll(() => {
-                execSync(`rm -rf ./${appName}`);
+                deleteApp(appName);
             });
 
             it('creates js language type app', () => {
-                const result = execSync(`${SDK_NAME} init ${appName}`);
+                const result = createApp(appName);
                 expect(result.toString()).toContain(`${appName} was generated successfully!`);
                 expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
             });
@@ -62,11 +70,11 @@ describe('init command', () => {
                 appName = `${Date.now()}my-app`;
             });
             afterAll(() => {
-                execSync(`rm -rf ./${appName}`);
+                deleteApp(appName);
             });
 
             it('creates js language type app', () => {
-                const result = execSync(`${SDK_NAME} init ${appName} --js`);
+                const result = createApp(appName, '--js');
                 expect(result.toString()).toContain(`${appName} was generated successfully!`);
                 expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
             });
@@ -78,7 +86,7 @@ describe('init command', () => {
                 appName = `${Date.now()}my-app`;
             });
             afterAll(() => {
-                execSync(`rm -rf ./${appName}`);
+                deleteApp(appName);
             });
 
             it('creates ts language type app', () => {
