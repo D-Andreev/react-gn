@@ -1,5 +1,4 @@
 import {ChildProcessWithoutNullStreams} from 'child_process';
-import {EOL} from 'os';
 import ICra from './interfaces/ICra';
 import EventEmitter from 'events';
 import {CRA_EVENT} from '../constants';
@@ -20,8 +19,6 @@ export default class Cra extends EventEmitter implements ICra {
         child.stderr.on('data', onError);
         child.stdout.on('data', onData);
         child.on('close', onClose);
-
-        return child;
     }
 
     constructor(storage: IStorage, childProcess: typeof import('child_process')) {
@@ -71,8 +68,7 @@ export default class Cra extends EventEmitter implements ICra {
             const onClose: Listener = (code: number) => {
                 this.emit(CRA_EVENT.EJECT_CLOSE, code);
             };
-            const child: ChildProcessWithoutNullStreams =
-                this.spawnChild(command, [], onError, onData, onClose);
-        })
+            this.spawnChild(command, [], onError, onData, onClose);
+        });
     }
 }

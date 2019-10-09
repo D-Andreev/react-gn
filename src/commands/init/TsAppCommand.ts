@@ -1,3 +1,4 @@
+import path from 'path';
 import IStorage from '../../services/interfaces/IStorage';
 import IUserInterface from '../../user-interface/interfaces/IUserInterface';
 import Flag from '../Flag';
@@ -5,7 +6,6 @@ import ICra from '../../services/interfaces/ICra';
 import InitCommand from './InitCommand';
 import ICommand from '../interfaces/ICommand';
 import {COMMAND_FLAG} from '../../constants';
-import * as path from "path";
 
 export default class JsAppCommand extends InitCommand implements ICommand {
 
@@ -16,6 +16,10 @@ export default class JsAppCommand extends InitCommand implements ICommand {
 
     initApp(args: string[], done: Function): void {
         super.initApp(args, done);
+    }
+
+    ejectApp(path: string, done: Function): void {
+        super.ejectApp(path, done);
     }
 
     execute(done: Function): void {
