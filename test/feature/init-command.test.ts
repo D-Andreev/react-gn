@@ -5,6 +5,7 @@ import {ASCII_ART, SDK_NAME} from '../../src/constants';
 describe('init command', () => {
     let appName: string;
     beforeAll(() => {
+        execSync('git init');
         appName = `${Date.now()}my-app`;
         execSync('yarn build');
     });
@@ -14,6 +15,7 @@ describe('init command', () => {
     });
 
     beforeEach(() => {
+        execSync('git add --all && git co -m "WIP"');
         execSync(`rm -rf ./${appName}`);
     });
 
