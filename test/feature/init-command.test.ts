@@ -5,6 +5,8 @@ import {ASCII_ART, SDK_NAME} from '../../src/constants';
 describe('init command', () => {
     let appName: string;
     beforeAll(() => {
+        execSync('git stash');
+        execSync('git clean -fd');
         const email = 'd.andreev90@gmail.com';
         const user = 'D-Andreev';
         execSync(`git config --global user.email "${email}"`);
@@ -18,6 +20,8 @@ describe('init command', () => {
     });
 
     beforeEach(() => {
+        execSync('git stash');
+        execSync('git clean -fd');
         execSync(`rm -rf ./${appName}`);
     });
 
@@ -144,9 +148,6 @@ describe('init command', () => {
                 const command =
                     `${SDK_NAME} init ${appName} --ejected`;
                 const result = execSync(command);
-                console.log('res', result.toString());
-                fs.writeFileSync('./log.txt', result.toString());
-                execSync('git stash');
                 expect(result.toString()).toContain(`${appName} was generated successfully!`);
                 expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
@@ -166,7 +167,6 @@ describe('init command', () => {
                 const command =
                     `${SDK_NAME} init ${appName} --ejected --ts`;
                 const result = execSync(command);
-                execSync('git stash');
                 expect(result.toString()).toContain(`${appName} was generated successfully!`);
                 expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeTruthy();
