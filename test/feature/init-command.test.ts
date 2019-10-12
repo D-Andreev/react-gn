@@ -140,6 +140,8 @@ describe('init command', () => {
                 const command =
                     `${SDK_NAME} init ${appName} --ejected`;
                 const result = execSync(command);
+                console.log('res', result);
+                fs.writeFileSync('./log.txt', result);
                 expect(result.toString()).toContain(`${appName} was generated successfully!`);
                 expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
