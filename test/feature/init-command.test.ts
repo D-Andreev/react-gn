@@ -15,7 +15,7 @@ describe('init command', () => {
     });
 
     beforeEach(() => {
-        execSync('git add --all && git co -m "WIP"');
+        execSync('git add --all && git commit -m "WIP"');
         execSync(`rm -rf ./${appName}`);
     });
 
