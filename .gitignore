@@ -74,6 +74,3 @@ my-app/
 
 # Apps generate from feature tests
 *my-app/
-
-# git credentials
-git-credentials.json
