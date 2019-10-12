@@ -15,7 +15,6 @@ describe('init command', () => {
     });
 
     beforeEach(() => {
-        execSync('git add --all && git commit -m "WIP"');
         execSync(`rm -rf ./${appName}`);
     });
 
@@ -140,6 +139,10 @@ describe('init command', () => {
             });
 
             it('it ejects the app', () => {
+
+                const a = execSync('git stat');
+                console.log('asd', a.toString());
+                execSync('git add --all && git commit -m "WIP"');
                 const command =
                     `${SDK_NAME} init ${appName} --ejected`;
                 const result = execSync(command);
@@ -159,6 +162,9 @@ describe('init command', () => {
             });
 
             it('it builds a ts app and ejects it', () => {
+                const a = execSync('git stat');
+                console.log('asd', a.toString());
+                execSync('git add --all && git commit -m "WIP"');
                 const command =
                     `${SDK_NAME} init ${appName} --ejected --ts`;
                 const result = execSync(command);
