@@ -140,7 +140,7 @@ describe('init command', () => {
 
             it('it ejects the app', () => {
 
-                const a = execSync('git stat');
+                const a = execSync('git status');
                 console.log('asd', a.toString());
                 execSync('git add --all && git commit -m "WIP"');
                 const command =
@@ -162,7 +162,7 @@ describe('init command', () => {
             });
 
             it('it builds a ts app and ejects it', () => {
-                const a = execSync('git stat');
+                const a = execSync('git status');
                 console.log('asd', a.toString());
                 execSync('git add --all && git commit -m "WIP"');
                 const command =
