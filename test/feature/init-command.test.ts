@@ -5,12 +5,6 @@ import {ASCII_ART, SDK_NAME} from '../../src/constants';
 describe('init command', () => {
     let appName: string;
     beforeAll(() => {
-        const email = 'd.andreev90@gmail.com';
-        const user = 'D-Andreev';
-        execSync(`git config user.email "${email}"`);
-        execSync(`git config user.name "${user}"`);
-        execSync('git add --all && git co -m "WIP');
-        execSync('git clean -fd');
         appName = `${Date.now()}my-app`;
         execSync('yarn build');
     });
@@ -20,8 +14,6 @@ describe('init command', () => {
     });
 
     beforeEach(() => {
-        execSync('git add --all && git co -m "WIP');
-        execSync('git clean -fd');
         execSync(`rm -rf ./${appName}`);
     });
 
