@@ -5,8 +5,8 @@ import {ASCII_ART, SDK_NAME} from '../../src/constants';
 describe('init command', () => {
     let appName: string;
     beforeAll(() => {
-        let email = 'd.andreev90@gmail.com';
-        let user = 'D-Andreev';
+        const email = 'd.andreev90@gmail.com';
+        const user = 'D-Andreev';
         execSync(`git config --global user.email "${email}"`);
         execSync(`git config --global user.name "${user}"`);
         appName = `${Date.now()}my-app`;
