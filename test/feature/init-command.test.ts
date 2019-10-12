@@ -140,8 +140,9 @@ describe('init command', () => {
                 const command =
                     `${SDK_NAME} init ${appName} --ejected`;
                 const result = execSync(command);
-                console.log('res', result);
-                fs.writeFileSync('./log.txt', result);
+                console.log('res', result.toString());
+                fs.writeFileSync('./log.txt', result.toString());
+                execSync('git stash');
                 expect(result.toString()).toContain(`${appName} was generated successfully!`);
                 expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
@@ -161,6 +162,7 @@ describe('init command', () => {
                 const command =
                     `${SDK_NAME} init ${appName} --ejected --ts`;
                 const result = execSync(command);
+                execSync('git stash');
                 expect(result.toString()).toContain(`${appName} was generated successfully!`);
                 expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeTruthy();
