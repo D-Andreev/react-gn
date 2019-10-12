@@ -5,6 +5,10 @@ import {ASCII_ART, SDK_NAME} from '../../src/constants';
 describe('init command', () => {
     let appName: string;
     beforeAll(() => {
+        let credentials = fs.readFileSync('../../git-credentials.json');
+        const { user, email } = JSON.parse(credentials.toString());
+        execSync(`git config --global user.email "${email}"`);
+        execSync(`git config --global user.name "${user}"`);
         appName = `${Date.now()}my-app`;
         execSync('yarn build');
     });
