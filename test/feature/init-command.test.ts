@@ -102,7 +102,7 @@ describe('init command', () => {
                 const command =
                     `${SDK_NAME} init ${appName} --unknown-flag some-value --ts some-other-unknown-flag some-other-value`;
                 const result = execSync(command);
-                console.log('1', result.toString());
+                console.log('loggg', result.toString());
                 expect(result.toString()).toContain(`${appName} was generated successfully!`);
                 expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeTruthy();
