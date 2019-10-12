@@ -9,7 +9,7 @@ describe('init command', () => {
         const user = 'D-Andreev';
         execSync(`git config user.email "${email}"`);
         execSync(`git config user.name "${user}"`);
-        execSync('git stash');
+        execSync('git add --all && git co -m "WIP');
         execSync('git clean -fd');
         appName = `${Date.now()}my-app`;
         execSync('yarn build');
@@ -20,7 +20,7 @@ describe('init command', () => {
     });
 
     beforeEach(() => {
-        execSync('git stash');
+        execSync('git add --all && git co -m "WIP');
         execSync('git clean -fd');
         execSync(`rm -rf ./${appName}`);
     });
