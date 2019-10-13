@@ -15,5 +15,5 @@ module.exports = {
         '**/test/**/*.test.(ts|js)'
     ],
     testEnvironment: 'node',
-    coverageReporters: ['none']
+    coverageReporters: ['text-summary']
 };
