@@ -151,7 +151,7 @@ describe('init command', () => {
 
                 const a = execSync('git status');
                 console.log('asd', a.toString());
-                execSync('git add --all && git commit -m "WIP"');
+                execSync('git stash && git clean -fd');
                 const command =
                     `${SDK_NAME} init ${appName} --ejected`;
                 const result = execSync(command);
@@ -172,8 +172,8 @@ describe('init command', () => {
 
             it('it builds a ts app and ejects it', () => {
                 const a = execSync('git status');
-                console.log('asd', a.toString());
-                execSync('git add --all && git commit -m "WIP"');
+                console.log('asd2', a.toString());
+                execSync('git stash && git clean -fd');
                 const command =
                     `${SDK_NAME} init ${appName} --ejected --ts`;
                 const result = execSync(command);
