@@ -58,9 +58,7 @@ export default class Cra extends EventEmitter implements ICra {
                 this.emit(CRA_EVENT.EJECT_ERROR, err);
                 return;
             }
-
-            const command = `cd ${path} && npm run eject`;
-            const commandArguments = ['-y'];
+            const command = `cd ${path} && echo yes | npm run eject`;
             const onError: Listener = (err: Error) => {
                 this.emit(CRA_EVENT.EJECT_ERROR, err);
             };
@@ -70,7 +68,7 @@ export default class Cra extends EventEmitter implements ICra {
             const onClose: Listener = (code: number) => {
                 this.emit(CRA_EVENT.EJECT_CLOSE, code);
             };
-            this.spawnChild(command, commandArguments, onError, onData, onClose);
-        })
+            this.spawnChild(command, [], onError, onData, onClose);
+        });
     }
 }

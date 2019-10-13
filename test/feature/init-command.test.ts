@@ -2,9 +2,19 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import {ASCII_ART, SDK_NAME} from '../../src/constants';
 
+function setupGit() {
+    const email = 'd.andreev90@gmail.com';
+    const user = 'D-Andreev';
+    execSync(`git config --global user.email "${email}"`);
+    execSync(`git config --global user.name "${user}"`);
+}
+
 describe('init command', () => {
     let appName: string;
     beforeAll(() => {
+        if (process.env.TEST_ENV === 'CI') {
+            setupGit();
+        }
         appName = `${Date.now()}my-app`;
         execSync('yarn build');
     });
@@ -124,6 +134,48 @@ describe('init command', () => {
                 expect(result.toString()).toContain(`${appName} was generated successfully!`);
                 expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeTruthy();
+            });
+        });
+
+        describe('when I enter --ejected', () => {
+            let appName: string;
+            beforeAll(() => {
+                appName = `${Date.now()}my-app`;
+            });
+            afterAll(() => {
+                execSync(`rm -rf ./${appName}`);
+            });
+
+            it('it ejects the app', () => {
+
+                execSync('git stash && git clean -fd');
+                const command =
+                    `${SDK_NAME} init ${appName} --ejected`;
+                const result = execSync(command);
+                expect(result.toString()).toContain(`${appName} was generated successfully!`);
+                expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
+                expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
+            });
+        });
+
+        describe('when I enter --ejected --ts', () => {
+            let appName: string;
+            beforeAll(() => {
+                appName = `${Date.now()}my-app`;
+            });
+            afterAll(() => {
+                execSync(`rm -rf ./${appName}`);
+            });
+
+            it('it builds a ts app and ejects it', () => {
+                execSync('git stash && git clean -fd');
+                const command =
+                    `${SDK_NAME} init ${appName} --ejected --ts`;
+                const result = execSync(command);
+                expect(result.toString()).toContain(`${appName} was generated successfully!`);
+                expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
+                expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeTruthy();
+                expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
             });
         });
     });

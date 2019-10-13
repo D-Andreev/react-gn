@@ -113,8 +113,6 @@ describe('CommandFactory', () => {
                         'some-value'
                     ], noop);
                 // @ts-ignore
-                console.log(command.flags);
-                // @ts-ignore
                 expect(command.flags).toEqual([]);
             });
         });

@@ -1,9 +1,11 @@
+import path from 'path';
 import IStorage from '../../services/interfaces/IStorage';
 import IUserInterface from '../../user-interface/interfaces/IUserInterface';
 import Flag from '../Flag';
 import ICra from '../../services/interfaces/ICra';
 import InitCommand from './InitCommand';
 import ICommand from '../interfaces/ICommand';
+import {COMMAND_FLAG} from '../../constants';
 
 export default class JsAppCommand extends InitCommand implements ICommand {
 
@@ -16,13 +18,23 @@ export default class JsAppCommand extends InitCommand implements ICommand {
         super.initApp(args, done);
     }
 
+    ejectApp(path: string, done: Function): void {
+        super.ejectApp(path, done);
+    }
+
     execute(done: Function): void {
         this.initApp(['--typescript'], (err: Error) => {
             if (err) {
                 return done(err);
             }
-
-            done();
-        })
+            const ejectFlag: Flag | undefined = this.flags.find((flag: Flag) => {
+                return flag.name === COMMAND_FLAG.EJECTED;
+            });
+            if (ejectFlag) {
+                this.ejectApp(path.join(this.path, this.appName), done);
+            } else {
+                done();
+            }
+        });
     }
 }
