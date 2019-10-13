@@ -2,10 +2,19 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import {ASCII_ART, SDK_NAME} from '../../src/constants';
 
+function setupGit() {
+    const email = 'd.andreev90@gmail.com';
+    const user = 'D-Andreev';
+    execSync(`git config --global user.email "${email}"`);
+    execSync(`git config --global user.name "${user}"`);
+}
+
 describe('init command', () => {
     let appName: string;
     beforeAll(() => {
-        execSync('git init');
+        if (process.env.TEST_ENV === 'CI') {
+            setupGit();
+        }
         appName = `${Date.now()}my-app`;
         execSync('yarn build');
     });
