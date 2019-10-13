@@ -12,7 +12,7 @@
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
     "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\"",
-    "test": "jest --forceExit --coverage",
+    "test": "jest --forceExit --coverage --verbose",
     "test-ci": "export TEST_ENV=CI && sudo npm link && yarn test --runInBand",
     "test-unit": "npm run test ./test/unit/",
     "test-feature": "npm run test ./test/feature/",
