@@ -149,8 +149,6 @@ describe('init command', () => {
 
             it('it ejects the app', () => {
 
-                const a = execSync('git status');
-                console.log('asd', a.toString());
                 execSync('git stash && git clean -fd');
                 const command =
                     `${SDK_NAME} init ${appName} --ejected`;
@@ -171,8 +169,6 @@ describe('init command', () => {
             });
 
             it('it builds a ts app and ejects it', () => {
-                const a = execSync('git status');
-                console.log('asd2', a.toString());
                 execSync('git stash && git clean -fd');
                 const command =
                     `${SDK_NAME} init ${appName} --ejected --ts`;
