@@ -16,7 +16,7 @@ export default class CodeGenerator implements ICodeGenerator {
                         return `import ${name} from '${from}';`
                     },
                     multiple: (names: string[], from: string): string => {
-                        let imports: string = names.join(', ');
+                        const imports: string = names.join(', ');
                         return `import {${imports}} from ${from}`
                     }
                 }
@@ -44,7 +44,6 @@ export default class CodeGenerator implements ICodeGenerator {
     private jsxPutAfter(input: string, jsx: string, options: IJsxOptions): string {
         input = input.replace(options.after, 'P1');
         input = input.replace(`</${options.element}>`, 'P2');
-        const match = input.match(/(P1>)[\s]+.*[\s]+P2/);
 
         input = input.replace('P1', options.after);
         input = input.replace('P2',
@@ -131,7 +130,7 @@ export default class CodeGenerator implements ICodeGenerator {
         }
     }
 
-    addClassMethod(input: string, method: string, languageType: string): string {
+    addClassMethod(input: string, method: string): string {
         const matchStartOfClass: RegExpMatchArray = input.match(/extends React.Component {[\s]+/);
         if (!matchStartOfClass || matchStartOfClass.length < 1) {
             return input;

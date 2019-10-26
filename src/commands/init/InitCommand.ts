@@ -112,7 +112,7 @@ export default class InitCommand implements IInitCommand {
             const paths: string[] = Object
                 .keys(template)
                 .filter((key: string) => key !== 'dependencies');
-            this.storage.createPaths(this.path, paths, (err: Error) => {
+            this.storage.createPaths(this.path, paths, () => {
 
             });
         }

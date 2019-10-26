@@ -136,7 +136,7 @@ describe('templates', () => {
             const method = `simpleAction() {
                 this.props.simpleAction();
             }`;
-            const res = CodeGenerator.getInstance().addClassMethod(input, method, 'js')
+            const res = CodeGenerator.getInstance().addClassMethod(input, method)
                 .replace(/\n\s+/g, '');
             expect(res).toContain('simpleAction() {this.props.simpleAction();}');
         });
