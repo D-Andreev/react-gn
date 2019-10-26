@@ -19,8 +19,41 @@
     - Apply all options from config and set in file structure
     - Modify files based on file structure
 
+fesdk-4 TODO:
+Prerequisites:
+    - Implement storage.createPath (done)
+    - Add dependencies to codeGenerator if they have any
+
+1. Extract all the flags with codeGenerator and foreach apply the changes
+    - when flag is --withRedux
+        - install dependencies (install in demo and add versions to template)
+        - apply template
+
+Other small changes
+ - Initialize config service and use it, instead of flags to eject
+ - Make flag for preferred package manager
+ - Format js code before saving to file (eslint?)
+
+
+Idea:
+    Create small bits of code into codeGenerator with placeholders and add them into files.
+
+        Actions on component:
+            - add import statements (done)
+            - convert functional component to class (done)
+            - Add jsx (done)
+            - Add class method (done)
+            - Add export (done)
+            - Add mapDispatchToProps (done)
+            - Add mapStateToProps (done)
+            - Add prop types?
+            - Add state?
+            - Add props?
+
+        Actions on redux:
+            - Add (to) action
+            - Add (to) reducer
 
 
 
-Other shit
- - Make flags with getter/setter
+

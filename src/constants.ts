@@ -16,7 +16,12 @@ export const COMMAND_FLAG = {
 
 export const MAIN_COMMANDS = ['init', 'create'];
 export const ALLOWED_LANGUAGE_TYPE_FLAGS = ['--js', '--ts'];
-export const ALLOWED_FLAGS = ['--config', '--ejected'].concat(ALLOWED_LANGUAGE_TYPE_FLAGS);
+export const FLAGS_WITH_TEMPLATES = {
+    WITH_REDUX: '--withRedux',
+};
+export const ALLOWED_FLAGS = ['--config', '--ejected']
+    .concat(Object.values(FLAGS_WITH_TEMPLATES))
+    .concat(ALLOWED_LANGUAGE_TYPE_FLAGS);
 
 export const ALLOWED_FLAGS_DESCRIPTIONS: {[flag: string]: string} = {
     '--help': 'Shows the help.',
@@ -55,8 +60,13 @@ export const OUTPUT_TYPE = {
     ERROR: 'error'
 };
 
+export const LANGUAGE_TYPE = {
+    JS: 'js',
+    TS: 'ts',
+};
+
 export const DEFAULT_CONFIG = {
-    language: 'js',
+    language: LANGUAGE_TYPE.JS,
     ejected: false,
 };
 
@@ -68,3 +78,6 @@ export const CRA_EVENT = {
     EJECT_DATA: 'EJECT_DATA',
     EJECT_CLOSE: 'EJECT_CLOSE'
 };
+
+export const RETURN_STATEMENT_MIN_MATCH_COUNT = 3;
+export const START_OF_CLASS_MIN_MATCH_COUNT = 1;

@@ -5,7 +5,7 @@ import Flag from '../Flag';
 import ICra from '../../services/interfaces/ICra';
 import InitCommand from './InitCommand';
 import ICommand from '../interfaces/ICommand';
-import {COMMAND_FLAG} from '../../constants';
+import {COMMAND_FLAG, LANGUAGE_TYPE} from '../../constants';
 
 export default class JsAppCommand extends InitCommand implements ICommand {
 
@@ -22,6 +22,10 @@ export default class JsAppCommand extends InitCommand implements ICommand {
         super.ejectApp(path, done);
     }
 
+    applyConfigOptions(languageType: string, done: Function): void {
+        super.applyConfigOptions(languageType, done);
+    }
+
     execute(done: Function): void {
         this.initApp(['--typescript'], (err: Error) => {
             if (err) {
@@ -31,9 +35,15 @@ export default class JsAppCommand extends InitCommand implements ICommand {
                 return flag.name === COMMAND_FLAG.EJECTED;
             });
             if (ejectFlag) {
-                this.ejectApp(path.join(this.path, this.appName), done);
+                this.ejectApp(path.join(this.path, this.appName), (err: Error) => {
+                    if (err) {
+                        return done(err);
+                    }
+
+                    this.applyConfigOptions(LANGUAGE_TYPE.JS, done);
+                });
             } else {
-                done();
+                this.applyConfigOptions(LANGUAGE_TYPE.JS, done);
             }
         });
     }

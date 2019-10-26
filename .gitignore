@@ -74,3 +74,6 @@ my-app/
 
 # Apps generate from feature tests
 *my-app/
+
+# Demos
+demos/
