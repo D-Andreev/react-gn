@@ -38,6 +38,29 @@ export default class Storage implements IStorage {
         });
     };
 
+    private createFolderIfNotExists(folderPath: string): void {
+        if (!this.fs.existsSync(folderPath)) {
+            this.fs.mkdirSync(folderPath);
+        }
+    }
+
+    private getCurrentFolderPath(splitPath: string[], i: number): string {
+        let folder = '';
+        if (i === 0) {
+            folder = splitPath[i];
+        } else {
+            folder = splitPath.slice(0, i + 1).join(this.path.sep);
+        }
+
+        return folder;
+    }
+
+    private static getSplitPaths(paths: string[]): string[][] {
+        return paths
+            .map((path: string) => path.split('/'))
+            .filter((splitPath: string[]) => splitPath.length > 1);
+    }
+
     constructor(fs: typeof import('fs'), path: typeof import('path')) {
         this.fs = fs;
         this.path = path;
@@ -70,5 +93,32 @@ export default class Storage implements IStorage {
             }
             this.walk(path, done);
         });
+    }
+
+    createPaths(mainPath: string, paths: string[], done: Function): void {
+        if (!paths || !paths.length) {
+            return done();
+        }
+
+        const splitPaths: string[][] = Storage.getSplitPaths(paths);
+        const checkedPaths: {[key: string]: boolean} = {};
+        for (let i = 0; i < splitPaths.length; i++) {
+            const splitPath: string[] = splitPaths[i];
+            for (let j = 0; j < splitPath.length - 1; j++) {
+                const folder = this.getCurrentFolderPath(splitPath, j);
+                const folderPath: string = this.path.join(mainPath, folder);
+                if (checkedPaths.hasOwnProperty(folderPath)) {
+                    continue;
+                }
+                try {
+                    this.createFolderIfNotExists(folderPath);
+                    checkedPaths[folderPath] = true;
+                } catch (e) {
+                    return done(e);
+                }
+            }
+        }
+
+        done();
     }
 }

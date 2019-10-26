@@ -5,4 +5,5 @@ export default interface IStorage {
     delete(path: string, done: Function): void;
     directoryExists(path: string, done: Function): void;
     scanDirectory(path: string, done: Function): void;
+    createPaths(mainPath: string, paths: string[], done: Function): void;
 }

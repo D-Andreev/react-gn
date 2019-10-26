@@ -2,10 +2,11 @@ import IStorage from '../../services/interfaces/IStorage';
 import IUserInterface from '../../user-interface/interfaces/IUserInterface';
 import ICra from '../../services/interfaces/ICra';
 import Flag from '../Flag';
-import {CRA_EVENT, OUTPUT_TYPE} from '../../constants';
+import {CRA_EVENT, FLAGS_WITH_TEMPLATES, OUTPUT_TYPE} from '../../constants';
 import Output from '../Output';
 import {noop} from '../../utils';
 import IInitCommand from '../interfaces/IInitCommand';
+import ITemplate from '../interfaces/ITemplate';
 
 export default class InitCommand implements IInitCommand {
     public readonly storage: IStorage;
@@ -14,6 +15,27 @@ export default class InitCommand implements IInitCommand {
     public readonly appName: string;
     public readonly flags: Flag[];
     public readonly path: string;
+
+    private static getTemplateByFlag(languageType: string, flagWithTemplate: string): ITemplate {
+        let template: ITemplate = null;
+
+        switch (flagWithTemplate) {
+            case FLAGS_WITH_TEMPLATES.WITH_REDUX:
+                template = require('./templates/with-redux');
+                // TODO: Assemble template
+                break;
+            default:
+                throw new Error('No such template');
+        }
+
+        return template;
+    }
+
+    private getFlagsWithTemplates(): string[] {
+        return this.flags
+            .map((flag: Flag) => flag.name)
+            .filter((flagName: string) => FLAGS_WITH_TEMPLATES.hasOwnProperty(flagName));
+    }
 
     constructor(
         storage: IStorage, userInterface: IUserInterface, cra: ICra, appName: string, flags: Flag[], path: string) {
@@ -73,5 +95,27 @@ export default class InitCommand implements IInitCommand {
                 done(new Error(contents));
             }
         });
+    }
+
+    applyConfigOptions(languageType: string, done: Function): void {
+        const flagsWithTemplates: string[] = this.getFlagsWithTemplates();
+
+        for (let i = 0; i < flagsWithTemplates.length; i++) {
+            const flagWithTemplate: string = flagsWithTemplates[i];
+            let template: ITemplate = null;
+            try {
+                template = InitCommand.getTemplateByFlag(languageType, flagWithTemplate);
+            } catch (e) {
+                return done(e);
+            }
+
+            const paths: string[] = Object
+                .keys(template)
+                .filter((key: string) => key !== 'dependencies');
+            this.storage.createPaths(this.path, paths, () => {
+
+            });
+        }
+        done();
     }
 }
