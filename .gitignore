@@ -76,4 +76,4 @@ my-app/
 *my-app/
 
 # Demos
-demos/
+demos/**/**/**/node_modules/
