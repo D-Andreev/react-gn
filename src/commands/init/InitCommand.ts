@@ -39,18 +39,26 @@ export default class InitCommand implements IInitCommand {
                 Object.values(FLAGS_WITH_TEMPLATES).indexOf(flagName) !== 1);
     }
 
+    private onSaveFileError(fileName: string, err: Error, done: Function): void {
+        const output: Output[] = [new Output(err.message, OUTPUT_TYPE.ERROR)];
+        this.userInterface.showOutput(output, noop);
+        return done(err);
+    }
+
     private saveFiles(i: number, languageType: string, paths: string[], template: any, done: Function): void {
         if (i === paths.length) {
             return done();
         }
-        const fileName = `${this.path}${sep}${this.appName}${sep}${paths[i]}.${template[paths[i]][languageType].extension}`;
+        const fileName = `${this.getAppPath()}${sep}${paths[i]}.${template[paths[i]][languageType].extension}`;
         this.storage.directoryExists(fileName, (err: Error) => {
             if (err) {
                 this.storage.create(fileName, template[paths[i]][languageType].contents, (err: Error) => {
                     if (err) {
-                        return done(err);
+                        return this.onSaveFileError(paths[i], err, done);
                     }
-
+                    const contents = `${paths[i]} was created successfully!`;
+                    const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
+                    this.userInterface.showOutput(output, noop);
                     this.saveFiles(++i, languageType, paths, template, done);
                 });
             } else {
@@ -64,13 +72,19 @@ export default class InitCommand implements IInitCommand {
                 // But for now we are just updating the file with the content from the template.
                 this.storage.update(fileName, template[paths[i]][languageType].contents, (err: Error) => {
                     if (err) {
-                        return done(err);
+                        return this.onSaveFileError(paths[i], err, done);
                     }
-
+                    const contents = `${paths[i]} was updated successfully!`;
+                    const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
+                    this.userInterface.showOutput(output, noop);
                     this.saveFiles(++i, languageType, paths, template, done);
                 });
             }
         });
+    }
+
+    private getAppPath(): string {
+        return `${this.path}${sep}${this.appName}`;
     }
 
     constructor(
@@ -159,7 +173,7 @@ export default class InitCommand implements IInitCommand {
             const paths: string[] = Object
                 .keys(template)
                 .filter((key: string) => key !== 'dependencies');
-            this.storage.createPaths(`${this.path}${sep}${this.appName}`, paths, (err: Error) => {
+            this.storage.createPaths(this.getAppPath(), paths, (err: Error) => {
                 if (err) {
                     return done(err);
                 }
@@ -168,7 +182,7 @@ export default class InitCommand implements IInitCommand {
                     const version = current.version ? `@${current.version}` : '';
                     const devFlag = current.isDev ? '--save-dev' : '';
                     try {
-                        this.childProcess.execSync(`cd ${this.path}${sep}${this.appName} && npm install ${current.name}${version}${devFlag}`);
+                        this.childProcess.execSync(`cd ${this.getAppPath()} && npm install ${current.name}${version}${devFlag}`);
                     } catch (e) {
                         return done(e);
                     }
