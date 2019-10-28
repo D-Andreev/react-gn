@@ -160,6 +160,7 @@ export default class InitCommand implements IInitCommand {
 
     applyConfigOptions(languageType: string, done: Function): void {
         const flagsWithTemplates: string[] = this.getFlagsWithTemplates();
+        console.log('ffff', flagsWithTemplates, this.flags);
         if (!flagsWithTemplates.length) {
             return done(new Error('No flags with templates found'));
         }
