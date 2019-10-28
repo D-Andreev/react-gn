@@ -180,6 +180,8 @@ export default class InitCommand implements IInitCommand {
                 .filter((key: string) => key !== 'dependencies');
             this.storage.createPaths(this.getAppPath(), paths, (err: Error) => {
                 if (err) {
+                    const output: Output[] = [new Output(err.message, OUTPUT_TYPE.ERROR)];
+                    this.userInterface.showOutput(output, noop);
                     return done(err);
                 }
                 for (let i = 0; i < template.dependencies[languageType].length; i++) {
@@ -190,6 +192,8 @@ export default class InitCommand implements IInitCommand {
                         this.childProcess.execSync(
                             `cd ${this.getAppPath()} && npm install ${current.name}${version}${devFlag}`);
                     } catch (e) {
+                        const output: Output[] = [new Output(e.message, OUTPUT_TYPE.ERROR)];
+                        this.userInterface.showOutput(output, noop);
                         return done(e);
                     }
                 }
