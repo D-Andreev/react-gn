@@ -18,11 +18,14 @@ export default class InitCommand implements IInitCommand {
     public readonly path: string;
     public readonly childProcess: typeof import('child_process');
 
-    private static getTemplateByFlag(flagWithTemplate: string): ITemplate {
+    private getTemplateByFlag(flagWithTemplate: string): ITemplate {
         let template: ITemplate = null;
 
         switch (flagWithTemplate) {
             case FLAGS_WITH_TEMPLATES.WITH_REDUX:
+                const contents = `Adding ${flagWithTemplate}`;
+                const output: Output[] = [new Output(contents, OUTPUT_TYPE.INFO)];
+                this.userInterface.showOutput(output, noop);
                 template = require('./templates/with-redux').default;
                 break;
             default:
@@ -165,7 +168,7 @@ export default class InitCommand implements IInitCommand {
             const flagWithTemplate: string = flagsWithTemplates[i];
             let template: any = null;
             try {
-                template = InitCommand.getTemplateByFlag(flagWithTemplate);
+                template = this.getTemplateByFlag(flagWithTemplate);
             } catch (e) {
                 return done(e);
             }
