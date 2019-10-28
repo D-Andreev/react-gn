@@ -7,7 +7,7 @@ import {COMMAND_FLAG, CRA_EVENT, FLAGS_WITH_TEMPLATES, OUTPUT_TYPE} from '../../
 import Output from '../Output';
 import {noop} from '../../utils';
 import IInitCommand from '../interfaces/IInitCommand';
-import ITemplate from '../interfaces/ITemplate';
+import ITemplate, {IDependency, IFile} from '../interfaces/ITemplate';
 
 export default class InitCommand implements IInitCommand {
     public readonly storage: IStorage;
@@ -89,6 +89,24 @@ export default class InitCommand implements IInitCommand {
 
     private getAppPath(): string {
         return `${this.path}${sep}${this.appName}`;
+    }
+
+    private installTemplateDependencies(templateDependencies: IDependency[] | IFile[], done: Function): void {
+        for (let i = 0; i < templateDependencies.length; i++) {
+            const current: any = templateDependencies[i];
+            const version = current.version ? `@${current.version}` : '';
+            const devFlag = current.isDev ? '--save-dev' : '';
+            try {
+                this.childProcess.execSync(
+                    `cd ${this.getAppPath()} && npm install ${current.name}${version}${devFlag}`);
+            } catch (e) {
+                const output: Output[] = [new Output(e.message, OUTPUT_TYPE.ERROR)];
+                this.userInterface.showOutput(output, noop);
+                return done(e);
+            }
+        }
+
+        done();
     }
 
     constructor(
@@ -183,40 +201,34 @@ export default class InitCommand implements IInitCommand {
                     this.userInterface.showOutput(output, noop);
                     return done(err);
                 }
-                for (let i = 0; i < template.dependencies[languageType].length; i++) {
-                    const current: any = template.dependencies[languageType][i];
-                    const version = current.version ? `@${current.version}` : '';
-                    const devFlag = current.isDev ? '--save-dev' : '';
-                    try {
-                        this.childProcess.execSync(
-                            `cd ${this.getAppPath()} && npm install ${current.name}${version}${devFlag}`);
-                    } catch (e) {
-                        const output: Output[] = [new Output(e.message, OUTPUT_TYPE.ERROR)];
-                        this.userInterface.showOutput(output, noop);
-                        return done(e);
-                    }
-                }
-
-                this.saveFiles(0, languageType, paths, template, (err: Error) => {
+                this.installTemplateDependencies(template.dependencies[languageType], (err: Error) => {
                     if (err) {
                         return done(err);
                     }
 
-                    try {
-                        const output: Output[] = [new Output('Refreshing node_modules', OUTPUT_TYPE.NORMAL)];
-                        this.userInterface.showOutput(output, noop);
-                        this.childProcess.execSync(
-                            `cd ${this.getAppPath()}${sep} && rm -rf ./node_modules && npm install`);
-                    } catch (e) {
-                        const output: Output[] = [new Output(e.message, OUTPUT_TYPE.ERROR)];
-                        this.userInterface.showOutput(output, noop);
-                        return done(e);
-                    }
+                    this.saveFiles(0, languageType, paths, template, (err: Error) => {
+                        if (err) {
+                            return done(err);
+                        }
 
-                    const contents = 'node_modules were installed successfully!';
-                    const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
-                    this.userInterface.showOutput(output, noop);
-                    done();
+                        try {
+                            const output: Output[] = [
+                                new Output('Refreshing node_modules', OUTPUT_TYPE.NORMAL)
+                            ];
+                            this.userInterface.showOutput(output, noop);
+                            this.childProcess.execSync(
+                                `cd ${this.getAppPath()}${sep} && rm -rf ./node_modules && npm install`);
+                        } catch (e) {
+                            const output: Output[] = [new Output(e.message, OUTPUT_TYPE.ERROR)];
+                            this.userInterface.showOutput(output, noop);
+                            return done(e);
+                        }
+
+                        const contents = 'node_modules were installed successfully!';
+                        const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
+                        this.userInterface.showOutput(output, noop);
+                        done();
+                    });
                 });
             });
         }
