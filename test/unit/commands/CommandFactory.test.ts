@@ -22,7 +22,7 @@ describe('CommandFactory', () => {
     beforeEach(() => {
         const storage: IStorage = new MockStorage();
         cra = new Cra(storage, childProcess);
-        commandFactory = new CommandFactory(storage, cra);
+        commandFactory = new CommandFactory(storage, cra, childProcess);
     });
 
     describe('when I use the create command', () => {

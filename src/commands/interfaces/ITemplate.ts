@@ -1,9 +1,9 @@
-interface IDependency {
+export interface IDependency {
     name: string;
     version: string;
 }
 
-interface IFile {
+export interface IFile {
     extension: string;
     contents: string;
 }

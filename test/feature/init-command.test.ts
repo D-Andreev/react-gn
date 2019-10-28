@@ -14,6 +14,8 @@ describe('init command', () => {
     beforeAll(() => {
         if (process.env.TEST_ENV === 'CI') {
             setupGit();
+            execSync('sudo npm link');
+            execSync('sudo npm install -g create-react-app');
         }
         appName = `${Date.now()}my-app`;
         execSync('yarn build');
@@ -63,6 +65,7 @@ describe('init command', () => {
                 const result = execSync(`${SDK_NAME} init ${appName}`);
                 expect(result.toString()).toContain(`${appName} was generated successfully!`);
                 expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
+                execSync(`cd ${appName} && npm run build`);
             });
         });
 
@@ -79,6 +82,7 @@ describe('init command', () => {
                 const result = execSync(`${SDK_NAME} init ${appName} --js`);
                 expect(result.toString()).toContain(`${appName} was generated successfully!`);
                 expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
+                execSync(`cd ${appName} && npm run build`);
             });
         });
 
@@ -96,6 +100,7 @@ describe('init command', () => {
                 expect(result.toString()).toContain(`${appName} was generated successfully!`);
                 expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeTruthy();
+                execSync(`cd ${appName} && npm run build`);
             });
         });
 
@@ -115,6 +120,7 @@ describe('init command', () => {
                 expect(result.toString()).toContain(`${appName} was generated successfully!`);
                 expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeTruthy();
+                execSync(`cd ${appName} && npm run build`);
             });
         });
 
@@ -134,6 +140,7 @@ describe('init command', () => {
                 expect(result.toString()).toContain(`${appName} was generated successfully!`);
                 expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeTruthy();
+                execSync(`cd ${appName} && npm run build`);
             });
         });
 
@@ -155,6 +162,7 @@ describe('init command', () => {
                 expect(result.toString()).toContain(`${appName} was generated successfully!`);
                 expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
+                execSync(`cd ${appName} && npm run build`);
             });
         });
 
@@ -176,6 +184,54 @@ describe('init command', () => {
                 expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
+                execSync(`cd ${appName} && npm run build`);
+            });
+        });
+
+        describe('when I enter --withRedux', () => {
+            let appName: string;
+            beforeAll(() => {
+                appName = `${Date.now()}my-app`;
+            });
+            afterAll(() => {
+                execSync(`rm -rf ./${appName}`);
+            });
+
+            it('it builds the app and adds redux', () => {
+                execSync('git stash && git clean -fd');
+                const command =
+                    `${SDK_NAME} init ${appName} --withRedux`;
+                const result = execSync(command);
+                expect(result.toString()).toContain(`${appName} was generated successfully!`);
+                expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
+                expect(fs.existsSync(`./${appName}/src/actions/simpleAction.js`)).toBeTruthy();
+                expect(fs.existsSync(`./${appName}/src/reducers/simpleReducer.js`)).toBeTruthy();
+                expect(fs.existsSync(`./${appName}/src/store.js`)).toBeTruthy();
+                execSync(`cd ${appName} && npm run build`);
+            });
+        });
+
+        describe('when I enter --withRedux --ejected', () => {
+            let appName: string;
+            beforeAll(() => {
+                appName = `${Date.now()}my-app`;
+            });
+            afterAll(() => {
+                execSync(`rm -rf ./${appName}`);
+            });
+
+            it('it builds the app, ejects it and adds redux', () => {
+                execSync('git stash && git clean -fd');
+                const command =
+                    `${SDK_NAME} init ${appName} --withRedux --ejected`;
+                const result = execSync(command);
+                expect(result.toString()).toContain(`${appName} was generated successfully!`);
+                expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
+                expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
+                expect(fs.existsSync(`./${appName}/src/actions/simpleAction.js`)).toBeTruthy();
+                expect(fs.existsSync(`./${appName}/src/reducers/simpleReducer.js`)).toBeTruthy();
+                expect(fs.existsSync(`./${appName}/src/store.js`)).toBeTruthy();
+                execSync(`cd ${appName} && npm run build`);
             });
         });
     });

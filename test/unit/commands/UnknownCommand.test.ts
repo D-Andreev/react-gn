@@ -6,9 +6,12 @@ import IUserInterface from '../../../src/user-interface/interfaces/IUserInterfac
 describe('UnknownCommand', () => {
     let unknownCommand: UnknownCommand;
     let userInterface: IUserInterface;
+    let stdout: any;
 
     beforeEach(() => {
-        userInterface = new Cli(console, readline);
+        stdout = process.stdout;
+        stdout.write = jest.fn();
+        userInterface = new Cli(stdout, readline);
         unknownCommand = new UnknownCommand(userInterface);
     });
 

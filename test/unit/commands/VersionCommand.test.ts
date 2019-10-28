@@ -9,9 +9,12 @@ describe('VersionCommand', () => {
     let versionCommand: VersionCommand;
     let userInterface: IUserInterface;
     let mockStorage: any;
+    let stdout: any;
 
     beforeEach(() => {
-        userInterface = new Cli(console, readline);
+        stdout = process.stdout;
+        stdout.write = jest.fn();
+        userInterface = new Cli(stdout, readline);
         mockStorage = new MockStorage();
         versionCommand = new VersionCommand(mockStorage, userInterface);
     });

@@ -10,8 +10,15 @@ import {COMMAND_FLAG, LANGUAGE_TYPE} from '../../constants';
 export default class JsAppCommand extends InitCommand implements ICommand {
 
     constructor(
-        storage: IStorage, userInterface: IUserInterface, cra: ICra, appName: string, flags: Flag[], path: string) {
-        super(storage, userInterface, cra, appName, flags, path);
+        storage: IStorage,
+        userInterface: IUserInterface,
+        cra: ICra,
+        childProcess: typeof import('child_process'),
+        appName: string,
+        flags: Flag[],
+        path: string
+    ) {
+        super(storage, userInterface, cra, childProcess, appName, flags, path);
     }
 
     initApp(args: string[], done: Function): void {

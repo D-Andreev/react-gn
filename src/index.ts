@@ -12,4 +12,4 @@ import {noop} from './utils';
 
 const storage: IStorage = new StorageService(fs, path);
 const cra: ICra = new Cra(storage, childProcess);
-new CommandFactory(storage, cra).createCommand(process.argv, noop);
+new CommandFactory(storage, cra, childProcess).createCommand(process.argv, noop);

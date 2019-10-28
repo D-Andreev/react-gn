@@ -7,11 +7,12 @@ import {FgWhite} from '../../../src/user-interface/colors';
 describe('Cli', () => {
     let cli: IUserInterface;
     let done: Function | jest.Mock<any, any>;
+    let stdout: any;
 
     beforeEach(() => {
-        // @ts-ignore
-        global.console = {log: jest.fn()};
-        cli = new Cli(global.console, readline);
+        stdout = process.stdout;
+        stdout.write = jest.fn();
+        cli = new Cli(stdout, readline);
         done = jest.fn();
     });
 
@@ -30,8 +31,8 @@ describe('Cli', () => {
                     output.push({contents: 'test' + i, type: OUTPUT_TYPE.NORMAL});
                 }
                 cli.showOutput(output, done);
-                expect(global.console.log).toHaveBeenNthCalledWith(1, '', FgWhite);
-                expect(global.console.log).toHaveBeenNthCalledWith(2, output[0].contents);
+                expect(stdout.write).toHaveBeenNthCalledWith(1, FgWhite);
+                expect(stdout.write).toHaveBeenNthCalledWith(2, output[0].contents);
 
                 expect(done).toHaveBeenCalledWith();
             });
