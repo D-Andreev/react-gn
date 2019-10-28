@@ -44,6 +44,8 @@ describe('InitCommand', () => {
             }
         };
         flags = [];
+        path = 'my-app';
+        appName = 'my-test-app';
         initCommand = new InitCommand(storage, userInterface, cra, childProcess, appName, flags, path);
     });
 
@@ -81,7 +83,7 @@ describe('InitCommand', () => {
                     });
                     // @ts-ignore
                     initCommand.getTemplateByFlag = jest.fn(() => {
-                        throw new Error();
+                        throw new Error('No such template');
                     });
                     initCommand.applyConfigOptions(LANGUAGE_TYPE.JS, (err: Error) => {
                         expect(err).toBeTruthy();
@@ -94,11 +96,11 @@ describe('InitCommand', () => {
 
             describe('when templates for flags are found', () => {
                 beforeEach(() => {
-                    flags = [{name: 'invalid-flag', value: ''}];
+                    flags = [{name: '--withRedux', value: ''}];
                     initCommand = new InitCommand(storage, userInterface, cra, childProcess, appName, flags, path);
                     // @ts-ignore
                     initCommand.getFlagsWithTemplates = jest.fn(() => {
-                        return ['invalid-flag'];
+                        return ['--withRedux'];
                     });
                     // @ts-ignore
                     InitCommand.getTemplateByFlag = jest.fn(() => {
@@ -117,10 +119,6 @@ describe('InitCommand', () => {
                     });
 
                     it('yields error', (done) => {
-                        // @ts-ignore
-                        InitCommand.getTemplateByFlag = jest.fn(() => {
-                            return {};
-                        });
                         initCommand.applyConfigOptions(LANGUAGE_TYPE.JS, (err: Error) => {
                             expect(err).toBeTruthy();
                             expect(err instanceof Error).toBeTruthy();
@@ -180,7 +178,11 @@ describe('InitCommand', () => {
                                 initCommand.applyConfigOptions(LANGUAGE_TYPE.JS, () => {
                                     // @ts-ignore
                                     expect(initCommand.storage.create)
-                                        .toHaveBeenCalledWith('src/App.js', 'test', expect.any(Function));
+                                        .toHaveBeenCalledWith(
+                                            'my-app/my-test-app/src/actions/simpleAction.js',
+                                            expect.any(String),
+                                            expect.any(Function)
+                                        );
                                     done();
                                 });
                             });
@@ -214,7 +216,11 @@ describe('InitCommand', () => {
                                 initCommand.applyConfigOptions(LANGUAGE_TYPE.JS, () => {
                                     // @ts-ignore
                                     expect(initCommand.storage.update)
-                                        .toHaveBeenCalledWith('src/App.js', 'test', expect.any(Function));
+                                        .toHaveBeenCalledWith(
+                                            'my-app/my-test-app/src/actions/simpleAction.js',
+                                            expect.any(String),
+                                            expect.any(Function)
+                                        );
                                     done();
                                 });
                             });
