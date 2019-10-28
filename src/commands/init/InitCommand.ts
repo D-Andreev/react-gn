@@ -185,13 +185,32 @@ export default class InitCommand implements IInitCommand {
                     const version = current.version ? `@${current.version}` : '';
                     const devFlag = current.isDev ? '--save-dev' : '';
                     try {
-                        this.childProcess.execSync(`cd ${this.getAppPath()} && npm install ${current.name}${version}${devFlag}`);
+                        this.childProcess.execSync(
+                            `cd ${this.getAppPath()} && npm install ${current.name}${version}${devFlag}`);
                     } catch (e) {
                         return done(e);
                     }
                 }
 
-                this.saveFiles(0, languageType, paths, template, done);
+                this.saveFiles(0, languageType, paths, template, (err: Error) => {
+                    if (err) {
+                        return done(err);
+                    }
+
+                    try {
+                        this.childProcess.execSync(
+                            `rm -rf ${this.getAppPath()}${sep}node_modules && npm install`);
+                    } catch (e) {
+                        const output: Output[] = [new Output(e.message, OUTPUT_TYPE.ERROR)];
+                        this.userInterface.showOutput(output, noop);
+                        return done(e);
+                    }
+
+                    const contents = 'node_modules were installed successfully!';
+                    const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
+                    this.userInterface.showOutput(output, noop);
+                    done();
+                });
             });
         }
     }
