@@ -161,7 +161,6 @@ export default class InitCommand implements IInitCommand {
 
     applyConfigOptions(languageType: string, done: Function): void {
         const flagsWithTemplates: string[] = this.getFlagsWithTemplates();
-        console.log('ffff', flagsWithTemplates, this.flags);
         if (!flagsWithTemplates.length) {
             return done(new Error('No flags with templates found'));
         }
@@ -205,7 +204,7 @@ export default class InitCommand implements IInitCommand {
 
                     try {
                         this.childProcess.execSync(
-                            `rm -rf ${this.getAppPath()}${sep}node_modules && npm install`);
+                            `cd ${this.getAppPath()}${sep} && rm -rf ./node_modules && npm install`);
                     } catch (e) {
                         const output: Output[] = [new Output(e.message, OUTPUT_TYPE.ERROR)];
                         this.userInterface.showOutput(output, noop);
