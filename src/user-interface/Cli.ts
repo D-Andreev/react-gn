@@ -1,3 +1,4 @@
+import {EOL} from 'os';
 import {Interface} from 'readline';
 import IUserInterface from './interfaces/IUserInterface';
 import {ERROR, OUTPUT_TYPE} from '../constants';
@@ -31,6 +32,7 @@ export default class Cli implements IUserInterface {
             this.stdout.write(color);
             this.stdout.write(line.contents);
             this.stdout.write(FgWhite);
+            this.stdout.write(EOL);
         });
         done();
     }
