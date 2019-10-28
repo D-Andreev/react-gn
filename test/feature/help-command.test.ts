@@ -7,7 +7,7 @@ describe('help command', () => {
     beforeAll(() => {
         appName = `${Date.now()}my-app`;
         execSync('yarn build');
-        execSync('npm link');
+        execSync('sudo npm link');
     });
 
     afterAll(() => {
