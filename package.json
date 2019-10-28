@@ -1,9 +1,7 @@
 {
   "name": "react-sdk",
   "version": "1.0.0",
-  "dependencies": {
-    "create-react-app": "^3.1.2"
-  },
+  "preinstall": "npm i -g create-react-app",
   "bin": {
     "react-sdk": "./dist/index.js"
   },

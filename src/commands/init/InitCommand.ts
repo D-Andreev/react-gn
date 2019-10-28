@@ -1,3 +1,4 @@
+import {sep} from 'path';
 import IStorage from '../../services/interfaces/IStorage';
 import IUserInterface from '../../user-interface/interfaces/IUserInterface';
 import ICra from '../../services/interfaces/ICra';
@@ -22,7 +23,7 @@ export default class InitCommand implements IInitCommand {
 
         switch (flagWithTemplate) {
             case FLAGS_WITH_TEMPLATES.WITH_REDUX:
-                template = require('./templates/with-redux');
+                template = require('./templates/with-redux').default;
                 break;
             default:
                 throw new Error('No such template');
@@ -34,16 +35,16 @@ export default class InitCommand implements IInitCommand {
     private getFlagsWithTemplates(): string[] {
         return this.flags
             .map((flag: Flag) => flag.name)
-            .filter((flagName: string) => FLAGS_WITH_TEMPLATES.hasOwnProperty(flagName));
+            .filter((flagName: string) =>
+                Object.values(FLAGS_WITH_TEMPLATES).indexOf(flagName) !== 1);
     }
 
     private saveFiles(i: number, languageType: string, paths: string[], template: any, done: Function): void {
         if (i === paths.length) {
             return done();
         }
-
-        this.storage.directoryExists(paths[i], (err: Error) => {
-            const fileName = `${paths[i]}.${template[paths[i]][languageType].extension}`;
+        const fileName = `${this.path}${sep}${this.appName}${sep}${paths[i]}.${template[paths[i]][languageType].extension}`;
+        this.storage.directoryExists(fileName, (err: Error) => {
             if (err) {
                 this.storage.create(fileName, template[paths[i]][languageType].contents, (err: Error) => {
                     if (err) {
@@ -158,11 +159,10 @@ export default class InitCommand implements IInitCommand {
             const paths: string[] = Object
                 .keys(template)
                 .filter((key: string) => key !== 'dependencies');
-            this.storage.createPaths(this.path, paths, (err: Error) => {
+            this.storage.createPaths(`${this.path}${sep}${this.appName}`, paths, (err: Error) => {
                 if (err) {
                     return done(err);
                 }
-
                 for (let i = 0; i < template.dependencies[languageType].length; i++) {
                     const current: any = template.dependencies[languageType][i];
                     const version = current.version ? `@${current.version}` : '';
