@@ -6,8 +6,11 @@ describe('help command', () => {
 
     beforeAll(() => {
         appName = `${Date.now()}my-app`;
+        if (process.env.TEST_ENV === 'CI') {
+            execSync('sudo npm link');
+            execSync('sudo npm install -g create-react-app');
+        }
         execSync('yarn build');
-        execSync('sudo npm link');
     });
 
     afterAll(() => {
