@@ -203,6 +203,8 @@ export default class InitCommand implements IInitCommand {
                     }
 
                     try {
+                        const output: Output[] = [new Output('Refresing nod_modules', OUTPUT_TYPE.NORMAL)];
+                        this.userInterface.showOutput(output, noop);
                         this.childProcess.execSync(
                             `cd ${this.getAppPath()}${sep} && rm -rf ./node_modules && npm install`);
                     } catch (e) {
