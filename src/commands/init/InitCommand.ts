@@ -43,8 +43,8 @@ export default class InitCommand implements IInitCommand {
         }
 
         this.storage.directoryExists(paths[i], (err: Error) => {
+            const fileName = `${paths[i]}.${template[paths[i]][languageType].extension}`;
             if (err) {
-                const fileName = `${paths[i]}.${template[paths[i]][languageType].extension}`;
                 this.storage.create(fileName, template[paths[i]][languageType].contents, (err: Error) => {
                     if (err) {
                         return done(err);
@@ -53,7 +53,21 @@ export default class InitCommand implements IInitCommand {
                     this.saveFiles(++i, languageType, paths, template, done);
                 });
             } else {
-                // modify the file
+                // In the future manually editing the file using CodeGenerator might be possible.
+                /* Here are the possible changes that might be needed.
+                    * get steps from config
+                    * Add CodeGenerator as dep.
+                    * read the file and get contents
+                    * execute each step with function from CodeGenerator with contents passed from file
+                *  */
+                // But for now we are just updating the file with the content from the template.
+                this.storage.update(fileName, template[paths[i]][languageType].contents, (err: Error) => {
+                    if (err) {
+                        return done(err);
+                    }
+
+                    this.saveFiles(++i, languageType, paths, template, done);
+                });
             }
         });
     }

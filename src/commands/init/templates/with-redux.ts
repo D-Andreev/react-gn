@@ -82,7 +82,7 @@ export default {
                             document.getElementById('root')
                         );
                         serviceWorker.unregister();
-`
+            `
         }
     },
     [['src', 'App'].join(EOL)]: {

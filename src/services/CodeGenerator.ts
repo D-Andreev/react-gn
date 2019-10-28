@@ -17,7 +17,7 @@ export default class CodeGenerator implements ICodeGenerator {
                     },
                     multiple: (names: string[], from: string): string => {
                         const imports: string = names.join(', ');
-                        return `import {${imports}} from ${from}`
+                        return `import {${imports}} from '${from}';`
                     }
                 }
             },
@@ -70,12 +70,12 @@ export default class CodeGenerator implements ICodeGenerator {
         return matchExport;
     }
 
-    importStatement(names: string[], from: string, languageType: string): string {
-        if (names.length === 1) {
-            return this.templates.importStatement[languageType].single(names[0], from);
+    addImportStatement(input: string, from: string, names: string | string[], languageType: string): string {
+        if (typeof names === 'string') {
+            return `${input}\n${this.templates.importStatement[languageType].single(names, from)}`;
         }
 
-        return this.templates.importStatement[languageType].multiple(names, from);
+        return `${input}\n${this.templates.importStatement[languageType].multiple(names, from)}`;
     }
 
     // TODO: Add extends<Props>... (Add language type and param for props)

@@ -161,15 +161,6 @@ describe('InitCommand', () => {
                             });
                         });
 
-                        describe('when final path was reached', () => {
-                            it('yields with no error', (done) => {
-                                initCommand.applyConfigOptions(LANGUAGE_TYPE.JS, (err: Error) => {
-                                    expect(err).toBeFalsy();
-                                    done();
-                                });
-                            });
-                        });
-
                         describe('when file does not exist', () => {
                             beforeEach(() => {
                                 storage.directoryExists = jest.fn((path: string, done: Function) => {
@@ -186,7 +177,7 @@ describe('InitCommand', () => {
                             });
 
                             it('creates it', (done) => {
-                                initCommand.applyConfigOptions(LANGUAGE_TYPE.JS, (err: Error) => {
+                                initCommand.applyConfigOptions(LANGUAGE_TYPE.JS, () => {
                                     // @ts-ignore
                                     expect(initCommand.storage.create)
                                         .toHaveBeenCalledWith('src/App.js', 'test', expect.any(Function));
@@ -195,6 +186,40 @@ describe('InitCommand', () => {
                             });
 
                             describe('when there is an error creating the file', () => {
+                                it('yields error', (done) => {
+                                    initCommand.applyConfigOptions(LANGUAGE_TYPE.JS, (err: Error) => {
+                                        expect(err.message).toEqual('err');
+                                        done();
+                                    });
+                                });
+                            });
+                        });
+
+                        describe('when file exists', () => {
+                            beforeEach(() => {
+                                storage.directoryExists = jest.fn((path: string, done: Function) => {
+                                    done();
+                                });
+                                // @ts-ignore
+                                initCommand.storage.update = jest.fn((
+                                    name: string,
+                                    content: string,
+                                    done: Function
+                                ) => {
+                                    done(new Error('err'));
+                                });
+                            });
+
+                            it('updates it', (done) => {
+                                initCommand.applyConfigOptions(LANGUAGE_TYPE.JS, () => {
+                                    // @ts-ignore
+                                    expect(initCommand.storage.update)
+                                        .toHaveBeenCalledWith('src/App.js', 'test', expect.any(Function));
+                                    done();
+                                });
+                            });
+
+                            describe('when there is an error updating the file', () => {
                                 it('yields error', (done) => {
                                     initCommand.applyConfigOptions(LANGUAGE_TYPE.JS, (err: Error) => {
                                         expect(err.message).toEqual('err');

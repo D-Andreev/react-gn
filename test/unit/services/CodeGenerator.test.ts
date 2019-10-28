@@ -2,13 +2,29 @@ import CodeGenerator from '../../../src/services/CodeGenerator';
 import IJsxOptions from '../../../src/services/interfaces/IJsxOptions';
 import {IStateProp} from '../../../src/services/interfaces/IStateProp';
 
-describe('templates', () => {
-    describe('importStatement', () => {
+describe('CodeGenerator', () => {
+    describe('addImportStatement', () => {
         describe('when names is one', () => {
             it('it returns a single import statement', () => {
                 expect(CodeGenerator.getInstance()
-                    .importStatement(['myFile'], './path/to/myFile.js', 'js')
-                ).toEqual('import myFile from \'./path/to/myFile.js\';');
+                    .addImportStatement('test',
+                        './path/to/myFile.js',
+                        'myFile',
+                        'js'
+                    )
+                ).toEqual('test\nimport myFile from \'./path/to/myFile.js\';');
+            });
+        });
+
+        describe('when names is more than one', () => {
+            it('it returns a multi import statement', () => {
+                expect(CodeGenerator.getInstance()
+                    .addImportStatement('test',
+                        './path/to/myFile.js',
+                        ['myFile', 'myOtherFile'],
+                        'js'
+                    )
+                ).toEqual('test\nimport {myFile, myOtherFile} from \'./path/to/myFile.js\';');
             });
         });
     });
