@@ -80,7 +80,7 @@ export default class CommandFactory implements ICommandFactory{
     }
 
     createCommand(commandArguments: string[], done: Function): ICommand {
-        const userInterface = new Cli(console, readline);
+        const userInterface = new Cli(process.stdout, readline);
         const unknownCommand: ICommand = new UnknownCommand(userInterface);
         let command = unknownCommand;
 
