@@ -4,6 +4,7 @@ import {SDK_NAME} from '../../src/constants';
 describe('version command', () => {
     beforeAll(() => {
         execSync('yarn build');
+        execSync('npm link');
     });
 
     describe('when I enter react-sdk --version', () => {

@@ -17,6 +17,7 @@ describe('init command', () => {
         }
         appName = `${Date.now()}my-app`;
         execSync('yarn build');
+        execSync('npm link');
     });
 
     afterAll(() => {
