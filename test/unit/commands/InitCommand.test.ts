@@ -8,6 +8,7 @@ import Flag from '../../../src/commands/Flag';
 import IInitCommand from '../../../src/commands/interfaces/IInitCommand';
 import childProcess from 'child_process';
 import {LANGUAGE_TYPE} from '../../../src/constants';
+import {sep} from 'path';
 
 describe('InitCommand', () => {
     let storage: IStorage;
@@ -179,7 +180,7 @@ describe('InitCommand', () => {
                                     // @ts-ignore
                                     expect(initCommand.storage.create)
                                         .toHaveBeenCalledWith(
-                                            'my-app/my-test-app/src/actions/simpleAction.js',
+                                            `my-app${sep}my-test-app${sep}src${sep}actions${sep}simpleAction.js`,
                                             expect.any(String),
                                             expect.any(Function)
                                         );
@@ -217,7 +218,7 @@ describe('InitCommand', () => {
                                     // @ts-ignore
                                     expect(initCommand.storage.update)
                                         .toHaveBeenCalledWith(
-                                            'my-app/my-test-app/src/actions/simpleAction.js',
+                                            `my-app${sep}my-test-app${sep}src${sep}actions${sep}simpleAction.js`,
                                             expect.any(String),
                                             expect.any(Function)
                                         );
