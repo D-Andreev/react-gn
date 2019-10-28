@@ -3,7 +3,7 @@ import IStorage from '../../services/interfaces/IStorage';
 import IUserInterface from '../../user-interface/interfaces/IUserInterface';
 import ICra from '../../services/interfaces/ICra';
 import Flag from '../Flag';
-import {CRA_EVENT, FLAGS_WITH_TEMPLATES, OUTPUT_TYPE} from '../../constants';
+import {COMMAND_FLAG, CRA_EVENT, FLAGS_WITH_TEMPLATES, OUTPUT_TYPE} from '../../constants';
 import Output from '../Output';
 import {noop} from '../../utils';
 import IInitCommand from '../interfaces/IInitCommand';
@@ -38,6 +38,7 @@ export default class InitCommand implements IInitCommand {
     private getFlagsWithTemplates(): string[] {
         return this.flags
             .map((flag: Flag) => flag.name)
+            .filter((flagName: string) => flagName !== COMMAND_FLAG.EJECTED)
             .filter((flagName: string) =>
                 Object.values(FLAGS_WITH_TEMPLATES).indexOf(flagName) !== 1);
     }
