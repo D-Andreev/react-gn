@@ -43,7 +43,7 @@ export default class InitCommand implements IInitCommand {
                 Object.values(FLAGS_WITH_TEMPLATES).indexOf(flagName) !== 1);
     }
 
-    private onSaveFileError(fileName: string, err: Error, done: Function): void {
+    private onSaveFileError(err: Error, done: Function): void {
         const output: Output[] = [new Output(err.message, OUTPUT_TYPE.ERROR)];
         this.userInterface.showOutput(output, noop);
         return done(err);
@@ -58,7 +58,7 @@ export default class InitCommand implements IInitCommand {
             if (err) {
                 this.storage.create(fileName, template[paths[i]][languageType].contents, (err: Error) => {
                     if (err) {
-                        return this.onSaveFileError(paths[i], err, done);
+                        return this.onSaveFileError(err, done);
                     }
                     const contents = `${paths[i]} was created successfully!`;
                     const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
@@ -76,7 +76,7 @@ export default class InitCommand implements IInitCommand {
                 // But for now we are just updating the file with the content from the template.
                 this.storage.update(fileName, template[paths[i]][languageType].contents, (err: Error) => {
                     if (err) {
-                        return this.onSaveFileError(paths[i], err, done);
+                        return this.onSaveFileError(err, done);
                     }
                     const contents = `${paths[i]} was updated successfully!`;
                     const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
