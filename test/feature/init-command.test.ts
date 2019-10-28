@@ -179,5 +179,47 @@ describe('init command', () => {
                 expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
             });
         });
+
+        describe('when I enter --withRedux', () => {
+            let appName: string;
+            beforeAll(() => {
+                appName = `${Date.now()}my-app`;
+            });
+            afterAll(() => {
+                execSync(`rm -rf ./${appName}`);
+            });
+
+            it('it builds a ts app and ejects it', () => {
+                execSync('git stash && git clean -fd');
+                const command =
+                    `${SDK_NAME} init ${appName} --withRedux`;
+                const result = execSync(command);
+                expect(result.toString()).toContain(`${appName} was generated successfully!`);
+                expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
+                expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeTruthy();
+                expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
+            });
+        });
+
+        describe('when I enter --withRedux --ejected', () => {
+            let appName: string;
+            beforeAll(() => {
+                appName = `${Date.now()}my-app`;
+            });
+            afterAll(() => {
+                execSync(`rm -rf ./${appName}`);
+            });
+
+            it('it builds a ts app and ejects it', () => {
+                execSync('git stash && git clean -fd');
+                const command =
+                    `${SDK_NAME} init ${appName} --withRedux --ejected`;
+                const result = execSync(command);
+                expect(result.toString()).toContain(`${appName} was generated successfully!`);
+                expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
+                expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeTruthy();
+                expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
+            });
+        });
     });
 });
