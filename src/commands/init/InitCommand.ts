@@ -168,7 +168,7 @@ export default class InitCommand implements IInitCommand {
                     const version = current.version ? `@${current.version}` : '';
                     const devFlag = current.isDev ? '--save-dev' : '';
                     try {
-                        this.childProcess.execSync(`npm install ${current.name}${version}${devFlag}`);
+                        this.childProcess.execSync(`cd ${this.path}${sep}${this.appName} && npm install ${current.name}${version}${devFlag}`);
                     } catch (e) {
                         return done(e);
                     }
