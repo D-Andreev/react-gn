@@ -16,8 +16,7 @@
     "test-ci": "export TEST_ENV=CI && sudo npm link && yarn test",
     "test-unit": "npm run test ./test/unit/",
     "test-feature": "npm run test ./test/feature/",
-    "watch-test": "npm run test -- --watchAll",
-    "watch-test-unit": "npm run test-unit -- --watchAll"
+    "watch-test": "npm run test -- --watchAll"
   },
   "devDependencies": {
     "@types/jest": "^24.0.18",

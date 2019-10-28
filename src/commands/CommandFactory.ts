@@ -23,6 +23,7 @@ import ICra from '../services/interfaces/ICra';
 export default class CommandFactory implements ICommandFactory{
     private readonly storage: IStorage;
     private readonly cra: ICra;
+    public readonly childProcess: typeof import('child_process');
 
     private static isFlagName(arg: string): boolean {
         return arg.indexOf(FLAG_INDICATOR) !== -1;
@@ -68,13 +69,14 @@ export default class CommandFactory implements ICommandFactory{
         const languageType: string = CommandFactory.getLanguageTypeFlag(commandArguments, languageTypeMap);
 
         return new languageTypeMap[languageType](
-            this.storage, userInterface, this.cra, appName, flags, process.cwd()
+            this.storage, userInterface, this.cra, this.childProcess, appName, flags, process.cwd()
         );
     }
 
-    constructor(storage: IStorage, cra: ICra) {
+    constructor(storage: IStorage, cra: ICra, childProcess: typeof import('child_process')) {
         this.storage = storage;
         this.cra = cra;
+        this.childProcess = childProcess;
     }
 
     createCommand(commandArguments: string[], done: Function): ICommand {

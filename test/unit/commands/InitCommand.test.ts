@@ -6,6 +6,8 @@ import ICra from '../../../src/services/interfaces/ICra';
 import MockStorage from '../../mock/MockStorage';
 import Flag from '../../../src/commands/Flag';
 import IInitCommand from '../../../src/commands/interfaces/IInitCommand';
+import childProcess from 'child_process';
+import {LANGUAGE_TYPE} from '../../../src/constants';
 
 describe('InitCommand', () => {
     let storage: IStorage;
@@ -42,12 +44,168 @@ describe('InitCommand', () => {
             }
         };
         flags = [];
-        initCommand = new InitCommand(storage, userInterface, cra, appName, flags, path);
+        initCommand = new InitCommand(storage, userInterface, cra, childProcess, appName, flags, path);
     });
 
-    it('calls cra.createApp with args', () => {
-        cra.createApp = jest.fn();
-        initCommand.initApp([], () => {});
-        expect(cra.createApp).toHaveBeenCalledWith(appName, path, []);
+    describe('initApp', () => {
+        it('calls cra.createApp with args', () => {
+            cra.createApp = jest.fn();
+            initCommand.initApp([], () => {});
+            expect(cra.createApp).toHaveBeenCalledWith(appName, path, []);
+        });
+    });
+
+    describe('applyConfigurations', () => {
+        describe('when no flags with templates are found', () => {
+            it('yields error', (done) => {
+                // @ts-ignore
+                initCommand.getFlagsWithTemplates = jest.fn(() => {
+                    return [];
+                });
+                initCommand.applyConfigOptions(LANGUAGE_TYPE.JS, (err: Error) => {
+                    expect(err).toBeTruthy();
+                    expect(err instanceof Error).toBeTruthy();
+                    done();
+                });
+            });
+        });
+
+        describe('when flags with templates are found', () => {
+            describe('when template for a flag is not found', () => {
+                it('yields error', (done) => {
+                    flags = [{name: 'invalid-flag', value: ''}];
+                    initCommand = new InitCommand(storage, userInterface, cra, childProcess, appName, flags, path);
+                    // @ts-ignore
+                    initCommand.getFlagsWithTemplates = jest.fn(() => {
+                        return [{name: 'invalid-flag', value: ''}];
+                    });
+                    // @ts-ignore
+                    initCommand.getTemplateByFlag = jest.fn(() => {
+                        throw new Error();
+                    });
+                    initCommand.applyConfigOptions(LANGUAGE_TYPE.JS, (err: Error) => {
+                        expect(err).toBeTruthy();
+                        expect(err instanceof Error).toBeTruthy();
+                        expect(err.message).toEqual('No such template');
+                        done();
+                    });
+                });
+            });
+
+            describe('when templates for flags are found', () => {
+                beforeEach(() => {
+                    flags = [{name: 'invalid-flag', value: ''}];
+                    initCommand = new InitCommand(storage, userInterface, cra, childProcess, appName, flags, path);
+                    // @ts-ignore
+                    initCommand.getFlagsWithTemplates = jest.fn(() => {
+                        return ['invalid-flag'];
+                    });
+                    // @ts-ignore
+                    InitCommand.getTemplateByFlag = jest.fn(() => {
+                        return {
+                            dependencies: {js: [{name: '', version: '', isDev: true}]},
+                            'src/App': {js: {extension: 'js', contents: 'test'}}};
+                    });
+                });
+
+                describe('when createPaths throws an error', () => {
+                    beforeEach(() => {
+                        // @ts-ignore
+                        storage.createPaths = jest.fn((path: string, paths: any, done: Function) => {
+                            done(new Error('CreatePaths error'));
+                        });
+                    });
+
+                    it('yields error', (done) => {
+                        // @ts-ignore
+                        InitCommand.getTemplateByFlag = jest.fn(() => {
+                            return {};
+                        });
+                        initCommand.applyConfigOptions(LANGUAGE_TYPE.JS, (err: Error) => {
+                            expect(err).toBeTruthy();
+                            expect(err instanceof Error).toBeTruthy();
+                            expect(err.message).toEqual('CreatePaths error');
+                            done();
+                        });
+                    });
+                });
+
+                describe('when createPaths is successful', () => {
+                    beforeEach(() => {
+                        // @ts-ignore
+                        storage.createPaths = jest.fn((path: string, paths: any, done: Function) => {
+                            done();
+                        });
+                    });
+
+                    describe('when npm install fails', () => {
+                        it('yields error', (done) => {
+                            // @ts-ignore
+                            initCommand.childProcess.execSync = jest.fn(() => {
+                                throw new Error('err');
+                            });
+                            initCommand.applyConfigOptions(LANGUAGE_TYPE.JS, (err: Error) => {
+                                expect(err).toBeTruthy();
+                                expect(err instanceof Error).toBeTruthy();
+                                expect(err.message).toEqual('err');
+                                done();
+                            });
+                        });
+                    });
+
+                    describe('when npm install is successful', () => {
+                        beforeEach(() => {
+                            // @ts-ignore
+                            initCommand.childProcess.execSync = jest.fn(() => {
+                                return '';
+                            });
+                        });
+
+                        describe('when final path was reached', () => {
+                            it('yields with no error', (done) => {
+                                initCommand.applyConfigOptions(LANGUAGE_TYPE.JS, (err: Error) => {
+                                    expect(err).toBeFalsy();
+                                    done();
+                                });
+                            });
+                        });
+
+                        describe('when file does not exist', () => {
+                            beforeEach(() => {
+                                storage.directoryExists = jest.fn((path: string, done: Function) => {
+                                    done(new Error('err'));
+                                });
+                                // @ts-ignore
+                                initCommand.storage.create = jest.fn((
+                                    name: string,
+                                    content: string,
+                                    done: Function
+                                ) => {
+                                    done(new Error('err'));
+                                });
+                            });
+
+                            it('creates it', (done) => {
+                                initCommand.applyConfigOptions(LANGUAGE_TYPE.JS, (err: Error) => {
+                                    // @ts-ignore
+                                    expect(initCommand.storage.create)
+                                        .toHaveBeenCalledWith('src/App.js', 'test', expect.any(Function));
+                                    done();
+                                });
+                            });
+
+                            describe('when there is an error creating the file', () => {
+                                it('yields error', (done) => {
+                                    initCommand.applyConfigOptions(LANGUAGE_TYPE.JS, (err: Error) => {
+                                        expect(err.message).toEqual('err');
+                                        done();
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
     });
 });
