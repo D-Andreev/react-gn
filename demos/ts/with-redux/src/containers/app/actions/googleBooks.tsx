@@ -1,7 +1,7 @@
 import * as constants from '../constants';
 import {ThunkAction, ThunkDispatch} from 'redux-thunk';
 import {AnyAction} from 'redux';
-import {Book, GoogleBooksResponse} from '../types';
+import {Book, GoogleBooksResponse} from '../types/googleBooksTypes';
 
 const GOOGLE_BOOKS_URL = 'https://www.googleapis.com/books/v1/volumes?q=title:';
 function get<T>(url: string): Promise<T> {
@@ -10,7 +10,7 @@ function get<T>(url: string): Promise<T> {
             if (!response.ok) {
                 throw new Error(response.statusText);
             }
-            return response.json<>();
+            return response.json();
         });
 }
 
@@ -38,7 +38,7 @@ export function setLoading(isLoading: boolean): SetLoading {
 export const search = (searchQuery: string): ThunkAction<Promise<void>, {}, {}, AnyAction> => {
     return async (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {
         return new Promise<void>(() => {
-            dispatch(setLoading(true));
+
             return get<GoogleBooksResponse>(`${GOOGLE_BOOKS_URL}${encodeURIComponent(searchQuery)}`)
                 .then((response: GoogleBooksResponse) => {
                     dispatch(setLoading(false));

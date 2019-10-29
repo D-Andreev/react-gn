@@ -1,5 +1,5 @@
-import {Book, BooksState, StoreState} from '../types';
-import {GoogleBooksActions} from '../actions';
+import {Book, BooksState} from '../types/googleBooksTypes';
+import {GoogleBooksActions} from '../actions/googleBooks';
 import {SET_BOOKS, SET_LOADING} from '../constants';
 
 export const initialBooksState: BooksState = {isLoading: false, books: []};
@@ -29,7 +29,7 @@ export default function googleBooks(
 
                     return -1;
                 });
-            console.log('zi books', state.books);
+
             return {...state };
     }
     return state;
