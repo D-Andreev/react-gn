@@ -38,9 +38,7 @@ export default class InitCommand implements IInitCommand {
     private getFlagsWithTemplates(): string[] {
         return this.flags
             .map((flag: Flag) => flag.name)
-            .filter((flagName: string) => flagName !== COMMAND_FLAG.EJECTED)
-            .filter((flagName: string) =>
-                Object.values(FLAGS_WITH_TEMPLATES).indexOf(flagName) !== 1);
+            .filter((flagName: string) => Object.values(FLAGS_WITH_TEMPLATES).includes(flagName))
     }
 
     private onSaveFileError(err: Error, done: Function): void {
@@ -206,6 +204,11 @@ export default class InitCommand implements IInitCommand {
                     this.userInterface.showOutput(output, noop);
                     return done(err);
                 }
+
+                const output: Output[] = [
+                    new Output('Installing dependencies...', OUTPUT_TYPE.NORMAL)
+                ];
+                this.userInterface.showOutput(output, noop);
                 this.installTemplateDependencies(template.dependencies[languageType], (err: Error) => {
                     if (err) {
                         return done(err);

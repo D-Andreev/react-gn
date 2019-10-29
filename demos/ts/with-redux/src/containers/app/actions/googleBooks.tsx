@@ -37,8 +37,8 @@ export function setLoading(isLoading: boolean): SetLoading {
 
 export const search = (searchQuery: string): ThunkAction<Promise<void>, {}, {}, AnyAction> => {
     return async (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {
+        dispatch(setLoading(true));
         return new Promise<void>(() => {
-
             return get<GoogleBooksResponse>(`${GOOGLE_BOOKS_URL}${encodeURIComponent(searchQuery)}`)
                 .then((response: GoogleBooksResponse) => {
                     dispatch(setLoading(false));

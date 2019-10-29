@@ -1,3 +1,5 @@
+/* tslint:disable */
+
 import {sep} from 'path';
 
 export default {
@@ -54,7 +56,7 @@ export default combineReducers({
         ts: {
             extension: 'tsx',
             contents: `import { combineReducers } from 'redux';
-import googleBooksReducer from '../containers/app/reducers/googleBooksReducer';
+import googleBooksReducer from '../containers/app/reducers/googleBooks';
 
 export default combineReducers({
     books: googleBooksReducer
@@ -83,7 +85,7 @@ export default function configureStore(initialState={}) {
 import thunk from 'redux-thunk';
 import rootReducer from './reducers/rootReducer';
 import {StoreState} from './containers/app/types/googleBooksTypes';
-import {initialBooksState} from './containers/app/reducers/googleBooksReducer';
+import {initialBooksState} from './containers/app/reducers/googleBooks';
 
 export const initialStoreState: StoreState = {
     books: initialBooksState
@@ -234,8 +236,9 @@ it('renders without crashing', () => {
 `
         }
     },
-    [['src', 'containers', 'app', 'App'].join(sep)]: {
+    [['src', 'containers', 'app', 'App.styles'].join(sep)]: {
         ts: {
+            removeOriginal: ['src', 'App.css'].join(sep),
             extension: 'css',
             contents: `.App {
   text-align: center;
@@ -300,6 +303,7 @@ td:last-child {
     },
     [['src', 'containers', 'app', 'App.test'].join(sep)]: {
         ts: {
+            removeOriginal: ['src', 'App.test.ts'].join(sep),
             extension: 'tsx',
             contents: `import React from 'react';
 import ReactDOM from 'react-dom';
@@ -320,10 +324,11 @@ it('renders without crashing', () => {
     },
     [['src', 'containers', 'app', 'App'].join(sep)]: {
         ts: {
+            removeOriginal: ['src', 'App.tsx'].join(sep),
             extension: 'tsx',
             contents: `import * as React from 'react';
 import logo from '../../logo.svg';
-import './App.css';
+import './App.styles.css';
 import {Book, StoreState} from './types/googleBooksTypes';
 import * as actions from './actions/googleBooks';
 import {SetLoading} from './actions/googleBooks';
@@ -542,8 +547,8 @@ export default function googleBooks(
                 '\n' +
                 'export const search = (searchQuery: string): ThunkAction<Promise<void>, {}, {}, AnyAction> => {\n' +
                 '    return async (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {\n' +
+                '        dispatch(setLoading(true));\n' +
                 '        return new Promise<void>(() => {\n' +
-                '\n' +
                 '            return get<GoogleBooksResponse>(`${GOOGLE_BOOKS_URL}${encodeURIComponent(searchQuery)}`)\n' +
                 '                .then((response: GoogleBooksResponse) => {\n' +
                 '                    dispatch(setLoading(false));\n' +
@@ -564,7 +569,7 @@ export default function googleBooks(
                 '    });\n' +
                 '}\n' +
                 '\n' +
-                'export type GoogleBooksActions = SetLoading | SetBooks | Search;'
+                'export type GoogleBooksActions = SetLoading | SetBooks | Search;\n'
         }
     },
     [['src', 'components', 'searchBooks', 'SearchBooks'].join(sep)]: {
@@ -610,10 +615,7 @@ export default function googleBooks(
                 '                    {props.books.map((b: Book) => (\n' +
                 '                        <tr key={b.id}>\n' +
                 '                            <td>\n' +
-                '                                <img' +
-                '                                   src={b.volumeInfo.imageLinks.thumbnail}' +
-                '                                   alt={b.volumeInfo.title}' +
-        '                                        />\n' +
+                '                            <img src={b.volumeInfo.imageLinks.thumbnail} alt={b.volumeInfo.title} />\n' +
                 '                            </td>\n' +
                 '                            <td>{b.volumeInfo.title}</td>\n' +
                 '                            <td>{b.volumeInfo.authors}</td>\n' +
