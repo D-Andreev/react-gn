@@ -109,6 +109,13 @@ export default class InitCommand implements IInitCommand {
         done();
     }
 
+    private getFilePaths(template: ITemplate, languageType: string): string[] {
+        return Object
+            .keys(template)
+            .filter((key: string) =>
+                key !== 'dependencies' && template[key].hasOwnProperty(languageType));
+    }
+
     constructor(
         storage: IStorage,
         userInterface: IUserInterface,
@@ -192,9 +199,7 @@ export default class InitCommand implements IInitCommand {
                 return done(e);
             }
 
-            const paths: string[] = Object
-                .keys(template)
-                .filter((key: string) => key !== 'dependencies');
+            const paths: string[] = this.getFilePaths(template, languageType);
             this.storage.createPaths(this.getAppPath(), paths, (err: Error) => {
                 if (err) {
                     const output: Output[] = [new Output(err.message, OUTPUT_TYPE.ERROR)];
