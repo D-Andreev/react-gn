@@ -274,7 +274,16 @@ describe('init command', () => {
                 expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
-                execSync(`cd ${appName} && npm run build`);
+                let a = false;
+                try {
+                    execSync(`cd ${appName} && npm run build`);
+                } catch (e) {
+                    a = true;
+                    console.log(e);
+                }
+                if (a) {
+                    throw new Error('asd');
+                }
             });
         });
     });
