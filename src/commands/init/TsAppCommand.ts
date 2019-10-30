@@ -47,10 +47,10 @@ export default class JsAppCommand extends InitCommand implements ICommand {
                         return done(err);
                     }
 
-                    this.applyConfigOptions(LANGUAGE_TYPE.JS, done);
+                    this.applyConfigOptions(LANGUAGE_TYPE.TS, done);
                 });
             } else {
-                this.applyConfigOptions(LANGUAGE_TYPE.JS, done);
+                this.applyConfigOptions(LANGUAGE_TYPE.TS, done);
             }
         });
     }

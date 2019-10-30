@@ -1,6 +1,7 @@
 import {Stats} from 'fs';
 import IStorage from './interfaces/IStorage';
 import ErrnoException = NodeJS.ErrnoException;
+import {sep} from 'path';
 
 export default class Storage implements IStorage {
     private readonly fs: typeof import('fs');
@@ -57,7 +58,7 @@ export default class Storage implements IStorage {
 
     private static getSplitPaths(paths: string[]): string[][] {
         return paths
-            .map((path: string) => path.split('/'))
+            .map((path: string) => path.split(sep))
             .filter((splitPath: string[]) => splitPath.length > 1);
     }
 

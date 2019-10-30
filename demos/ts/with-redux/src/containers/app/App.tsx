@@ -1,6 +1,6 @@
 import * as React from 'react';
 import logo from '../../logo.svg';
-import './App.css';
+import './App.styles.css';
 import {Book, StoreState} from './types/googleBooksTypes';
 import * as actions from './actions/googleBooks';
 import {SetLoading} from './actions/googleBooks';
