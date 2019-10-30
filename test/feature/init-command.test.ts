@@ -234,5 +234,48 @@ describe('init command', () => {
                 execSync(`cd ${appName} && npm run build`);
             });
         });
+
+        describe('when I enter --withRedux --ts', () => {
+            let appName: string;
+            beforeAll(() => {
+                appName = `${Date.now()}my-app`;
+            });
+            afterAll(() => {
+                execSync(`rm -rf ./${appName}`);
+            });
+
+            it('it builds the app, ejects it and adds redux', () => {
+                execSync('git stash && git clean -fd');
+                const command =
+                    `${SDK_NAME} init ${appName} --withRedux --ts`;
+                const result = execSync(command);
+                expect(result.toString()).toContain(`${appName} was generated successfully!`);
+                expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
+                expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeTruthy();
+                execSync(`cd ${appName} && npm run build`);
+            });
+        });
+
+        describe('when I enter --withRedux --ts --ejected', () => {
+            let appName: string;
+            beforeAll(() => {
+                appName = `${Date.now()}my-app`;
+            });
+            afterAll(() => {
+                execSync(`rm -rf ./${appName}`);
+            });
+
+            it('it builds the app, ejects it and adds redux', () => {
+                execSync('git stash && git clean -fd');
+                const command =
+                    `${SDK_NAME} init ${appName} --withRedux --ts --ejected`;
+                const result = execSync(command);
+                expect(result.toString()).toContain(`${appName} was generated successfully!`);
+                expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
+                expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeTruthy();
+                expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
+                execSync(`cd ${appName} && npm run build`);
+            });
+        });
     });
 });
