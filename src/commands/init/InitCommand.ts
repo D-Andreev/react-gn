@@ -3,7 +3,7 @@ import IStorage from '../../services/interfaces/IStorage';
 import IUserInterface from '../../user-interface/interfaces/IUserInterface';
 import ICra from '../../services/interfaces/ICra';
 import Flag from '../Flag';
-import {COMMAND_FLAG, CRA_EVENT, FLAGS_WITH_TEMPLATES, OUTPUT_TYPE} from '../../constants';
+import {CRA_EVENT, FLAGS_WITH_TEMPLATES, OUTPUT_TYPE} from '../../constants';
 import Output from '../Output';
 import {noop} from '../../utils';
 import IInitCommand from '../interfaces/IInitCommand';
