@@ -238,7 +238,7 @@ it('renders without crashing', () => {
     },
     [['src', 'containers', 'app', 'App.styles'].join(sep)]: {
         ts: {
-            removeOriginal: ['src', 'App.css'].join(sep),
+            removeFiles: [['src', 'App.css'].join(sep)],
             extension: 'css',
             contents: `.App {
   text-align: center;
@@ -303,7 +303,7 @@ td:last-child {
     },
     [['src', 'containers', 'app', 'App.test'].join(sep)]: {
         ts: {
-            removeOriginal: ['src', 'App.test.ts'].join(sep),
+            removeFiles: [['src', 'App.test.tsx'].join(sep)],
             extension: 'tsx',
             contents: `import React from 'react';
 import ReactDOM from 'react-dom';
@@ -324,7 +324,7 @@ it('renders without crashing', () => {
     },
     [['src', 'containers', 'app', 'App'].join(sep)]: {
         ts: {
-            removeOriginal: ['src', 'App.tsx'].join(sep),
+            removeFiles: [['src', 'App.tsx'].join(sep)],
             extension: 'tsx',
             contents: `import * as React from 'react';
 import logo from '../../logo.svg';

@@ -86,6 +86,11 @@ describe('InitCommand', () => {
                     initCommand.getTemplateByFlag = jest.fn(() => {
                         throw new Error('No such template');
                     });
+                    // @ts-ignore
+                    InitCommand.removeFiles = jest.fn((
+                        template: any, paths: string[], languageType: string, done: Function) => {
+                        done();
+                    });
                     initCommand.applyConfigOptions(LANGUAGE_TYPE.JS, (err: Error) => {
                         expect(err).toBeTruthy();
                         expect(err instanceof Error).toBeTruthy();
@@ -111,7 +116,26 @@ describe('InitCommand', () => {
                     });
                 });
 
-                describe('when createPaths throws an error', () => {
+                describe('when there is an error removing the files', () => {
+                    beforeEach(() => {
+                        // @ts-ignore
+                        initCommand.removeFiles = jest.fn((
+                            template: any, paths: string[], languageType: string, done: Function) => {
+                            done(new Error('Error removing files'));
+                        });
+                    });
+
+                    it('yields error', (done) => {
+                        initCommand.applyConfigOptions(LANGUAGE_TYPE.JS, (err: Error) => {
+                            expect(err).toBeTruthy();
+                            expect(err instanceof Error).toBeTruthy();
+                            expect(err.message).toEqual('Error removing files');
+                            done();
+                        });
+                    });
+                });
+
+                describe('when there is an error creating the paths', () => {
                     beforeEach(() => {
                         // @ts-ignore
                         storage.createPaths = jest.fn((path: string, paths: any, done: Function) => {
@@ -129,7 +153,7 @@ describe('InitCommand', () => {
                     });
                 });
 
-                describe('when createPaths is successful', () => {
+                describe('when paths creation is successful', () => {
                     beforeEach(() => {
                         // @ts-ignore
                         storage.createPaths = jest.fn((path: string, paths: any, done: Function) => {

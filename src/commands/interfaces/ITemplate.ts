@@ -6,7 +6,7 @@ export interface IDependency {
 export interface IFile {
     extension: string;
     contents: string;
-    removeOriginal?: string;
+    removeFiles?: string[];
 }
 
 export default interface ITemplate {

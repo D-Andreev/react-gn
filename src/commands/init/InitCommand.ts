@@ -41,7 +41,7 @@ export default class InitCommand implements IInitCommand {
             .filter((flagName: string) => Object.values(FLAGS_WITH_TEMPLATES).includes(flagName))
     }
 
-    private onSaveFileError(err: Error, done: Function): void {
+    private onError(err: Error, done: Function): void {
         const output: Output[] = [new Output(err.message, OUTPUT_TYPE.ERROR)];
         this.userInterface.showOutput(output, noop);
         return done(err);
@@ -56,7 +56,7 @@ export default class InitCommand implements IInitCommand {
             if (err) {
                 this.storage.create(fileName, template[paths[i]][languageType].contents, (err: Error) => {
                     if (err) {
-                        return this.onSaveFileError(err, done);
+                        return this.onError(err, done);
                     }
                     const contents = `${paths[i]} was created successfully!`;
                     const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
@@ -64,17 +64,9 @@ export default class InitCommand implements IInitCommand {
                     this.saveFiles(++i, languageType, paths, template, done);
                 });
             } else {
-                // In the future manually editing the file using CodeGenerator might be possible.
-                /* Here are the possible changes that might be needed.
-                    * get steps from config
-                    * Add CodeGenerator as dep.
-                    * read the file and get contents
-                    * execute each step with function from CodeGenerator with contents passed from file
-                *  */
-                // But for now we are just updating the file with the content from the template.
                 this.storage.update(fileName, template[paths[i]][languageType].contents, (err: Error) => {
                     if (err) {
-                        return this.onSaveFileError(err, done);
+                        return this.onError(err, done);
                     }
                     const contents = `${paths[i]} was updated successfully!`;
                     const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
@@ -112,6 +104,35 @@ export default class InitCommand implements IInitCommand {
             .keys(template)
             .filter((key: string) =>
                 key !== 'dependencies' && template[key].hasOwnProperty(languageType));
+    }
+
+    private removeFile(i: number, filesToBeRemoved: string[], done: Function) {
+        if (i === filesToBeRemoved.length) {
+            return done();
+        }
+
+        this.storage.delete(filesToBeRemoved[i], (err: Error) => {
+            if (err) {
+                return done(err);
+            }
+
+            this.removeFile(++i, filesToBeRemoved, done);
+        });
+    }
+
+    private removeFiles(template: any, paths: string[], languageType: string, done: Function): void {
+        let filesToBeRemoved: string[] = [];
+        for (let i = 0; i < paths.length; i++) {
+            const removeFilesList = template[paths[i]][languageType].removeFiles;
+            if (removeFilesList && removeFilesList.length) {
+                filesToBeRemoved = filesToBeRemoved.concat(removeFilesList);
+            }
+        }
+        filesToBeRemoved = filesToBeRemoved.map((file: string) =>
+            `${this.getAppPath()}${sep}${file}`
+        );
+
+        this.removeFile(0, filesToBeRemoved, done);
     }
 
     constructor(
@@ -194,48 +215,50 @@ export default class InitCommand implements IInitCommand {
             try {
                 template = this.getTemplateByFlag(flagWithTemplate);
             } catch (e) {
-                return done(e);
+                return this.onError(e, done);
             }
 
             const paths: string[] = this.getFilePaths(template, languageType);
-            this.storage.createPaths(this.getAppPath(), paths, (err: Error) => {
+            this.removeFiles(template, paths, languageType, (err: Error) => {
                 if (err) {
-                    const output: Output[] = [new Output(err.message, OUTPUT_TYPE.ERROR)];
-                    this.userInterface.showOutput(output, noop);
-                    return done(err);
+                    return this.onError(err, done);
                 }
 
-                const output: Output[] = [
-                    new Output('Installing dependencies...', OUTPUT_TYPE.NORMAL)
-                ];
-                this.userInterface.showOutput(output, noop);
-                this.installTemplateDependencies(template.dependencies[languageType], (err: Error) => {
+                this.storage.createPaths(this.getAppPath(), paths, (err: Error) => {
                     if (err) {
-                        return done(err);
+                        return this.onError(err, done);
                     }
 
-                    this.saveFiles(0, languageType, paths, template, (err: Error) => {
+                    const output: Output[] = [
+                        new Output('Installing dependencies...', OUTPUT_TYPE.NORMAL)
+                    ];
+                    this.userInterface.showOutput(output, noop);
+                    this.installTemplateDependencies(template.dependencies[languageType], (err: Error) => {
                         if (err) {
-                            return done(err);
+                            return this.onError(err, done);
                         }
 
-                        try {
-                            const output: Output[] = [
-                                new Output('Refreshing node_modules', OUTPUT_TYPE.NORMAL)
-                            ];
-                            this.userInterface.showOutput(output, noop);
-                            this.childProcess.execSync(
-                                `cd ${this.getAppPath()}${sep} && rm -rf ./node_modules && npm install`);
-                        } catch (e) {
-                            const output: Output[] = [new Output(e.message, OUTPUT_TYPE.ERROR)];
-                            this.userInterface.showOutput(output, noop);
-                            return done(e);
-                        }
+                        this.saveFiles(0, languageType, paths, template, (err: Error) => {
+                            if (err) {
+                                return this.onError(err, done);
+                            }
 
-                        const contents = 'node_modules were installed successfully!';
-                        const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
-                        this.userInterface.showOutput(output, noop);
-                        done();
+                            try {
+                                const output: Output[] = [
+                                    new Output('Refreshing node_modules', OUTPUT_TYPE.NORMAL)
+                                ];
+                                this.userInterface.showOutput(output, noop);
+                                this.childProcess.execSync(
+                                    `cd ${this.getAppPath()}${sep} && rm -rf ./node_modules && npm install`);
+                            } catch (e) {
+                                return this.onError(e, done);
+                            }
+
+                            const contents = 'node_modules were installed successfully!';
+                            const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
+                            this.userInterface.showOutput(output, noop);
+                            done();
+                        });
                     });
                 });
             });
