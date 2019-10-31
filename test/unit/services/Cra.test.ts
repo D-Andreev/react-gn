@@ -1,3 +1,4 @@
+import {init} from '../../../src/di-container';
 import childProcess from 'child_process';
 import {EventEmitter} from 'events';
 import Cra from '../../../src/services/Cra';
@@ -6,6 +7,7 @@ import MockStorage from '../../mock/MockStorage';
 import {CRA_EVENT} from '../../../src/constants';
 import IStorage from '../../../src/services/interfaces/IStorage';
 
+init();
 jest.mock('child_process');
 
 describe('Cra', () => {

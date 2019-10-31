@@ -2,11 +2,10 @@ import {Stats} from 'fs';
 import IStorage from './interfaces/IStorage';
 import ErrnoException = NodeJS.ErrnoException;
 import {sep} from 'path';
+import {injectable, inject} from 'tsyringe';
 
+@injectable()
 export default class Storage implements IStorage {
-    private readonly fs: typeof import('fs');
-    private readonly path: typeof import('path');
-
     private walk(path: string, done: Function) {
         let results: string[] = [];
         this.fs.readdir(path, (err: ErrnoException | null, list: string[]) => {
@@ -62,9 +61,8 @@ export default class Storage implements IStorage {
             .filter((splitPath: string[]) => splitPath.length > 1);
     }
 
-    constructor(fs: typeof import('fs'), path: typeof import('path')) {
-        this.fs = fs;
-        this.path = path;
+    constructor(@inject('fs') private readonly fs: typeof import('fs'),
+                @inject('path') private readonly path: typeof import('path')) {
     }
 
     create(path: string, content: string, done: (err: ErrnoException | null) => {}): void {

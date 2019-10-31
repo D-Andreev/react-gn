@@ -1,8 +1,10 @@
+import {init} from '../../../src/di-container';
 import fs from 'fs';
 import path from 'path';
 import Storage from '../../../src/services/Storage';
 import IStorage from '../../../src/services/interfaces/IStorage';
 
+init();
 jest.mock('fs');
 jest.mock('path');
 
