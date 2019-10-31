@@ -7,9 +7,7 @@ import {
     FLAG_INDICATOR,
     FLAGS_MIN_INDEX
 } from '../constants';
-import TsAppCommand from './init/TsAppCommand';
 import IStorage from '../services/interfaces/IStorage';
-import JsAppCommand from './init/JsAppCommand';
 import {ICommandFactory} from './interfaces/ICommandFactory';
 import ILanguageTypeMap from './interfaces/ILanguageTypeMap';
 import Flag from './Flag';
