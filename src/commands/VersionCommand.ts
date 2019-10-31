@@ -2,14 +2,23 @@ import ICommand from './interfaces/ICommand';
 import IStorage from '../services/interfaces/IStorage';
 import IUserInterface from '../user-interface/interfaces/IUserInterface';
 import {OUTPUT_TYPE} from '../constants';
+import Flag from './Flag';
+import {inject, injectable} from 'tsyringe';
 
+@injectable()
 export default class VersionCommand implements ICommand {
-    private readonly storage: IStorage;
-    private readonly userInterface: IUserInterface;
+    public flags: Flag[];
+    public appName: string;
+    public path: string;
 
-    constructor(storage: IStorage, userInterface: IUserInterface) {
-        this.storage = storage;
-        this.userInterface = userInterface;
+    constructor(@inject('storage') private readonly storage: IStorage,
+                @inject('userInterface') private readonly userInterface: IUserInterface) {
+    }
+
+    setAppMetadata(appName: string, flags: Flag[], path: string): void {
+        this.appName = appName;
+        this.flags = flags;
+        this.path = path;
     }
 
     execute(done: Function): void {

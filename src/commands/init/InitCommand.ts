@@ -13,10 +13,10 @@ export default class InitCommand implements IInitCommand {
     public readonly storage: IStorage;
     public readonly userInterface: IUserInterface;
     public readonly cra: ICra;
-    public readonly appName: string;
-    public readonly flags: Flag[];
-    public readonly path: string;
     public readonly childProcess: typeof import('child_process');
+    public appName: string;
+    public flags: Flag[];
+    public path: string;
 
     private getTemplateByFlag(flagWithTemplate: string): ITemplate {
         let template: ITemplate = null;
@@ -139,18 +139,18 @@ export default class InitCommand implements IInitCommand {
         storage: IStorage,
         userInterface: IUserInterface,
         cra: ICra,
-        childProcess: typeof import('child_process'),
-        appName: string,
-        flags: Flag[],
-        path: string
+        childProcess: typeof import('child_process')
     ) {
         this.storage = storage;
         this.userInterface = userInterface;
         this.cra = cra;
+        this.childProcess = childProcess;
+    }
+
+    setAppMetadata(appName: string, flags: Flag[], path: string) {
         this.appName = appName;
         this.flags = flags;
         this.path = path;
-        this.childProcess = childProcess;
     }
 
     initApp(args: string[], done: Function): void {

@@ -26,5 +26,9 @@
     "npm": "^6.11.3",
     "ts-jest": "^24.1.0",
     "typescript": "^3.6.3"
+  },
+  "dependencies": {
+    "reflect-metadata": "^0.1.13",
+    "tsyringe": "^3.4.0"
   }
 }
