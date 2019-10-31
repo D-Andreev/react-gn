@@ -42,7 +42,8 @@ describe('JsAppCommand', () => {
             }
         };
         flags = [];
-        jsAppCommand = new JsAppCommand(storage, userInterface, cra, childProcess, appName, flags, path);
+        jsAppCommand = new JsAppCommand(storage, userInterface, cra, childProcess);
+        jsAppCommand.setAppMetadata(appName, flags, path);
     });
 
     xit('calls initApp with args', (done) => {

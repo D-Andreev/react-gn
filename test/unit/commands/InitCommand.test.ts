@@ -47,7 +47,8 @@ describe('InitCommand', () => {
         flags = [];
         path = 'my-app';
         appName = 'my-test-app';
-        initCommand = new InitCommand(storage, userInterface, cra, childProcess, appName, flags, path);
+        initCommand = new InitCommand(storage, userInterface, cra, childProcess);
+        initCommand.setAppMetadata(appName, flags, path);
     });
 
     describe('initApp', () => {
@@ -77,7 +78,9 @@ describe('InitCommand', () => {
             describe('when template for a flag is not found', () => {
                 it('yields error', (done) => {
                     flags = [{name: 'invalid-flag', value: ''}];
-                    initCommand = new InitCommand(storage, userInterface, cra, childProcess, appName, flags, path);
+                    initCommand = new InitCommand(storage, userInterface, cra, childProcess);
+                    initCommand = new InitCommand(storage, userInterface, cra, childProcess);
+                    initCommand.setAppMetadata(appName, flags, path);
                     // @ts-ignore
                     initCommand.getFlagsWithTemplates = jest.fn(() => {
                         return [{name: 'invalid-flag', value: ''}];
@@ -103,7 +106,8 @@ describe('InitCommand', () => {
             describe('when templates for flags are found', () => {
                 beforeEach(() => {
                     flags = [{name: '--withRedux', value: ''}];
-                    initCommand = new InitCommand(storage, userInterface, cra, childProcess, appName, flags, path);
+                    initCommand = new InitCommand(storage, userInterface, cra, childProcess);
+                    initCommand.setAppMetadata(appName, flags, path);
                     // @ts-ignore
                     initCommand.getFlagsWithTemplates = jest.fn(() => {
                         return ['--withRedux'];
