@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import {container} from 'tsyringe';
 import fs from 'fs';
 import path from 'path';
