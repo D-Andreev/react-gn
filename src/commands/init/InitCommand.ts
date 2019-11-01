@@ -136,6 +136,34 @@ export default class InitCommand implements IInitCommand {
         this.removeFile(0, filesToBeRemoved, done);
     }
 
+    private generateApplyTemplateFunctions(flagsWithTemplates: string[], languageType: string): Function[] {
+        return flagsWithTemplates.map((flag: string) => {
+            const fn = (flag: string, next: Function) => {
+                let template: any = null;
+                try {
+                    template = this.getTemplateByFlag(flag);
+                } catch (e) {
+                    return next(e);
+                }
+                const paths: string[] = this.getFilePaths(template, languageType);
+                steed.parallel([
+                    (next: Function) => this.removeFiles(template, paths, languageType, next),
+                    (next: Function) => this.storage.createPaths(this.getAppPath(), paths, next),
+                    (next: Function) => {
+                        this.userInterface.showOutput([
+                            new Output('Installing dependencies...', OUTPUT_TYPE.NORMAL)
+                        ], noop);
+                        this.installTemplateDependencies(template.dependencies[languageType], next);
+                    },
+                    (next: Function) => this.saveFiles(0, languageType, paths, template, next)
+
+                ], (err: Error) => next(err));
+            };
+
+            return fn.bind(this, flag);
+        });
+    }
+
     protected getEjectedFlag(): Flag | undefined {
         return this.flags.find((flag: Flag) => {
             return flag.name === COMMAND_FLAG.EJECTED;
@@ -215,32 +243,7 @@ export default class InitCommand implements IInitCommand {
         if (!flagsWithTemplates.length) {
             return done(new Error('No flags with templates found'));
         }
-        const fns: Function[] = flagsWithTemplates.map((flag: string) => {
-            const fn = (flag: string, next: Function) => {
-                let template: any = null;
-                try {
-                    template = this.getTemplateByFlag(flag);
-                } catch (e) {
-                    return next(e);
-                }
-                const paths: string[] = this.getFilePaths(template, languageType);
-                steed.parallel([
-                    (next: Function) => this.removeFiles(template, paths, languageType, next),
-                    (next: Function) => this.storage.createPaths(this.getAppPath(), paths, next),
-                    (next: Function) => {
-                        this.userInterface.showOutput([
-                            new Output('Installing dependencies...', OUTPUT_TYPE.NORMAL)
-                        ], noop);
-                        this.installTemplateDependencies(template.dependencies[languageType], next);
-                    },
-                    (next: Function) => this.saveFiles(0, languageType, paths, template, next)
-
-                ], (err: Error) => next(err));
-            };
-
-            return fn.bind(this, flag);
-        });
-
+        const fns: Function[] = this.generateApplyTemplateFunctions(flagsWithTemplates, languageType);
         steed.waterfall(fns, (err: Error) => {
             if (err) {
                 return this.onError(err, done);
