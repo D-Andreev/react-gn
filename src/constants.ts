@@ -14,7 +14,7 @@ export const COMMAND_FLAG = {
     EJECTED: '--ejected'
 };
 
-export const MAIN_COMMANDS = ['init', 'create'];
+export const MAIN_COMMANDS = ['init'];
 export const ALLOWED_LANGUAGE_TYPE_FLAGS = ['--js', '--ts'];
 export const FLAGS_WITH_TEMPLATES = {
     WITH_REDUX: '--withRedux',
@@ -25,13 +25,14 @@ export const ALLOWED_FLAGS = ['--config', '--ejected']
 
 export const ALLOWED_FLAGS_DESCRIPTIONS: {[flag: string]: string} = {
     '--help': 'Shows the help.',
-    '--js': 'Create a javascript app.',
-    '--ts': 'Create a typescript app.',
+    '--js': 'Generate code in javascript.',
+    '--ts': 'Generate code in typescript.',
     '--config': 'File path to config file.',
+    '--ejected': 'Generate an ejected app.',
+    '--withRedux': 'Generate an app with redux',
 };
 export const MAIN_COMMANDS_DESCRIPTIONS: {[flag: string]: string} = {
-    'init': 'Initialize react application. (react-sdk init my-app)',
-    'create': 'Create react component. (react-sdk create my-component)',
+    'init': 'Initialize react application. (react-sdk init my-app)'
 };
 
 export const ASCII_ART = {

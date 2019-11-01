@@ -23,6 +23,7 @@
   "devDependencies": {
     "@types/jest": "^24.0.18",
     "@types/node": "^12.7.5",
+    "@types/steed": "^1.1.2",
     "@typescript-eslint/eslint-plugin": "^2.2.0",
     "@typescript-eslint/parser": "^2.2.0",
     "eslint": "^6.4.0",
@@ -34,6 +35,7 @@
   },
   "dependencies": {
     "reflect-metadata": "^0.1.13",
+    "steed": "^1.1.3",
     "tsyringe": "^3.4.0"
   }
 }

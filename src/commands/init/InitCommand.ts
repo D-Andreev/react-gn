@@ -1,9 +1,10 @@
 import {sep} from 'path';
+import steed from 'steed';
 import IStorage from '../../services/interfaces/IStorage';
 import IUserInterface from '../../user-interface/interfaces/IUserInterface';
 import ICra from '../../services/interfaces/ICra';
 import Flag from '../Flag';
-import {CRA_EVENT, FLAGS_WITH_TEMPLATES, OUTPUT_TYPE} from '../../constants';
+import {COMMAND_FLAG, CRA_EVENT, FLAGS_WITH_TEMPLATES, OUTPUT_TYPE} from '../../constants';
 import Output from '../Output';
 import {noop} from '../../utils';
 import IInitCommand from '../interfaces/IInitCommand';
@@ -135,6 +136,12 @@ export default class InitCommand implements IInitCommand {
         this.removeFile(0, filesToBeRemoved, done);
     }
 
+    protected getEjectedFlag(): Flag | undefined {
+        return this.flags.find((flag: Flag) => {
+            return flag.name === COMMAND_FLAG.EJECTED;
+        });
+    }
+
     constructor(
         storage: IStorage,
         userInterface: IUserInterface,
@@ -209,59 +216,53 @@ export default class InitCommand implements IInitCommand {
             return done(new Error('No flags with templates found'));
         }
 
-        for (let i = 0; i < flagsWithTemplates.length; i++) {
-            const flagWithTemplate: string = flagsWithTemplates[i];
-            let template: any = null;
-            try {
-                template = this.getTemplateByFlag(flagWithTemplate);
-            } catch (e) {
-                return this.onError(e, done);
-            }
-
-            const paths: string[] = this.getFilePaths(template, languageType);
-            this.removeFiles(template, paths, languageType, (err: Error) => {
-                if (err) {
-                    return this.onError(err, done);
+        const fns: Function[] = flagsWithTemplates.map((flag: string) => {
+            const fn = (flag: string, next: Function) => {
+                let template: any = null;
+                try {
+                    template = this.getTemplateByFlag(flag);
+                } catch (e) {
+                    return next(e);
                 }
-
-                this.storage.createPaths(this.getAppPath(), paths, (err: Error) => {
-                    if (err) {
-                        return this.onError(err, done);
+                const paths: string[] = this.getFilePaths(template, languageType);
+                steed.parallel([
+                    (next: Function) => this.removeFiles(template, paths, languageType, next),
+                    (next: Function) => this.storage.createPaths(this.getAppPath(), paths, next),
+                    (next: Function) => {
+                        this.userInterface.showOutput([
+                            new Output('Installing dependencies...', OUTPUT_TYPE.NORMAL)
+                        ], noop);
+                        this.installTemplateDependencies(template.dependencies[languageType], next);
+                    },
+                    (next: Function) => this.saveFiles(0, languageType, paths, template, next),
+                    (next: Function) => {
+                        try {
+                            this.userInterface.showOutput([
+                                new Output('Refreshing node_modules', OUTPUT_TYPE.NORMAL)
+                            ], noop);
+                            this.childProcess.execSync(
+                                `cd ${this.getAppPath()}${sep} && rm -rf ./node_modules && npm install`);
+                        } catch (e) {
+                            return next(e);
+                        }
+                        this.userInterface.showOutput([
+                            new Output('node_modules were installed successfully!', OUTPUT_TYPE.SUCCESS)
+                        ], noop);
+                        next();
                     }
 
-                    const output: Output[] = [
-                        new Output('Installing dependencies...', OUTPUT_TYPE.NORMAL)
-                    ];
-                    this.userInterface.showOutput(output, noop);
-                    this.installTemplateDependencies(template.dependencies[languageType], (err: Error) => {
-                        if (err) {
-                            return this.onError(err, done);
-                        }
+                ], (err: Error) => next(err));
+            };
 
-                        this.saveFiles(0, languageType, paths, template, (err: Error) => {
-                            if (err) {
-                                return this.onError(err, done);
-                            }
+            return fn.bind(this, flag);
+        });
 
-                            try {
-                                const output: Output[] = [
-                                    new Output('Refreshing node_modules', OUTPUT_TYPE.NORMAL)
-                                ];
-                                this.userInterface.showOutput(output, noop);
-                                this.childProcess.execSync(
-                                    `cd ${this.getAppPath()}${sep} && rm -rf ./node_modules && npm install`);
-                            } catch (e) {
-                                return this.onError(e, done);
-                            }
+        steed.waterfall(fns, (err: Error) => {
+            if (err) {
+                return this.onError(err, done);
+            }
 
-                            const contents = 'node_modules were installed successfully!';
-                            const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
-                            this.userInterface.showOutput(output, noop);
-                            done();
-                        });
-                    });
-                });
-            });
-        }
+            done();
+        });
     }
 }

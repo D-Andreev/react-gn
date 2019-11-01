@@ -4,13 +4,17 @@ import Flag from '../Flag';
 import ICra from '../../services/interfaces/ICra';
 import InitCommand from './InitCommand';
 import ICommand from '../interfaces/ICommand';
-import {COMMAND_FLAG, LANGUAGE_TYPE} from '../../constants';
+import {LANGUAGE_TYPE} from '../../constants';
 import * as path from 'path';
 
 export default class JsAppCommand extends InitCommand implements ICommand {
     public flags: Flag[];
     public appName: string;
     public path: string;
+
+    protected getEjectedFlag(): Flag | undefined {
+        return super.getEjectedFlag();
+    }
 
     constructor(
         storage: IStorage,
@@ -45,9 +49,7 @@ export default class JsAppCommand extends InitCommand implements ICommand {
             if (err) {
                 return done(err);
             }
-            const ejectFlag: Flag | undefined = this.flags.find((flag: Flag) => {
-                return flag.name === COMMAND_FLAG.EJECTED;
-            });
+            const ejectFlag: Flag | undefined = this.getEjectedFlag();
             if (ejectFlag) {
                  this.ejectApp(path.join(this.path, this.appName), (err: Error) => {
                      if (err) {

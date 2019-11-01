@@ -55,7 +55,7 @@ export default class CommandFactory implements ICommandFactory{
         return COMMAND_FLAG.JS;
     }
 
-    private getInitCommand(commandArguments: string[], languageTypeMap: ILanguageTypeMap): ICommand {
+    private static getInitCommand(commandArguments: string[], languageTypeMap: ILanguageTypeMap): ICommand {
         const appName: string = commandArguments[3];
         const flags: Flag[] = CommandFactory.parseFlags(commandArguments);
         const languageType: string = CommandFactory.getLanguageTypeFlag(commandArguments, languageTypeMap);
@@ -92,7 +92,7 @@ export default class CommandFactory implements ICommandFactory{
                 if (!commandArguments[3]) {
                     command = unknownCommand;
                 } else {
-                    command = this.getInitCommand(commandArguments, languageTypeMap);
+                    command = CommandFactory.getInitCommand(commandArguments, languageTypeMap);
                 }
                 break;
             default:
