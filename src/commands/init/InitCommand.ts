@@ -215,7 +215,7 @@ export default class InitCommand implements IInitCommand {
         if (!flagsWithTemplates.length) {
             return done(new Error('No flags with templates found'));
         }
-
+        const startDate: any = new Date();
         const fns: Function[] = flagsWithTemplates.map((flag: string) => {
             const fn = (flag: string, next: Function) => {
                 let template: any = null;
@@ -261,7 +261,11 @@ export default class InitCommand implements IInitCommand {
             if (err) {
                 return this.onError(err, done);
             }
-
+            const endTime: any = new Date();
+            let timeDiff = endTime - startDate;
+            timeDiff /= 1000;
+            const seconds: any = Math.round(timeDiff);
+            console.log(seconds + ' seconds');
             done();
         });
     }
