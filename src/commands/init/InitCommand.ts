@@ -234,22 +234,7 @@ export default class InitCommand implements IInitCommand {
                         ], noop);
                         this.installTemplateDependencies(template.dependencies[languageType], next);
                     },
-                    (next: Function) => this.saveFiles(0, languageType, paths, template, next),
-                    (next: Function) => {
-                        try {
-                            this.userInterface.showOutput([
-                                new Output('Refreshing node_modules', OUTPUT_TYPE.NORMAL)
-                            ], noop);
-                            this.childProcess.execSync(
-                                `cd ${this.getAppPath()}${sep} && rm -rf ./node_modules && npm install`);
-                        } catch (e) {
-                            return next(e);
-                        }
-                        this.userInterface.showOutput([
-                            new Output('node_modules were installed successfully!', OUTPUT_TYPE.SUCCESS)
-                        ], noop);
-                        next();
-                    }
+                    (next: Function) => this.saveFiles(0, languageType, paths, template, next)
 
                 ], (err: Error) => next(err));
             };
@@ -261,6 +246,20 @@ export default class InitCommand implements IInitCommand {
             if (err) {
                 return this.onError(err, done);
             }
+
+            try {
+                this.userInterface.showOutput([
+                    new Output('Refreshing node_modules', OUTPUT_TYPE.NORMAL)
+                ], noop);
+                this.childProcess.execSync(
+                    `cd ${this.getAppPath()}${sep} && rm -rf ./node_modules && npm install`);
+            } catch (e) {
+                return done(e);
+            }
+            this.userInterface.showOutput([
+                new Output('node_modules were installed successfully!', OUTPUT_TYPE.SUCCESS)
+            ], noop);
+
             const endTime: any = new Date();
             let timeDiff = endTime - startDate;
             timeDiff /= 1000;
