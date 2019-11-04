@@ -243,6 +243,7 @@ export default class InitCommand implements IInitCommand {
         if (!flagsWithTemplates.length) {
             return done(new Error('No flags with templates found'));
         }
+
         const fns: Function[] = this.generateApplyTemplateFunctions(flagsWithTemplates, languageType);
         steed.waterfall(fns, (err: Error) => {
             if (err) {
