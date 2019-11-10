@@ -1,4 +1,3 @@
-import {init} from '../../../src/di-container';
 import readline from 'readline';
 import VersionCommand from '../../../src/commands/VersionCommand';
 import Cli from '../../../src/user-interface/Cli';
@@ -6,7 +5,6 @@ import IUserInterface from '../../../src/user-interface/interfaces/IUserInterfac
 import MockStorage from '../../mock/MockStorage';
 import {OUTPUT_TYPE} from '../../../src/constants';
 
-init();
 describe('VersionCommand', () => {
     let versionCommand: VersionCommand;
     let userInterface: IUserInterface;

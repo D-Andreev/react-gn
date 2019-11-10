@@ -8,24 +8,20 @@ import {COMMAND_FLAG, LANGUAGE_TYPE} from '../../constants';
 import * as path from 'path';
 
 export default class JsAppCommand extends InitCommand implements ICommand {
-    public flags: Flag[];
-    public appName: string;
-    public path: string;
+    public readonly flags: Flag[];
+    public readonly appName: string;
+    public readonly path: string;
 
     constructor(
         storage: IStorage,
         userInterface: IUserInterface,
         cra: ICra,
-        childProcess: typeof import('child_process')
+        childProcess: typeof import('child_process'),
+        appName: string,
+        flags: Flag[],
+        path: string
     ) {
-        super(storage, userInterface, cra, childProcess);
-    }
-
-    setAppMetadata(appName: string, flags: Flag[], path: string): void {
-        super.setAppMetadata(appName, flags, path);
-        this.appName = appName;
-        this.flags = flags;
-        this.path = path;
+        super(storage, userInterface, cra, childProcess, appName, flags, path);
     }
 
     initApp(args: string[], done: Function): void {

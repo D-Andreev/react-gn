@@ -1,3 +1,4 @@
+import readline from 'readline';
 import ICommand from './interfaces/ICommand';
 import {
     ALLOWED_FLAGS,
@@ -7,12 +8,17 @@ import {
     FLAG_INDICATOR,
     FLAGS_MIN_INDEX
 } from '../constants';
+import TsAppCommand from './init/TsAppCommand';
+import UnknownCommand from './UnknownCommand';
 import IStorage from '../services/interfaces/IStorage';
+import JsAppCommand from './init/JsAppCommand';
 import {ICommandFactory} from './interfaces/ICommandFactory';
+import Cli from '../user-interface/Cli';
+import IUserInterface from '../user-interface/interfaces/IUserInterface';
 import ILanguageTypeMap from './interfaces/ILanguageTypeMap';
 import Flag from './Flag';
+import VersionCommand from './VersionCommand';
 import ICra from '../services/interfaces/ICra';
-import {container} from 'tsyringe';
 
 export default class CommandFactory implements ICommandFactory{
     private readonly storage: IStorage;
@@ -55,18 +61,27 @@ export default class CommandFactory implements ICommandFactory{
         return COMMAND_FLAG.JS;
     }
 
-    private getInitCommand(commandArguments: string[], languageTypeMap: ILanguageTypeMap): ICommand {
+    private getCommand(
+        commandArguments: string[], languageTypeMap: ILanguageTypeMap, userInterface: IUserInterface
+    ): ICommand {
         const appName: string = commandArguments[3];
         const flags: Flag[] = CommandFactory.parseFlags(commandArguments);
         const languageType: string = CommandFactory.getLanguageTypeFlag(commandArguments, languageTypeMap);
 
-        const command: ICommand = container.resolve(languageTypeMap[languageType]);
-        command.setAppMetadata(appName, flags, process.cwd());
-        return command;
+        return new languageTypeMap[languageType](
+            this.storage, userInterface, this.cra, this.childProcess, appName, flags, process.cwd()
+        );
+    }
+
+    constructor(storage: IStorage, cra: ICra, childProcess: typeof import('child_process')) {
+        this.storage = storage;
+        this.cra = cra;
+        this.childProcess = childProcess;
     }
 
     createCommand(commandArguments: string[], done: Function): ICommand {
-        const unknownCommand: ICommand = container.resolve('UnknownCommand');
+        const userInterface = new Cli(process.stdout, readline);
+        const unknownCommand: ICommand = new UnknownCommand(userInterface);
         let command = unknownCommand;
 
         if (!commandArguments.length) {
@@ -77,14 +92,14 @@ export default class CommandFactory implements ICommandFactory{
             return command;
         }
         if (commandArguments[2] === COMMAND_FLAG.VERSION) {
-            command = container.resolve('VersionCommand');
+            command = new VersionCommand(this.storage, userInterface);
             command.execute(done);
             return command;
         }
 
         const languageTypeMap: ILanguageTypeMap = {
-            [COMMAND_FLAG.JS]: 'JsAppCommand',
-            [COMMAND_FLAG.TS]: 'TsAppCommand',
+            [COMMAND_FLAG.JS]: JsAppCommand,
+            [COMMAND_FLAG.TS]: TsAppCommand,
         };
 
         switch (commandArguments[2]) {
@@ -92,7 +107,7 @@ export default class CommandFactory implements ICommandFactory{
                 if (!commandArguments[3]) {
                     command = unknownCommand;
                 } else {
-                    command = this.getInitCommand(commandArguments, languageTypeMap);
+                    command = this.getCommand(commandArguments, languageTypeMap, userInterface);
                 }
                 break;
             default:

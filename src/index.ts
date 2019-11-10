@@ -1,9 +1,15 @@
 #!/usr/bin/env node
 
-import 'reflect-metadata';
+import fs from 'fs';
+import path from 'path';
+import childProcess from 'child_process';
 import CommandFactory from './commands/CommandFactory';
+import StorageService from './services/Storage';
+import IStorage from './services/interfaces/IStorage';
+import ICra from './services/interfaces/ICra';
+import Cra from './services/Cra';
 import {noop} from './utils';
-import {init} from './di-container';
 
-init();
-new CommandFactory().createCommand(process.argv, noop);
+const storage: IStorage = new StorageService(fs, path);
+const cra: ICra = new Cra(storage, childProcess);
+new CommandFactory(storage, cra, childProcess).createCommand(process.argv, noop);

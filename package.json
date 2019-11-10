@@ -16,10 +16,6 @@
     "test-feature": "npm run test ./test/feature/",
     "watch-test": "npm run test -- --watchAll"
   },
-  "pre-commit": [
-    "build",
-    "lint"
-  ],
   "devDependencies": {
     "@types/jest": "^24.0.18",
     "@types/node": "^12.7.5",
@@ -28,12 +24,7 @@
     "eslint": "^6.4.0",
     "jest": "^24.9.0",
     "npm": "^6.11.3",
-    "pre-commit": "^1.2.2",
     "ts-jest": "^24.1.0",
     "typescript": "^3.6.3"
-  },
-  "dependencies": {
-    "reflect-metadata": "^0.1.13",
-    "tsyringe": "^3.4.0"
   }
 }

@@ -5,14 +5,15 @@ import {ERROR, OUTPUT_TYPE} from '../constants';
 import Output from '../commands/Output';
 import {FgBlue, FgGreen, FgRed, FgWhite} from './colors';
 import WriteStream = NodeJS.WriteStream;
-import {inject, injectable} from 'tsyringe';
 
-@injectable()
 export default class Cli implements IUserInterface {
+    private readonly stdout: WriteStream;
+    private readonly readline: typeof import('readline');
     private readonly colorsMap: { [type: string]: string };
 
-    constructor(@inject('stdout') private readonly stdout: WriteStream,
-                @inject('readline') private readonly readline: typeof import('readline')) {
+    constructor(stdout: WriteStream, readline: typeof import('readline')) {
+        this.stdout = stdout;
+        this.readline = readline;
         this.colorsMap = {
             [OUTPUT_TYPE.NORMAL]: FgWhite,
             [OUTPUT_TYPE.INFO]: FgBlue,
