@@ -1,10 +1,8 @@
-import {init} from '../../../src/di-container';
 import readline from 'readline';
 import UnknownCommand from '../../../src/commands/UnknownCommand';
 import Cli from '../../../src/user-interface/Cli';
 import IUserInterface from '../../../src/user-interface/interfaces/IUserInterface';
 
-init();
 describe('UnknownCommand', () => {
     let unknownCommand: UnknownCommand;
     let userInterface: IUserInterface;

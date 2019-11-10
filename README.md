@@ -3,6 +3,4 @@
 SDK for react apps
 
 * Commands
-  - Help `--help`
-  - Version `--version`
-  - Init `init` (`--ts`, `--withRedux`, `--ejected`)
+  - Init

@@ -4,12 +4,13 @@ import EventEmitter from 'events';
 import {CRA_EVENT} from '../constants';
 import IStorage from './interfaces/IStorage';
 import ErrnoException = NodeJS.ErrnoException;
-import {injectable, inject} from 'tsyringe';
 
 export type Listener = (...args: any[]) => void;
 
-@injectable()
 export default class Cra extends EventEmitter implements ICra {
+    private readonly storage: IStorage;
+    private readonly childProcess: typeof import('child_process');
+
     private spawnChild(command: string, args: string[], onError: Listener, onData: Listener, onClose: Listener) {
         const {spawn} = this.childProcess;
         const child: ChildProcessWithoutNullStreams = spawn(command, args, {shell: true});
@@ -20,9 +21,10 @@ export default class Cra extends EventEmitter implements ICra {
         child.on('close', onClose);
     }
 
-    constructor(@inject('storage') private readonly storage: IStorage,
-                @inject('childProcess') private readonly childProcess: typeof import('child_process')) {
+    constructor(storage: IStorage, childProcess: typeof import('child_process')) {
         super();
+        this.storage = storage;
+        this.childProcess = childProcess;
     }
 
     createApp(name: string, path: string, args?: string[]): void {

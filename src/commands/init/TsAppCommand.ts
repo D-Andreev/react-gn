@@ -13,16 +13,12 @@ export default class JsAppCommand extends InitCommand implements ICommand {
         storage: IStorage,
         userInterface: IUserInterface,
         cra: ICra,
-        childProcess: typeof import('child_process')
+        childProcess: typeof import('child_process'),
+        appName: string,
+        flags: Flag[],
+        path: string
     ) {
-        super(storage, userInterface, cra, childProcess);
-    }
-
-    setAppMetadata(appName: string, flags: Flag[], path: string) {
-        super.setAppMetadata(appName, flags, path);
-        this.appName = appName;
-        this.flags = flags;
-        this.path = path;
+        super(storage, userInterface, cra, childProcess, appName, flags, path);
     }
 
     initApp(args: string[], done: Function): void {

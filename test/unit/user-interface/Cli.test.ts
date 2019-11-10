@@ -1,11 +1,9 @@
-import {init} from '../../../src/di-container';
 import readline from 'readline';
 import Cli from '../../../src/user-interface/Cli';
 import IUserInterface from '../../../src/user-interface/interfaces/IUserInterface';
 import {ERROR, OUTPUT_TYPE} from '../../../src/constants';
 import {FgWhite} from '../../../src/user-interface/colors';
 
-init();
 describe('Cli', () => {
     let cli: IUserInterface;
     let done: Function | jest.Mock<any, any>;

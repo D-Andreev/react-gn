@@ -1,10 +1,8 @@
-import {init} from '../../../src/di-container';
 import fs from 'fs';
-import path from 'path';
+import path, {sep} from 'path';
 import Storage from '../../../src/services/Storage';
 import IStorage from '../../../src/services/interfaces/IStorage';
 
-init();
 jest.mock('fs');
 jest.mock('path');
 
@@ -188,12 +186,12 @@ describe('Storage', () => {
         beforeEach(() => {
             mainPath = './path/to/app/';
             paths = [
-                'src/App',
+                `src${sep}App`,
                 'index',
-                'src/reducers/rootReducer',
-                'src/actions/simpleAction',
-                'src/reducers/simpleReducer',
-                'src/components/MyComponent'
+                `src${sep}reducers${sep}rootReducer`,
+                `src${sep}actions${sep}simpleAction`,
+                `src${sep}reducers${sep}simpleReducer`,
+                `src${sep}components${sep}MyComponent`
             ];
             // @ts-ignore
             path.join = require.requireActual('path').join;
@@ -218,9 +216,9 @@ describe('Storage', () => {
                 const cb = () => {
                     const expectedPaths: string[] = [
                         'src',
-                        'src/reducers',
-                        'src/actions',
-                        'src/components'
+                        `src${sep}reducers`,
+                        `src${sep}actions`,
+                        `src${sep}components`
                     ];
                     expectedPaths.forEach((currentPath: string, i: number) => {
                         expect(fs.existsSync).toHaveBeenCalledTimes(expectedPaths.length);

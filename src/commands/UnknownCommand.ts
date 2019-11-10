@@ -9,23 +9,12 @@ import {
     OUTPUT_TYPE
 } from '../constants';
 import Output from './Output';
-import Flag from './Flag';
-import {inject, injectable} from 'tsyringe';
 
-@injectable()
 export default class UnknownCommand implements ICommand {
-    public flags: Flag[];
-    public appName: string;
-    public path: string;
+    private readonly userInterface: IUserInterface;
 
-    constructor(@inject('userInterface') private readonly userInterface: IUserInterface) {
+    constructor(userInterface: IUserInterface) {
         this.userInterface = userInterface;
-    }
-
-    setAppMetadata(appName: string, flags: Flag[], path: string): void {
-        this.appName = appName;
-        this.flags = flags;
-        this.path = path;
     }
 
     execute(done: Function): void {

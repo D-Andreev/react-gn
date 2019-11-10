@@ -42,8 +42,7 @@ describe('TsAppCommand', () => {
             }
         };
         flags = [];
-        tsAppCommand = new TsAppCommand(storage, userInterface, cra, childProcess);
-        tsAppCommand.setAppMetadata(appName, flags, path);
+        tsAppCommand = new TsAppCommand(storage, userInterface, cra, childProcess, appName, flags, path);
     });
 
     xit('calls initApp with args', (done) => {
