@@ -1,24 +1,13 @@
 import { execSync } from 'child_process';
 import fs from 'fs';
 import {ASCII_ART, SDK_NAME} from '../../src/constants';
-
-function setupGit() {
-    const email = 'd.andreev90@gmail.com';
-    const user = 'D-Andreev';
-    execSync(`git config --global user.email "${email}"`);
-    execSync(`git config --global user.name "${user}"`);
-}
+import {buildPackage} from './utils';
 
 describe('init command', () => {
     let appName: string;
     beforeAll(() => {
-        if (process.env.TEST_ENV === 'CI') {
-            setupGit();
-            execSync('sudo npm link');
-            execSync('sudo npm install -g create-react-app');
-        }
+        buildPackage();
         appName = `${Date.now()}my-app`;
-        execSync('yarn build');
     });
 
     afterAll(() => {

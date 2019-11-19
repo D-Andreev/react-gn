@@ -3,6 +3,7 @@ export const SDK_NAME = 'react-sdk';
 export const COMMAND = {
     INIT: 'init',
     UNKNOWN: 'unknown',
+    COMPONENT: 'component',
 };
 
 export const COMMAND_FLAG = {
@@ -25,8 +26,8 @@ export const ALLOWED_FLAGS = ['--config', '--ejected']
 
 export const ALLOWED_FLAGS_DESCRIPTIONS: {[flag: string]: string} = {
     '--help': 'Shows the help.',
-    '--js': 'Create a javascript app.',
-    '--ts': 'Create a typescript app.',
+    '--js': 'Use javascript.',
+    '--ts': 'Use typescript.',
     '--config': 'File path to config file.',
 };
 export const MAIN_COMMANDS_DESCRIPTIONS: {[flag: string]: string} = {
@@ -43,6 +44,13 @@ export const ASCII_ART = {
         '|_|  |_|\\___|_| .__/ \n' +
         '              | |    \n' +
         '              |_|    '
+};
+
+export const NEW_COMPONENT_MESSAGE = {
+    INVALID_NAME: 'Please provide a name for the new component.',
+    CREATE_SUCCESS: 'Component was created successfully!',
+    INVALID_PATH: 'Target path is invalid.',
+    INVALID_TEMPLATE_PATH: 'Could not find template.'
 };
 
 export const FLAGS_MIN_INDEX = 3;
@@ -80,4 +88,3 @@ export const CRA_EVENT = {
 };
 
 export const RETURN_STATEMENT_MIN_MATCH_COUNT = 3;
-export const START_OF_CLASS_MIN_MATCH_COUNT = 1;
