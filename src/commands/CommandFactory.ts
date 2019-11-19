@@ -37,8 +37,7 @@ export default class CommandFactory implements ICommandFactory{
     private static parseFlags(commandArguments: string[], strict = true): Flag[] {
         const flags: Flag[] = [];
         let currentIndex: number = FLAGS_MIN_INDEX;
-
-        while(currentIndex <= commandArguments.length) {
+        while(currentIndex <= commandArguments.length -1) {
             const input: string = commandArguments[currentIndex];
             if (!strict || CommandFactory.isAllowedFlag(input)) {
                 const nextArg: string = commandArguments[currentIndex + 1] || '';
@@ -46,6 +45,7 @@ export default class CommandFactory implements ICommandFactory{
                     flags.push({ name: commandArguments[currentIndex], value: ''});
                 } else {
                     flags.push({ name: commandArguments[currentIndex], value: nextArg});
+                    currentIndex++;
                 }
             }
 
