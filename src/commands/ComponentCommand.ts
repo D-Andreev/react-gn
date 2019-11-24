@@ -138,6 +138,7 @@ export default class ComponentCommand implements ICommand {
     }
 
     private onTemplateRendered(err: ErrorEvent, fileIndex: number, isSuccessful: boolean, done: Function) {
+        console.log({err5: err})
         if (err) {
             isSuccessful = false;
             const output: Output[] = [
@@ -154,11 +155,20 @@ export default class ComponentCommand implements ICommand {
         const output: Output[] = [
             new Output(
                 `${this.transformedFilePaths[fileIndex]} was created successfully`,
-                OUTPUT_TYPE.SUCCESS
+                OUTPUT_TYPE.NORMAL
             )
         ];
         this.userInterface.showOutput(output, noop);
-        if (fileIndex === this.transformedFilePaths.length && isSuccessful) {
+        console.log({err77: fileIndex, asd: this.transformedFilePaths.length - 1, isSuccessful})
+        if (fileIndex === this.transformedFilePaths.length - 1 && isSuccessful) {
+            console.log({err4: err})
+            const output: Output[] = [
+                new Output(
+                    NEW_COMPONENT_MESSAGE.CREATE_SUCCESS,
+                    OUTPUT_TYPE.SUCCESS
+                )
+            ];
+            this.userInterface.showOutput(output, noop);
             return done();
         }
     }
@@ -183,12 +193,14 @@ export default class ComponentCommand implements ICommand {
 
     execute(done: Function): void {
         const templatePath: Flag | undefined = this.getFlag(COMMAND_FLAG.TEMPLATE);
+        console.log({templatePath, cwd: process.cwd()});
         if (!templatePath) {
             const err = new Error(NEW_COMPONENT_MESSAGE.INVALID_TEMPLATE_PATH);
             return this.onError(err, done);
         }
 
         this.storage.directoryExists(templatePath.value, (err: ErrorEvent) => {
+            console.log({err1: err})
             if (err) {
                 return this.onError(new Error(NEW_COMPONENT_MESSAGE.INVALID_TEMPLATE_PATH), done);
             }
@@ -201,6 +213,7 @@ export default class ComponentCommand implements ICommand {
             }
 
             this.storage.scanDirectory(templatePath.value, (err: ErrorEvent, filePaths: string[]) => {
+                console.log({err2: err})
                 if (err) {
                     return this.onError(err, done);
                 }
@@ -213,6 +226,7 @@ export default class ComponentCommand implements ICommand {
                 this.placeholders = this.extractPlaceholdersFromFlags();
                 this.transformedFilePaths = this.transformFilePaths(filePaths, componentNameArg.value);
                 this.storage.createPaths(this.targetPath, this.transformedFilePaths, (err: Error) => {
+                    console.log({err3: err})
                     if (err) {
                         return this.onError(err, done);
                     }
