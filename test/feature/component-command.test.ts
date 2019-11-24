@@ -43,16 +43,6 @@ describe('component command', () => {
     });
 
     describe('when I provide component name', () => {
-        describe('when I do not provide path', () => {
-            it('creates the component in the current directory', () => {
-                const result = execSync(`react-sdk component --name ${componentName} ` +
-                `--template ${containerTemplate}`
-                );
-                expect(result.toString()).toContain(NEW_COMPONENT_MESSAGE.CREATE_SUCCESS);
-                assertBasicComponentIsCreated(componentName);
-            });
-        });
-
         describe('when template path is not provided', () => {
             it('shows an error message', () => {
                 fs.mkdirSync(myDir);
