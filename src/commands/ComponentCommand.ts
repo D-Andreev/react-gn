@@ -96,7 +96,8 @@ export default class ComponentCommand implements ICommand {
 
     private transformFilePaths(filePaths: string[], componentName: string): string[] {
         return filePaths.map((filePath: string) => {
-            const matchComponentPath: any = filePath.match(/container(.*)/gi);
+            const regex = new RegExp(`${componentName}(.*)`, 'gi');
+            const matchComponentPath: any = filePath.match(regex);
             const componentPath = matchComponentPath[0].replace(`${this.templateName}${sep}`, '');
             let generatedPath = `${this.targetPath}${sep}${componentName}${sep}${componentPath}`;
             generatedPath = ComponentCommand.replacePlaceholdersWithData(generatedPath, this.placeholders);
@@ -170,19 +171,6 @@ export default class ComponentCommand implements ICommand {
         }
     }
 
-    private renderTemplates(
-        filePaths: string[],
-        done: Function): void {
-        const isSuccessful = true;
-        for (let i = 0; i < this.transformedFilePaths.length; i++) {
-            this.renderTemplate(
-                filePaths[i],
-                this.transformedFilePaths[i],
-                i,
-                (err: ErrorEvent) => this.onTemplateRendered(err, i, isSuccessful, done));
-        }
-    }
-
     private getComponentTargetPath(): string {
         const componentTargetPathArg: Flag | undefined = this.getFlag(COMMAND_FLAG.COMPONENT_TARGET_PATH);
         return componentTargetPathArg ? componentTargetPathArg.value : this.path;
@@ -212,10 +200,6 @@ export default class ComponentCommand implements ICommand {
                     return this.onError(err, done);
                 }
                 const templateParts: string[] = ComponentCommand.getTemplateParts(templatePath.value);
-                if (!templateParts || !templateParts.length) {
-                    const err = new Error(NEW_COMPONENT_MESSAGE.INVALID_TEMPLATE_PATH);
-                    return this.onError(err, done);
-                }
                 this.templateName = templateParts[templateParts.length - 1];
                 this.placeholders = this.getPlaceholderFlags();
                 this.transformedFilePaths = this.transformFilePaths(filePaths, componentNameArg.value);
@@ -223,8 +207,14 @@ export default class ComponentCommand implements ICommand {
                     if (err) {
                         return this.onError(err, done);
                     }
-
-                    return this.renderTemplates(filePaths, done);
+                    const isSuccessful = true;
+                    for (let i = 0; i < this.transformedFilePaths.length; i++) {
+                        this.renderTemplate(
+                            filePaths[i],
+                            this.transformedFilePaths[i],
+                            i,
+                            (err: ErrorEvent) => this.onTemplateRendered(err, i, isSuccessful, done));
+                    }
                 });
             });
         });
