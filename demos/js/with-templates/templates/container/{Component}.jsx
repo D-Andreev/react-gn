@@ -1,4 +1,4 @@
-import './Component.css';
+import './{Component}.css';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { {action1} } from './actions/{action1}';
@@ -13,17 +13,21 @@ class {Component} extends Component {
         const { {state1}, {state2} } = this.props;
         return (
             <div className="{component}">
-                <button onClick={this.onClick}> Get posts </button>
-                {state2 ? (
+                <div>
+                    <button onClick={this.onClick}> Get posts </button>
+                </div>
+                {{state2} ? (
                     <h2>Loading...</h2>
                 ) : (
-                    {state1}.map((x) =>
-                        <div className="post" key={x.id}>
-                            <div>{x.id}</div>
-                            <div>{x.title}</div>
-                            <div>{x.body}</div>
-                        </div>
-                    )
+                    <div>
+                        {{state1}.map((x) =>
+                            <div className="post" key={x.id}>
+                                <div>{x.id}</div>
+                                <div>{x.title}</div>
+                                <div>{x.body}</div>
+                            </div>
+                        )}
+                    </div>
                 )}
             </div>
         );

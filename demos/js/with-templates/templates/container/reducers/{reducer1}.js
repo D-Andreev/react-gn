@@ -1,16 +1,16 @@
-import {ON_GET_POSTS_ERROR, RECEIVE_POSTS, REQUEST_POSTS} from "../actions/{actions1}";
+import {ON_GET_POSTS_ERROR, RECEIVE_POSTS, REQUEST_POSTS} from "../actions/{action1}";
 
-export default (state = {}, action) => {
+export default (state = {{state1}: [], {state2}: false}, action) => {
     switch (action.type) {
         case REQUEST_POSTS:
-            state.{reducer}.{state2} = true;
+            state.{state2} = true;
             return {...state};
         case RECEIVE_POSTS:
-            state.{reducer}.{state2} = false;
-            state.{reducer}.{state1} = action.payload.posts;
+            state.{state2} = false;
+            state.{state1} = action.payload.posts;
             return {...state};
         case ON_GET_POSTS_ERROR:
-            state.{reducer}.{state2} = false;
+            state.{state2} = false;
             return {...state};
         default:
             return state;

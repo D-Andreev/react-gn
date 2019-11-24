@@ -12,9 +12,13 @@ export const COMMAND_FLAG = {
     HELP: '--help',
     VERSION: '--version',
     CONFIG: '--config',
-    EJECTED: '--ejected'
+    EJECTED: '--ejected',
+    TEMPLATE: '--template',
+    COMPONENT_TARGET_PATH: '--path',
+    COMPONENT_NAME: '--name',
 };
 
+export const ENUMERABLE_FLAGS = ['--state', '--action', '--reducer'];
 export const MAIN_COMMANDS = ['init', 'create'];
 export const ALLOWED_LANGUAGE_TYPE_FLAGS = ['--js', '--ts'];
 export const FLAGS_WITH_TEMPLATES = {
@@ -24,11 +28,19 @@ export const ALLOWED_FLAGS = ['--config', '--ejected']
     .concat(Object.values(FLAGS_WITH_TEMPLATES))
     .concat(ALLOWED_LANGUAGE_TYPE_FLAGS);
 
+export const NON_PLACEHOLDER_FLAGS = [
+    COMMAND_FLAG.COMPONENT_NAME,
+    COMMAND_FLAG.TEMPLATE,
+    COMMAND_FLAG.COMPONENT_TARGET_PATH,
+].concat(ALLOWED_LANGUAGE_TYPE_FLAGS);
+
 export const ALLOWED_FLAGS_DESCRIPTIONS: {[flag: string]: string} = {
     '--help': 'Shows the help.',
     '--js': 'Use javascript.',
     '--ts': 'Use typescript.',
     '--config': 'File path to config file.',
+    '--ejected': 'Creates an already ejected app',
+    '--withRedux': 'Add redux setup to the app',
 };
 export const MAIN_COMMANDS_DESCRIPTIONS: {[flag: string]: string} = {
     'init': 'Initialize react application. (react-sdk init my-app)',
@@ -50,7 +62,7 @@ export const NEW_COMPONENT_MESSAGE = {
     INVALID_NAME: 'Please provide a name for the new component.',
     CREATE_SUCCESS: 'Component was created successfully!',
     INVALID_PATH: 'Target path is invalid.',
-    INVALID_TEMPLATE_PATH: 'Could not find template.'
+    INVALID_TEMPLATE_PATH: 'Invalid template path.',
 };
 
 export const FLAGS_MIN_INDEX = 3;

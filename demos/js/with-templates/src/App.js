@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { simpleAction } from './actions/simpleAction';
+import MyPosts from './containers/myPosts/posts';
 import logo from './logo.svg';
 import './App.css';
 
@@ -23,6 +24,7 @@ class App extends Component {
           <pre>
              {JSON.stringify(this.props)}
           </pre>
+            <MyPosts />
         </div>
     );
   }

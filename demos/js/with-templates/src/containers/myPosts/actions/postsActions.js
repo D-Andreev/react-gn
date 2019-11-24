@@ -6,10 +6,10 @@ function requestPosts() {
 }
 
 export const RECEIVE_POSTS = 'RECEIVE_POSTS';
-function receivePosts(json) {
+function receivePosts(posts) {
     return {
         type: RECEIVE_POSTS,
-        posts: json.data.children,
+        payload: {posts},
         receivedAt: Date.now()
     }
 }
@@ -21,7 +21,7 @@ export function onError() {
     }
 }
 
-export function {action1}() {
+export function postsActions() {
     return function(dispatch) {
         dispatch(requestPosts());
         return fetch('https://jsonplaceholder.typicode.com/posts')
