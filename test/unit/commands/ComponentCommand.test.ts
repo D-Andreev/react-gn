@@ -18,6 +18,7 @@ describe('InitCommand', () => {
     let componentName: string;
     let flags: Flag[];
     let path: string;
+    let templatePth: string;
 
     beforeEach(() => {
         storage = new MockStorage();
@@ -49,6 +50,7 @@ describe('InitCommand', () => {
         componentName = 'myPosts';
         componentCommand = new ComponentCommand(
             storage, userInterface, childProcess, componentName, flags, './');
+        templatePth = `./container/${componentName}/${componentName}.js`;
     });
 
     describe('execute', () => {
@@ -98,7 +100,7 @@ describe('InitCommand', () => {
                 beforeEach(() => {
                     // @ts-ignore
                     storage.scanDirectory = jest.fn((path: string, done: Function) => {
-                        done(null, [`./test/${componentName}/${componentName}.js`])
+                        done(null, [templatePth])
                     });
                 });
 
@@ -109,7 +111,7 @@ describe('InitCommand', () => {
                             path: string, arr: string[], done: Function) => {
                             done(new Error('err'))
                         });
-                        flags = [{name: '--template', value: ''}, {name: '--name', value: componentName}];
+                        flags = [{name: '--template', value: templatePth}, {name: '--name', value: componentName}];
                         componentCommand = new ComponentCommand(
                             storage, userInterface, childProcess, componentName, flags, './');
                         componentCommand.execute((err: ErrorEvent) => {
@@ -124,7 +126,7 @@ describe('InitCommand', () => {
                         // @ts-ignore
                         storage.createPaths = jest.fn((
                             path: string, arr: string[], done: Function) => {
-                            done(null, [`./test/${componentName}/${componentName}.js`])
+                            done(null, [templatePth])
                         });
                         // @ts-ignore
                         storage.generateFilePath = jest.fn((
@@ -141,12 +143,12 @@ describe('InitCommand', () => {
                             done()
                         });
                         // @ts-ignore
-                        componentCommand.transformFilePaths = () => [`./test/${componentName}/${componentName}.js`];
+                        componentCommand.transformFilePaths = () => [templatePth];
                         // @ts-ignore
                         componentCommand.renderTemplate = jest.fn((a: any, b: any, c: any, done: any) => {
                             done(null, 0);
                         });
-                        flags = [{name: '--template', value: ''}, {name: '--name', value: componentName}];
+                        flags = [{name: '--template', value: './templates/container'}, {name: '--name', value: componentName}];
                         componentCommand = new ComponentCommand(
                             storage, userInterface, childProcess, componentName, flags, './');
                         componentCommand.execute((err: ErrorEvent) => {

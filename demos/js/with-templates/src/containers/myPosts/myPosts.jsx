@@ -1,10 +1,10 @@
-import './posts.css';
+import './myPosts.css';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { postsActions } from './actions/postsActions';
-import './posts.css';
+import './myPosts.css';
 
-class posts extends Component {
+class myPosts extends Component {
     onClick = () => {
         this.props.postsActions();
     };
@@ -12,7 +12,7 @@ class posts extends Component {
     render() {
         const { posts, isLoadingPosts } = this.props;
         return (
-            <div className="posts">
+            <div className="myPosts">
                 <div>
                     <button onClick={this.onClick}> Get posts </button>
                 </div>
@@ -43,4 +43,4 @@ const mapStateToProps = state => ({
     isLoadingPosts: state.myPostsReducer.isLoadingPosts
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(posts);
+export default connect(mapStateToProps, mapDispatchToProps)(myPosts);

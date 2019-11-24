@@ -96,9 +96,10 @@ export default class ComponentCommand implements ICommand {
 
     private transformFilePaths(filePaths: string[], componentName: string): string[] {
         return filePaths.map((filePath: string) => {
-            const regex = new RegExp(`${componentName}(.*)`, 'gi');
-            const matchComponentPath: any = filePath.match(regex);
-            const componentPath = matchComponentPath[0].replace(`${this.templateName}${sep}`, '');
+            const regex = new RegExp(`${this.templateName}(.*)`, 'gi');
+            const matchComponentPath = filePath.match(regex);
+            const componentPath = matchComponentPath[0]
+                .replace(`${this.templateName}${sep}`, '');
             let generatedPath = `${this.targetPath}${sep}${componentName}${sep}${componentPath}`;
             generatedPath = ComponentCommand.replacePlaceholdersWithData(generatedPath, this.placeholders);
             let componentParts = generatedPath.split(sep);
@@ -160,13 +161,6 @@ export default class ComponentCommand implements ICommand {
         ];
         this.userInterface.showOutput(output, noop);
         if (fileIndex === this.transformedFilePaths.length - 1 && isSuccessful) {
-            const output: Output[] = [
-                new Output(
-                    NEW_COMPONENT_MESSAGE.CREATE_SUCCESS,
-                    OUTPUT_TYPE.SUCCESS
-                )
-            ];
-            this.userInterface.showOutput(output, noop);
             return done();
         }
     }

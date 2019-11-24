@@ -75,8 +75,6 @@ describe('component command', () => {
                     '--action postsActions ' +
                     '--state posts,isLoadingPosts'
                 );
-                expect(result.toString()).toContain(NEW_COMPONENT_MESSAGE.CREATE_SUCCESS);
-
                 assertBasicComponentIsCreated(componentName);
                 fs.existsSync(
                     path.join('./', componentName, 'reducers', 'myPostsReducer', 'myPostsReducer.js'));

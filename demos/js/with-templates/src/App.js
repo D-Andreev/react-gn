@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { simpleAction } from './actions/simpleAction';
-import MyPosts from './containers/myPosts/posts';
+import MyPosts from './containers/myPosts/myPosts';
 import logo from './logo.svg';
 import './App.css';
 
