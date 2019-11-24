@@ -19,6 +19,7 @@ import ILanguageTypeMap from './interfaces/ILanguageTypeMap';
 import Flag from './Flag';
 import VersionCommand from './VersionCommand';
 import ICra from '../services/interfaces/ICra';
+import ComponentCommand from './ComponentCommand';
 
 export default class CommandFactory implements ICommandFactory{
     private readonly storage: IStorage;
@@ -29,18 +30,22 @@ export default class CommandFactory implements ICommandFactory{
         return arg.indexOf(FLAG_INDICATOR) !== -1;
     }
 
-    private static parseFlags(commandArguments: string[]): Flag[] {
+    private static isAllowedFlag(input: string): boolean {
+        return ALLOWED_FLAGS.indexOf(input) !== -1 && CommandFactory.isFlagName(input);
+    }
+
+    private static parseFlags(commandArguments: string[], strict = true): Flag[] {
         const flags: Flag[] = [];
         let currentIndex: number = FLAGS_MIN_INDEX;
-
-        while(currentIndex <= commandArguments.length) {
+        while(currentIndex <= commandArguments.length -1) {
             const input: string = commandArguments[currentIndex];
-            if (ALLOWED_FLAGS.indexOf(input) !== -1 && CommandFactory.isFlagName(input)) {
+            if (!strict || CommandFactory.isAllowedFlag(input)) {
                 const nextArg: string = commandArguments[currentIndex + 1] || '';
                 if (CommandFactory.isFlagName(nextArg)) {
                     flags.push({ name: commandArguments[currentIndex], value: ''});
                 } else {
                     flags.push({ name: commandArguments[currentIndex], value: nextArg});
+                    currentIndex++;
                 }
             }
 
@@ -108,6 +113,21 @@ export default class CommandFactory implements ICommandFactory{
                     command = unknownCommand;
                 } else {
                     command = this.getCommand(commandArguments, languageTypeMap, userInterface);
+                }
+                break;
+            case COMMAND.COMPONENT:
+                if (!commandArguments[3]) {
+                    command = unknownCommand;
+                } else {
+                    const flags: Flag[] = CommandFactory.parseFlags(commandArguments, false);
+                    command = new ComponentCommand(
+                        this.storage,
+                        userInterface,
+                        this.childProcess,
+                        commandArguments[3],
+                        flags,
+                        process.cwd()
+                    );
                 }
                 break;
             default:
