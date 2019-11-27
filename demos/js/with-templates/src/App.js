@@ -4,6 +4,7 @@ import { simpleAction } from './actions/simpleAction';
 import MyPosts from './containers/myPosts/myPosts';
 import logo from './logo.svg';
 import './App.css';
+import Label from "./components/label/Label";
 
 class App extends Component {
   simpleAction = (event) => {
@@ -24,6 +25,7 @@ class App extends Component {
           <pre>
              {JSON.stringify(this.props)}
           </pre>
+            <Label>Posts</Label>
             <MyPosts />
         </div>
     );
