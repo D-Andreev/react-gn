@@ -54,27 +54,25 @@ describe('component command', () => {
         });
 
         describe('when template path is provided', () => {
-            describe('when windows separator is used', () => {
-                it('creates the component in the provided directory', () => {
-                    fs.mkdirSync(myDir);
-                    const result = execSync(
-                        `cd ${myDir} && react-sdk component ` +
-                        `--name ${componentName} ` +
-                        `--template ${containerTemplate} ` +
-                        '--component posts ' +
-                        '--reducer myPostsReducer ' +
-                        '--action postsActions ' +
-                        '--state posts,isLoadingPosts'
-                    );
-                    assertBasicComponentIsCreated(componentName);
-                    fs.existsSync(
-                        path.join('./', componentName, 'reducers', 'myPostsReducer', 'myPostsReducer.js'));
-                    fs.existsSync(
-                        path.join('./', componentName, 'actions', 'postsActions', 'postsActions.js'));
-                });
+            it('creates the component in the provided directory', () => {
+                fs.mkdirSync(myDir);
+                const result = execSync(
+                    `cd ${myDir} && react-sdk component ` +
+                    `--name ${componentName} ` +
+                    `--template ${containerTemplate} ` +
+                    '--component posts ' +
+                    '--reducer myPostsReducer ' +
+                    '--action postsActions ' +
+                    '--state posts,isLoadingPosts'
+                );
+                assertBasicComponentIsCreated(componentName);
+                fs.existsSync(
+                    path.join('./', componentName, 'reducers', 'myPostsReducer', 'myPostsReducer.js'));
+                fs.existsSync(
+                    path.join('./', componentName, 'actions', 'postsActions', 'postsActions.js'));
             });
 
-            describe('when unix separator is used', () => {
+            describe('when I use a different path separator', () => {
                 it('creates the component in the provided directory', () => {
                     fs.mkdirSync(myDir);
                     const result = execSync(
