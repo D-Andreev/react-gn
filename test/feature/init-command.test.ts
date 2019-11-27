@@ -152,7 +152,7 @@ describe('init command', () => {
                 expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
                 console.log('asd', process.cwd());
-                console.log('asd2', fs.statSync(process.cwd()))
+                console.log('asd2', execSync('ls'))
             });
         });
 
@@ -175,7 +175,7 @@ describe('init command', () => {
                 expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
                 console.log('asd', process.cwd());
-                console.log('asd2', fs.statSync(process.cwd()))
+                console.log('asd2', execSync('ls'))
             });
         });
 
