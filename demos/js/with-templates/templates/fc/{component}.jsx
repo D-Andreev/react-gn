@@ -3,7 +3,7 @@ import './{component}.css';
 
 function {Component}({children}) {
     return (
-        <div className={{component}}>
+        <div className="{component}">
             {children}
         </div>
     )

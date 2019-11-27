@@ -71,6 +71,26 @@ describe('component command', () => {
                 fs.existsSync(
                     path.join('./', componentName, 'actions', 'postsActions', 'postsActions.js'));
             });
+
+            describe('when I use a different path separator', () => {
+                it('creates the component in the provided directory', () => {
+                    fs.mkdirSync(myDir);
+                    const result = execSync(
+                        `cd ${myDir} && react-sdk component ` +
+                        `--name ${componentName} ` +
+                        '--template  .\\containers' +
+                        '--component posts ' +
+                        '--reducer myPostsReducer ' +
+                        '--action postsActions ' +
+                        '--state posts,isLoadingPosts'
+                    );
+                    assertBasicComponentIsCreated(componentName);
+                    fs.existsSync(
+                        path.join('./', componentName, 'reducers', 'myPostsReducer', 'myPostsReducer.js'));
+                    fs.existsSync(
+                        path.join('./', componentName, 'actions', 'postsActions', 'postsActions.js'));
+                });
+            });
         });
     });
 });

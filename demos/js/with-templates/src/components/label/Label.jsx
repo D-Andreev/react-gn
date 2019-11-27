@@ -3,7 +3,7 @@ import './Label.css';
 
 function Label({children}) {
     return (
-        <div className={Label}>
+        <div className="Label">
             {children}
         </div>
     )
