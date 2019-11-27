@@ -5,7 +5,6 @@ describe('version command', () => {
     beforeAll(() => {
         execSync('yarn build');
         if (process.env.TEST_ENV === 'CI') {
-            execSync('sudo npm link');
             execSync('sudo npm install -g create-react-app');
         }
     });
