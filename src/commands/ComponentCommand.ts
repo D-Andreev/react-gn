@@ -25,6 +25,7 @@ export default class ComponentCommand implements ICommand {
     private placeholders: Flag[];
     private targetPath: string;
     private templateName: string;
+    private separator: string;
 
     constructor(
         storage: IStorage,
@@ -40,6 +41,7 @@ export default class ComponentCommand implements ICommand {
         this.componentName = componentName;
         this.flags = flags;
         this.path = path;
+        this.separator = sep;
     }
 
     private static replacePlaceholdersWithData(input: string, placeholders: Flag[]): string {
@@ -52,16 +54,6 @@ export default class ComponentCommand implements ICommand {
         }
 
         return input;
-    }
-
-    private static getTemplateParts(templatePath: string): string[] {
-        if (templatePath.indexOf('/') !== -1) {
-            return templatePath.split('/');
-        } else if (templatePath.indexOf('\\') !== -1) {
-            return templatePath.split('\\');
-        } else {
-            return [];
-        }
     }
 
     private getPlaceholderFlags(): Flag[] {
@@ -84,6 +76,20 @@ export default class ComponentCommand implements ICommand {
         return placeholders;
     }
 
+    private getTemplateParts(templatePath: string): string[] {
+        return templatePath
+            .split(this.separator)
+            .filter((part: string) => part.length);
+    }
+
+    private setSeparator(path: string): void {
+        if (path.indexOf('/') !== -1) {
+            this.separator = '/';
+        } else if (path.indexOf('\\') !== -1) {
+            this.separator = '\\'
+        }
+    }
+
     private onError(err: Error | ErrorEvent, done: Function): void {
         const output: Output[] = [new Output(err.message, OUTPUT_TYPE.ERROR)];
         this.userInterface.showOutput(output, noop);
@@ -99,20 +105,20 @@ export default class ComponentCommand implements ICommand {
             const regex = new RegExp(`${this.templateName}(.*)`, 'gi');
             const matchComponentPath = filePath.match(regex);
             const componentPath = matchComponentPath[0]
-                .replace(`${this.templateName}${sep}`, '');
-            let generatedPath = `${this.targetPath}${sep}${componentName}${sep}${componentPath}`;
+                .replace(`${this.templateName}${this.separator}`, '');
+            let generatedPath = `${this.targetPath}${this.separator}${componentName}${this.separator}${componentPath}`;
             generatedPath = ComponentCommand.replacePlaceholdersWithData(generatedPath, this.placeholders);
-            let componentParts = generatedPath.split(sep);
+            let componentParts = generatedPath.split(this.separator);
             const indexOfMainPath = componentParts.indexOf(componentName);
             componentParts = componentParts.slice(indexOfMainPath);
-            return componentParts.join(sep);
+            return componentParts.join(this.separator);
         });
     }
 
     private renderTemplate(templatePath: string, transformedFilePath: string, i: number, done: Function): void {
         const renderedTemplatePath = ComponentCommand
             .replacePlaceholdersWithData(transformedFilePath, this.placeholders);
-        const parts: string[] = renderedTemplatePath.split(sep);
+        const parts: string[] = renderedTemplatePath.split(this.separator);
         if (!parts || !parts.length) {
             return done(new Error(NEW_COMPONENT_MESSAGE.INVALID_NAME));
         }
@@ -193,7 +199,8 @@ export default class ComponentCommand implements ICommand {
                 if (err) {
                     return this.onError(err, done);
                 }
-                const templateParts: string[] = ComponentCommand.getTemplateParts(templatePath.value);
+                this.setSeparator(templatePath.value);
+                const templateParts: string[] = this.getTemplateParts(templatePath.value);
                 this.templateName = templateParts[templateParts.length - 1];
                 this.placeholders = this.getPlaceholderFlags();
                 this.transformedFilePaths = this.transformFilePaths(filePaths, componentNameArg.value);
