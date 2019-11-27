@@ -5,9 +5,6 @@ export function setupEnv() {
     const user = 'D-Andreev';
     execSync(`git config --global user.email "${email}"`);
     execSync(`git config --global user.name "${user}"`);
-    execSync('sudo chown -R $USER ~/.npm');
-    execSync('sudo chown -R $USER /usr/lib/node_modules');
-    execSync('sudo chown -R $USER /usr/local/lib/node_modules');
 }
 
 export function buildPackage() {
