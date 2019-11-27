@@ -11,7 +11,6 @@ export function buildPackage() {
     if (process.env.TEST_ENV === 'CI') {
         setupEnv();
         execSync('sudo npm install -g create-react-app');
-        execSync('sudo npm link');
     }
     execSync('yarn build');
 }
