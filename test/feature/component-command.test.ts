@@ -76,7 +76,7 @@ describe('component command', () => {
                 it('creates the component in the provided directory', () => {
                     fs.mkdirSync(myDir);
                     const result = execSync(
-                        `cd ${myDir} && react-sdk component ` +
+                        `cd ${myDir} && ${PACKAGE_NAME} component ` +
                         `-n ${componentName} ` +
                         `-t ${containerTemplate} ` +
                         '-c posts ' +

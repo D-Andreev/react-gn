@@ -18,7 +18,7 @@ describe('version command', () => {
 
     describe('when I use alias -v', () => {
         it('shows the version', () => {
-            const result = execSync(`${SDK_NAME} -v`);
+            const result = execSync(`${PACKAGE_NAME} -v`);
             expect(result.toString()).toContain('Version: ');
         });
     });
