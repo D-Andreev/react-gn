@@ -297,7 +297,7 @@ describe('init command', () => {
                 it('it builds the app, ejects it and adds redux', () => {
                     execSync('git stash && git clean -fd');
                     const command =
-                        `${SDK_NAME} init ${appName} wr --ts -e`;
+                        `${SDK_NAME} init ${appName} -wr --ts -e`;
                     const result = execSync(command);
                     expect(result.toString()).toContain(`${appName} was generated successfully!`);
                     expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
