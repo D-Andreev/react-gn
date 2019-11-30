@@ -31,7 +31,7 @@ describe('help command', () => {
 
     describe('when I use alias -h', () => {
         it('shows the help', () => {
-            const command = SDK_NAME +
+            const command = PACKAGE_NAME +
                 ' -h';
             const result = execSync(command);
             expect(result.toString()).toContain(ASCII_ART.HELP);

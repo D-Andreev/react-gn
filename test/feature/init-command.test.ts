@@ -157,7 +157,7 @@ describe('init command', () => {
                 it('it ejects the app', () => {
                     execSync('git stash && git clean -fd');
                     const command =
-                        `${SDK_NAME} init ${appName} -e`;
+                        `${PACKAGE_NAME} init ${appName} -e`;
                     const result = execSync(command);
                     expect(result.toString()).toContain(`${appName} was generated successfully!`);
                     expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
@@ -215,7 +215,7 @@ describe('init command', () => {
                 it('it builds the app and adds redux', () => {
                     execSync('git stash && git clean -fd');
                     const command =
-                        `${SDK_NAME} init ${appName} -wr`;
+                        `${PACKAGE_NAME} init ${appName} -wr`;
                     const result = execSync(command);
                     expect(result.toString()).toContain(`${appName} was generated successfully!`);
                     expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
@@ -297,7 +297,7 @@ describe('init command', () => {
                 it('it builds the app, ejects it and adds redux', () => {
                     execSync('git stash && git clean -fd');
                     const command =
-                        `${SDK_NAME} init ${appName} -wr --ts -e`;
+                        `${PACKAGE_NAME} init ${appName} -wr --ts -e`;
                     const result = execSync(command);
                     expect(result.toString()).toContain(`${appName} was generated successfully!`);
                     expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
