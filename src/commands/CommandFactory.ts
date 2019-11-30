@@ -103,7 +103,6 @@ export default class CommandFactory implements ICommandFactory{
         const unknownCommand: ICommand = new UnknownCommand(userInterface);
         let command = unknownCommand;
         commandArguments = CommandFactory.convertAliasesToFullCommand(commandArguments);
-        console.log({commandArguments})
         if (!commandArguments.length) {
             return unknownCommand;
         }
