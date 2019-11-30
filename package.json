@@ -3,12 +3,15 @@
   "version": "1.0.1",
   "preinstall": "npm i -g create-react-app",
   "bin": {
-    "react-gn": "./dist/index.js"
+    "react-gn": "./src/index.js"
   },
+  "main": "./src/index.js",
   "types": "index.d.ts",
   "prepublish": "tsc",
+  "prepare" : "npm run build",
+  "keywords": ["react", "cli", "generator"],
   "scripts": {
-    "build": "npm run build-ts",
+    "build": "tsc",
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
     "lint": "tsc --noEmit && eslint \"src/**/*.ts\"",
