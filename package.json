@@ -1,9 +1,13 @@
 {
   "name": "@react-gn/react-gn",
-  "version": "1.0.7",
+  "version": "1.0.8",
+  "files": [
+    "bin",
+    "dist"
+  ],
   "preinstall": "npm i -g create-react-app",
   "bin": {
-    "@react-gn/react-gn": "./dist/index.js"
+    "@react-gn/react-gn": "./bin/index.js"
   },
   "main": "./dist/index.js",
   "types": "index.d.ts",
@@ -11,6 +15,7 @@
   "prepare" : "npm run build",
   "keywords": ["react", "cli", "generator"],
   "scripts": {
+    "start": "node -r ts-node/register bin/index.js",
     "build": "tsc",
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
