@@ -1,5 +1,5 @@
 {
-  "name": "react-gn",
+  "name": "@react-gn/react-gn",
   "version": "1.0.0",
   "preinstall": "npm i -g create-react-app",
   "bin": {
