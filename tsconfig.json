@@ -1,4 +1,5 @@
 {
+  "declaration": true,
   "compilerOptions": {
     "module": "commonjs",
     "esModuleInterop": true,

@@ -1,10 +1,12 @@
 {
   "name": "@react-gn/react-gn",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "preinstall": "npm i -g create-react-app",
   "bin": {
     "react-gn": "./dist/index.js"
   },
+  "types": "index.d.ts",
+  "prepublish": "tsc",
   "scripts": {
     "build": "npm run build-ts",
     "build-ts": "tsc",
