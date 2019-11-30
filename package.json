@@ -1,13 +1,12 @@
 {
   "name": "@react-gn/react-gn",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "files": [
-    "bin",
     "dist"
   ],
   "preinstall": "npm i -g create-react-app",
   "bin": {
-    "@react-gn/react-gn": "./bin/index.js"
+    "@react-gn/react-gn": "./dist/index.js"
   },
   "main": "./dist/index.js",
   "types": "index.d.ts",
