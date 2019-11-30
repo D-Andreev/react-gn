@@ -1,6 +1,5 @@
 {
   "declaration": true,
-  "files": ["dist/**/*"],
   "compilerOptions": {
     "module": "commonjs",
     "esModuleInterop": true,
