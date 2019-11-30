@@ -1,5 +1,5 @@
 import { execSync } from 'child_process';
-import {SDK_NAME} from '../../src/constants';
+import {CLI_NAME} from '../../src/constants';
 
 describe('version command', () => {
     beforeAll(() => {
@@ -9,9 +9,9 @@ describe('version command', () => {
         }
     });
 
-    describe('when I enter react-sdk --version', () => {
+    describe(`when I enter ${CLI_NAME} --version`, () => {
         it('shows the version', () => {
-            const result = execSync(`${SDK_NAME} --version`);
+            const result = execSync(`${CLI_NAME} --version`);
             expect(result.toString()).toContain('Version: ');
         });
     });

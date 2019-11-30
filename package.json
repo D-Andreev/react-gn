@@ -1,5 +1,5 @@
 {
-  "name": "react-sdk",
+  "name": "react-gn",
   "version": "1.0.0",
   "preinstall": "npm i -g create-react-app",
   "bin": {
@@ -26,5 +26,20 @@
     "npm": "^6.11.3",
     "ts-jest": "^24.1.0",
     "typescript": "^3.6.3"
+  },
+  "description": "A command line interface for creating and developing react apps",
+  "author": "Dimitar Andreev",
+  "license": "MIT",
+  "homepage": "https://github.com/D-Andreev/react-sdk",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/D-Andreev/react-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/D-Andreev/react-sdk/issues"
+  },
+  "engines": {
+    "npm": ">=5.5.0",
+    "node": ">=8.15.0"
   }
 }

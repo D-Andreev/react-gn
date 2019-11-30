@@ -1,5 +1,5 @@
 import { execSync } from 'child_process';
-import {ASCII_ART, SDK_NAME} from '../../src/constants';
+import {ASCII_ART, CLI_NAME} from '../../src/constants';
 
 describe('help command', () => {
     let appName: string;
@@ -22,7 +22,7 @@ describe('help command', () => {
 
     describe('when I enter help command', () => {
         it('shows the help', () => {
-            const command = SDK_NAME +
+            const command = CLI_NAME +
                 ' --help';
             const result = execSync(command);
             expect(result.toString()).toContain(ASCII_ART.HELP);

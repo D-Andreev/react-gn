@@ -1,7 +1,7 @@
 import childProcess from 'child_process';
 import CommandFactory from '../../../src/commands/CommandFactory';
 import ICommand from '../../../src/commands/interfaces/ICommand';
-import {COMMAND} from '../../../src/constants';
+import {CLI_NAME, COMMAND} from '../../../src/constants';
 import JsAppCommand from '../../../src/commands/init/JsAppCommand';
 import TsAppCommand from '../../../src/commands/init/TsAppCommand';
 import UnknownCommand from '../../../src/commands/UnknownCommand';
@@ -26,7 +26,7 @@ describe('CommandFactory', () => {
     });
 
     describe('when I use the create command', () => {
-        describe('when react-sdk name is not provided', () => {
+        describe(`when ${CLI_NAME} name is not provided`, () => {
            it('returns unknown command', () => {
                const command: ICommand = commandFactory.createCommand([], noop);
                expect(command instanceof UnknownCommand).toBeTruthy();
