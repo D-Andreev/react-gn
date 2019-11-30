@@ -3,7 +3,7 @@ import ICommand from './interfaces/ICommand';
 import {
     ALLOWED_FLAGS,
     ALLOWED_LANGUAGE_TYPE_FLAGS,
-    COMMAND,
+    COMMAND, COMMAND_ALIAS,
     COMMAND_FLAG,
     FLAG_INDICATOR,
     FLAGS_MIN_INDEX
@@ -32,6 +32,20 @@ export default class CommandFactory implements ICommandFactory{
 
     private static isAllowedFlag(input: string): boolean {
         return ALLOWED_FLAGS.indexOf(input) !== -1 && CommandFactory.isFlagName(input);
+    }
+
+    private static convertAliasesToFullCommand(commandArguments: string[]): string[] {
+        return commandArguments
+            .map((arg: string, i: number) => {
+                if (i < 2) {
+                    return arg;
+                }
+                if (COMMAND_ALIAS.hasOwnProperty(arg)) {
+                    arg = COMMAND_ALIAS[arg];
+                }
+
+                return arg;
+            });
     }
 
     private static parseFlags(commandArguments: string[], strict = true): Flag[] {
@@ -88,7 +102,8 @@ export default class CommandFactory implements ICommandFactory{
         const userInterface = new Cli(process.stdout, readline);
         const unknownCommand: ICommand = new UnknownCommand(userInterface);
         let command = unknownCommand;
-
+        commandArguments = CommandFactory.convertAliasesToFullCommand(commandArguments);
+        console.log({commandArguments})
         if (!commandArguments.length) {
             return unknownCommand;
         }

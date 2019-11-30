@@ -152,6 +152,19 @@ describe('init command', () => {
                 expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
                 execSync('npm run build');
             });
+
+            describe('when I use alias -e', () => {
+                it('it ejects the app', () => {
+                    execSync('git stash && git clean -fd');
+                    const command =
+                        `${SDK_NAME} init ${appName} -e`;
+                    const result = execSync(command);
+                    expect(result.toString()).toContain(`${appName} was generated successfully!`);
+                    expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
+                    expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
+                    execSync('npm run build');
+                });
+            });
         });
 
         describe('when I enter --ejected --ts', () => {
@@ -196,6 +209,21 @@ describe('init command', () => {
                 expect(fs.existsSync(`./${appName}/src/reducers/simpleReducer.js`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/src/store.js`)).toBeTruthy();
                 execSync(`cd ${appName} && npm run build`);
+            });
+
+            describe('when I use alias -wr', () => {
+                it('it builds the app and adds redux', () => {
+                    execSync('git stash && git clean -fd');
+                    const command =
+                        `${SDK_NAME} init ${appName} -wr`;
+                    const result = execSync(command);
+                    expect(result.toString()).toContain(`${appName} was generated successfully!`);
+                    expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
+                    expect(fs.existsSync(`./${appName}/src/actions/simpleAction.js`)).toBeTruthy();
+                    expect(fs.existsSync(`./${appName}/src/reducers/simpleReducer.js`)).toBeTruthy();
+                    expect(fs.existsSync(`./${appName}/src/store.js`)).toBeTruthy();
+                    execSync(`cd ${appName} && npm run build`);
+                });
             });
         });
 
@@ -262,16 +290,21 @@ describe('init command', () => {
                 expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
-                let a = false;
-                try {
+                execSync(`cd ${appName} && npm run build`);
+            });
+
+            describe('when I use aliases', () => {
+                it('it builds the app, ejects it and adds redux', () => {
+                    execSync('git stash && git clean -fd');
+                    const command =
+                        `${SDK_NAME} init ${appName} wr --ts -e`;
+                    const result = execSync(command);
+                    expect(result.toString()).toContain(`${appName} was generated successfully!`);
+                    expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
+                    expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeTruthy();
+                    expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
                     execSync(`cd ${appName} && npm run build`);
-                } catch (e) {
-                    a = true;
-                    console.log(e);
-                }
-                if (a) {
-                    throw new Error('asd');
-                }
+                });
             });
         });
     });

@@ -11,6 +11,7 @@ import {COMMAND_FILE_PATH, COMMAND_NODE_PATH} from '../../constants';
 import ICra from '../../../src/services/interfaces/ICra';
 import IStorage from '../../../src/services/interfaces/IStorage';
 import Cra from '../../../src/services/Cra';
+import VersionCommand from '../../../src/commands/VersionCommand';
 
 function noop() {}
 jest.mock('child_process');
@@ -204,6 +205,114 @@ describe('CommandFactory', () => {
                         '--help'
                     ], noop);
                 expect(command instanceof TsAppCommand).toBeTruthy();
+            });
+        });
+
+        describe('when I pass alias', () => {
+            describe('when I pass --h', () => {
+                it('shows the help', () => {
+                    const command: ICommand = commandFactory
+                        .createCommand([
+                            COMMAND_NODE_PATH,
+                            COMMAND_FILE_PATH,
+                            '-h'
+                        ], noop);
+                    expect(command instanceof UnknownCommand).toBeTruthy();
+                });
+            });
+
+            describe('when I pass --v', () => {
+                it('shows the version', () => {
+                    const command: ICommand = commandFactory
+                        .createCommand([
+                            COMMAND_NODE_PATH,
+                            COMMAND_FILE_PATH,
+                            '-v',
+                        ], noop);
+                    // @ts-ignore
+                    expect(command instanceof VersionCommand).toBeTruthy();
+                });
+            });
+
+            describe('when I pass --c --e', () => {
+                it('sets the full flag names', () => {
+                    const command: ICommand = commandFactory
+                        .createCommand([
+                            COMMAND_NODE_PATH,
+                            COMMAND_FILE_PATH,
+                            COMMAND.INIT,
+                            'test-app',
+                            '--ts',
+                            '--unknown-flag',
+                            'some-value',
+                            'some-other-value',
+                            '--other-unknown-flag',
+                            '-c',
+                            './path/to/config',
+                            '-e'
+                        ], noop);
+                    // @ts-ignore
+                    expect(command.flags).toEqual([
+                        {name: '--ts', value: ''},
+                        {name: '--config', value: './path/to/config'},
+                        {name: '--ejected', value: ''},
+                    ]);
+                });
+            });
+
+            describe('when I pass --c --e', () => {
+                it('sets the full flag names', () => {
+                    const command: ICommand = commandFactory
+                        .createCommand([
+                            COMMAND_NODE_PATH,
+                            COMMAND_FILE_PATH,
+                            COMMAND.INIT,
+                            'test-app',
+                            '--ts',
+                            '--unknown-flag',
+                            'some-value',
+                            'some-other-value',
+                            '--other-unknown-flag',
+                            '-c',
+                            './path/to/config',
+                            '-e'
+                        ], noop);
+                    // @ts-ignore
+                    expect(command.flags).toEqual([
+                        {name: '--ts', value: ''},
+                        {name: '--config', value: './path/to/config'},
+                        {name: '--ejected', value: ''},
+                    ]);
+                });
+            });
+
+            describe('when I use aliases to create a component', () => {
+                it('sets the full flag names', () => {
+                    const command: ICommand = commandFactory
+                        .createCommand([
+                            COMMAND_NODE_PATH,
+                            COMMAND_FILE_PATH,
+                            COMMAND.COMPONENT,
+                            '-n',
+                            'MyComponent',
+                            '-t',
+                            '../template/path',
+                            '-p',
+                            '../component/path',
+                            '-a',
+                            'action1,action2',
+                            '-s',
+                            'state1,state2'
+                        ], noop);
+                    // @ts-ignore
+                    expect(command.flags).toEqual([
+                        {name: '--name', value: 'MyComponent'},
+                        {name: '--template', value: '../template/path'},
+                        {name: '--path', value: '../component/path'},
+                        {name: '--action', value: 'action1,action2'},
+                        {name: '--state', value: 'state1,state2'},
+                    ]);
+                });
             });
         });
     });
