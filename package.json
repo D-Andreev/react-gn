@@ -1,6 +1,6 @@
 {
   "name": "@react-gn/react-gn",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "preinstall": "npm i -g create-react-app",
   "bin": {
     "react-gn": "./src/index.js"
