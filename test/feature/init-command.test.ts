@@ -138,7 +138,7 @@ describe('init command', () => {
             beforeAll(() => {
                 appName = `${Date.now()}my-app`;
             });
-            afterAll(() => {
+            afterEach(() => {
                 execSync(`rm -rf ./${appName}`);
             });
 
@@ -194,7 +194,7 @@ describe('init command', () => {
             beforeAll(() => {
                 appName = `${Date.now()}my-app`;
             });
-            afterAll(() => {
+            afterEach(() => {
                 execSync(`rm -rf ./${appName}`);
             });
 
@@ -277,7 +277,7 @@ describe('init command', () => {
             beforeAll(() => {
                 appName = `${Date.now()}my-app`;
             });
-            afterAll(() => {
+            afterEach(() => {
                 execSync(`rm -rf ./${appName}`);
             });
 
