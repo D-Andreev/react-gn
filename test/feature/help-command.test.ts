@@ -32,7 +32,7 @@ describe('help command', () => {
     describe('when I use alias -h', () => {
         it('shows the help', () => {
             const command = SDK_NAME +
-                ' --h';
+                ' -h';
             const result = execSync(command);
             expect(result.toString()).toContain(ASCII_ART.HELP);
         });
