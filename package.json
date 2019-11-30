@@ -1,9 +1,9 @@
 {
-  "name": "react-sdk",
+  "name": "react-gn",
   "version": "1.0.0",
   "preinstall": "npm i -g create-react-app",
   "bin": {
-    "react-sdk": "./dist/index.js"
+    "react-gn": "./dist/index.js"
   },
   "scripts": {
     "build": "npm run build-ts",

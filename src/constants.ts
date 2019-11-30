@@ -1,4 +1,4 @@
-export const SDK_NAME = 'react-sdk';
+export const PACKAGE_NAME = 'react-gn';
 
 export const COMMAND = {
     INIT: 'init',
@@ -43,8 +43,8 @@ export const ALLOWED_FLAGS_DESCRIPTIONS: {[flag: string]: string} = {
     '--withRedux': 'Add redux setup to the app',
 };
 export const MAIN_COMMANDS_DESCRIPTIONS: {[flag: string]: string} = {
-    'init': 'Initialize react application. (react-sdk init my-app)',
-    'create': 'Create react component. (react-sdk create my-component)',
+    'init': `Initialize react application. (${PACKAGE_NAME} init my-app)`,
+    'create': `Create react component. (${PACKAGE_NAME} create my-component)`,
 };
 
 export const ASCII_ART = {

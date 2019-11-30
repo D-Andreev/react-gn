@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
 import {buildPackage} from './utils';
-import {ASCII_ART, NEW_COMPONENT_MESSAGE} from '../../src/constants';
+import {ASCII_ART, NEW_COMPONENT_MESSAGE, PACKAGE_NAME} from '../../src/constants';
 
 function assertBasicComponentIsCreated(componentName: string, dirPath: string = './'): void {
     fs.existsSync(path.join(dirPath, componentName));
@@ -37,7 +37,7 @@ describe('component command', () => {
 
     describe('when I do not provide component name', () => {
         it('shows the help', () => {
-            const result = execSync(`react-sdk component`);
+            const result = execSync(`${PACKAGE_NAME} component`);
             expect(result.toString()).toContain(ASCII_ART.HELP);
         });
     });
@@ -47,7 +47,7 @@ describe('component command', () => {
             it('shows an error message', () => {
                 fs.mkdirSync(myDir);
                 const result = execSync(
-                    `cd ${myDir} && react-sdk component --name ${componentName}`
+                    `cd ${myDir} && ${PACKAGE_NAME} component --name ${componentName}`
                 );
                 expect(result.toString()).toContain(NEW_COMPONENT_MESSAGE.INVALID_TEMPLATE_PATH);
             });
@@ -57,7 +57,7 @@ describe('component command', () => {
             it('creates the component in the provided directory', () => {
                 fs.mkdirSync(myDir);
                 const result = execSync(
-                    `cd ${myDir} && react-sdk component ` +
+                    `cd ${myDir} && ${PACKAGE_NAME} component ` +
                     `--name ${componentName} ` +
                     `--template ${containerTemplate} ` +
                     '--component posts ' +
@@ -76,7 +76,7 @@ describe('component command', () => {
                 it('creates the component in the provided directory', () => {
                     fs.mkdirSync(myDir);
                     const result = execSync(
-                        `cd ${myDir} && react-sdk component ` +
+                        `cd ${myDir} && ${PACKAGE_NAME} component ` +
                         `--name ${componentName} ` +
                         '--template  .\\containers' +
                         '--component posts ' +
