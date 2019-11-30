@@ -24,6 +24,19 @@ export const ALLOWED_LANGUAGE_TYPE_FLAGS = ['--js', '--ts'];
 export const FLAGS_WITH_TEMPLATES = {
     WITH_REDUX: '--withRedux',
 };
+export const COMMAND_ALIAS: {[alias: string]: string} = {
+    '-h': COMMAND_FLAG.HELP,
+    '-v': COMMAND_FLAG.VERSION,
+    '-c': COMMAND_FLAG.CONFIG,
+    '-e': COMMAND_FLAG.EJECTED,
+    '-t': COMMAND_FLAG.TEMPLATE,
+    '-p': COMMAND_FLAG.COMPONENT_TARGET_PATH,
+    '-n': COMMAND_FLAG.COMPONENT_NAME,
+    '-s': ENUMERABLE_FLAGS[0],
+    '-a': ENUMERABLE_FLAGS[1],
+    '-r': ENUMERABLE_FLAGS[2],
+    '-wr': FLAGS_WITH_TEMPLATES.WITH_REDUX,
+};
 export const ALLOWED_FLAGS = ['--config', '--ejected']
     .concat(Object.values(FLAGS_WITH_TEMPLATES))
     .concat(ALLOWED_LANGUAGE_TYPE_FLAGS);

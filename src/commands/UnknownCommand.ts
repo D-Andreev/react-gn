@@ -22,7 +22,7 @@ export default class UnknownCommand implements ICommand {
             { type: OUTPUT_TYPE.INFO, contents: ASCII_ART.HELP },
         ];
 
-        output.push({type: OUTPUT_TYPE.SUCCESS, contents: 'Main commands: '});
+        output.push({type: OUTPUT_TYPE.NORMAL, contents: 'Main commands: '});
         for (let i = 0; i < MAIN_COMMANDS.length; i++) {
             output.push({
                 type: OUTPUT_TYPE.NORMAL,

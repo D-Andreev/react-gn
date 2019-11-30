@@ -15,4 +15,11 @@ describe('version command', () => {
             expect(result.toString()).toContain('Version: ');
         });
     });
+
+    describe('when I use alias -v', () => {
+        it('shows the version', () => {
+            const result = execSync(`${SDK_NAME} -v`);
+            expect(result.toString()).toContain('Version: ');
+        });
+    });
 });
