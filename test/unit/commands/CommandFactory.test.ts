@@ -260,32 +260,6 @@ describe('CommandFactory', () => {
                 });
             });
 
-            describe('when I pass --c --e', () => {
-                it('sets the full flag names', () => {
-                    const command: ICommand = commandFactory
-                        .createCommand([
-                            COMMAND_NODE_PATH,
-                            COMMAND_FILE_PATH,
-                            COMMAND.INIT,
-                            'test-app',
-                            '--ts',
-                            '--unknown-flag',
-                            'some-value',
-                            'some-other-value',
-                            '--other-unknown-flag',
-                            '-c',
-                            './path/to/config',
-                            '-e'
-                        ], noop);
-                    // @ts-ignore
-                    expect(command.flags).toEqual([
-                        {name: '--ts', value: ''},
-                        {name: '--config', value: './path/to/config'},
-                        {name: '--ejected', value: ''},
-                    ]);
-                });
-            });
-
             describe('when I use aliases to create a component', () => {
                 it('sets the full flag names', () => {
                     const command: ICommand = commandFactory
@@ -311,6 +285,32 @@ describe('CommandFactory', () => {
                         {name: '--path', value: '../component/path'},
                         {name: '--action[]', value: 'action1,action2'},
                         {name: '--state[]', value: 'state1,state2'},
+                    ]);
+                });
+            });
+
+            describe('when I pass enumerable flags', () => {
+                it('sets the full flag names', () => {
+                    const command: ICommand = commandFactory
+                        .createCommand([
+                            COMMAND_NODE_PATH,
+                            COMMAND_FILE_PATH,
+                            COMMAND.COMPONENT,
+                            '-n',
+                            'MyComponent',
+                            '-t',
+                            '../template/path',
+                            '-p',
+                            '../component/path',
+                            '--enum-flag[]',
+                            '1,2,3'
+                        ], noop);
+                    // @ts-ignore
+                    expect(command.flags).toEqual([
+                        {name: '--name', value: 'MyComponent'},
+                        {name: '--template', value: '../template/path'},
+                        {name: '--path', value: '../component/path'},
+                        {name: '--enum-flag[]', value: '1,2,3'},
                     ]);
                 });
             });

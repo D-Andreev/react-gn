@@ -4,7 +4,6 @@ import IStorage from '../services/interfaces/IStorage';
 import IUserInterface from '../user-interface/interfaces/IUserInterface';
 import {
     COMMAND_FLAG, ENUMERABLE_FLAG_ID,
-    ENUMERABLE_FLAGS,
     FLAG_INDICATOR,
     NEW_COMPONENT_MESSAGE,
     NON_PLACEHOLDER_FLAGS,
