@@ -3,7 +3,7 @@ import Flag from './Flag';
 import IStorage from '../services/interfaces/IStorage';
 import IUserInterface from '../user-interface/interfaces/IUserInterface';
 import {
-    COMMAND_FLAG,
+    COMMAND_FLAG, ENUMERABLE_FLAG_ID,
     ENUMERABLE_FLAGS,
     FLAG_INDICATOR,
     NEW_COMPONENT_MESSAGE,
@@ -44,6 +44,10 @@ export default class ComponentCommand implements ICommand {
         this.separator = sep;
     }
 
+    private static isEnumerableFlag(flag: Flag): boolean {
+        return flag.name.indexOf(ENUMERABLE_FLAG_ID) !== -1;
+    }
+
     private static replacePlaceholdersWithData(input: string, placeholders: Flag[]): string {
         for (let i = 0; i < placeholders.length; i++) {
             const placeholder = new RegExp(
@@ -63,7 +67,7 @@ export default class ComponentCommand implements ICommand {
             if (NON_PLACEHOLDER_FLAGS.indexOf(flag.name) !== -1) {
                 continue;
             }
-            if (ENUMERABLE_FLAGS.indexOf(flag.name) !== -1) {
+            if (ComponentCommand.isEnumerableFlag(flag)) {
                 const split: string[] = flag.value.split(',');
                 for (let j = 0; j < split.length; j++) {
                     placeholders.push({name: `${flag.name}${j + 1}`, value: split[j]});

@@ -1,7 +1,7 @@
 import ICommand from './interfaces/ICommand';
 import IStorage from '../services/interfaces/IStorage';
 import IUserInterface from '../user-interface/interfaces/IUserInterface';
-import {OUTPUT_TYPE} from '../constants';
+import {OUTPUT_TYPE, PACKAGE_VERSION} from '../constants';
 
 export default class VersionCommand implements ICommand {
     private readonly storage: IStorage;
@@ -14,7 +14,7 @@ export default class VersionCommand implements ICommand {
 
     execute(done: Function): void {
         this.userInterface.showOutput([
-            {type: OUTPUT_TYPE.NORMAL, contents: 'Version: 1.0.13'},
+            {type: OUTPUT_TYPE.NORMAL, contents: `Version: ${PACKAGE_VERSION}`},
         ], done);
     }
 }

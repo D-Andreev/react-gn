@@ -309,8 +309,8 @@ describe('CommandFactory', () => {
                         {name: '--name', value: 'MyComponent'},
                         {name: '--template', value: '../template/path'},
                         {name: '--path', value: '../component/path'},
-                        {name: '--action', value: 'action1,action2'},
-                        {name: '--state', value: 'state1,state2'},
+                        {name: '--action[]', value: 'action1,action2'},
+                        {name: '--state[]', value: 'state1,state2'},
                     ]);
                 });
             });
