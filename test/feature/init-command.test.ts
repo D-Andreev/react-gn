@@ -3,6 +3,10 @@ import fs from 'fs';
 import {ASCII_ART, PACKAGE_NAME} from '../../src/constants';
 import {buildPackage} from './utils';
 
+function verifyAppIsCreated(appName: string) {
+    execSync(`cd ${appName} && npm install && npm run build`);
+}
+
 describe('init command', () => {
     let appName: string;
     beforeAll(() => {
@@ -54,7 +58,7 @@ describe('init command', () => {
                 const result = execSync(`${PACKAGE_NAME} init ${appName}`);
                 expect(result.toString()).toContain(`${appName} was generated successfully!`);
                 expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
-                execSync(`cd ${appName} && npm run build`);
+                verifyAppIsCreated(appName);
             });
         });
 
@@ -71,7 +75,7 @@ describe('init command', () => {
                 const result = execSync(`${PACKAGE_NAME} init ${appName} --js`);
                 expect(result.toString()).toContain(`${appName} was generated successfully!`);
                 expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
-                execSync(`cd ${appName} && npm run build`);
+                verifyAppIsCreated(appName);
             });
         });
 
@@ -89,7 +93,7 @@ describe('init command', () => {
                 expect(result.toString()).toContain(`${appName} was generated successfully!`);
                 expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeTruthy();
-                execSync(`cd ${appName} && npm run build`);
+                verifyAppIsCreated(appName);
             });
         });
 
@@ -109,7 +113,7 @@ describe('init command', () => {
                 expect(result.toString()).toContain(`${appName} was generated successfully!`);
                 expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeTruthy();
-                execSync(`cd ${appName} && npm run build`);
+                verifyAppIsCreated(appName);
             });
         });
 
@@ -129,7 +133,7 @@ describe('init command', () => {
                 expect(result.toString()).toContain(`${appName} was generated successfully!`);
                 expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeTruthy();
-                execSync(`cd ${appName} && npm run build`);
+                verifyAppIsCreated(appName);
             });
         });
 
@@ -208,7 +212,7 @@ describe('init command', () => {
                 expect(fs.existsSync(`./${appName}/src/actions/simpleAction.js`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/src/reducers/simpleReducer.js`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/src/store.js`)).toBeTruthy();
-                execSync(`cd ${appName} && npm run build`);
+                verifyAppIsCreated(appName);
             });
 
             describe('when I use alias -wr', () => {
@@ -222,7 +226,7 @@ describe('init command', () => {
                     expect(fs.existsSync(`./${appName}/src/actions/simpleAction.js`)).toBeTruthy();
                     expect(fs.existsSync(`./${appName}/src/reducers/simpleReducer.js`)).toBeTruthy();
                     expect(fs.existsSync(`./${appName}/src/store.js`)).toBeTruthy();
-                    execSync(`cd ${appName} && npm run build`);
+                    verifyAppIsCreated(appName);
                 });
             });
         });
@@ -247,7 +251,7 @@ describe('init command', () => {
                 expect(fs.existsSync(`./${appName}/src/actions/simpleAction.js`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/src/reducers/simpleReducer.js`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/src/store.js`)).toBeTruthy();
-                execSync(`cd ${appName} && npm run build`);
+                verifyAppIsCreated(appName);
             });
         });
 
@@ -268,7 +272,7 @@ describe('init command', () => {
                 expect(result.toString()).toContain(`${appName} was generated successfully!`);
                 expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeTruthy();
-                execSync(`cd ${appName} && npm run build`);
+                verifyAppIsCreated(appName);
             });
         });
 
@@ -290,7 +294,7 @@ describe('init command', () => {
                 expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeTruthy();
                 expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
-                execSync(`cd ${appName} && npm run build`);
+                verifyAppIsCreated(appName);
             });
 
             describe('when I use aliases', () => {
@@ -303,7 +307,7 @@ describe('init command', () => {
                     expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
                     expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeTruthy();
                     expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
-                    execSync(`cd ${appName} && npm run build`);
+                    verifyAppIsCreated(appName);
                 });
             });
         });
