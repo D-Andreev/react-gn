@@ -1,6 +1,6 @@
 {
   "name": "@react-gn/react-gn",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
@@ -17,9 +17,10 @@
     "watch-ts": "tsc -w",
     "lint": "tsc --noEmit && eslint \"src/**/*.ts\"",
     "test": "jest --forceExit --coverage",
-    "test-ci": "export TEST_ENV=CI && sudo npm link && yarn test",
     "test-unit": "npm run test ./test/unit/",
+    "test-unit-ci": "export TEST_ENV=CI && npm run test ./test/unit/",
     "test-feature": "npm run test ./test/feature/",
+    "test-feature-ci": "export TEST_ENV=CI && sudo npm link && npm run test ./test/feature/",
     "watch-test": "npm run test -- --watchAll"
   },
   "devDependencies": {

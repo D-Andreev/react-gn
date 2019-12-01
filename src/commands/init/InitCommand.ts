@@ -238,25 +238,14 @@ export default class InitCommand implements IInitCommand {
                             return this.onError(err, done);
                         }
 
+                        const contents = 'node_modules were installed successfully!';
+                        const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
+                        this.userInterface.showOutput(output, noop);
                         this.saveFiles(0, languageType, paths, template, (err: Error) => {
                             if (err) {
                                 return this.onError(err, done);
                             }
 
-                            try {
-                                const output: Output[] = [
-                                    new Output('Refreshing node_modules', OUTPUT_TYPE.NORMAL)
-                                ];
-                                this.userInterface.showOutput(output, noop);
-                                this.childProcess.execSync(
-                                    `cd ${this.getAppPath()}${sep} && rm -rf ./node_modules && npm install`);
-                            } catch (e) {
-                                return this.onError(e, done);
-                            }
-
-                            const contents = 'node_modules were installed successfully!';
-                            const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
-                            this.userInterface.showOutput(output, noop);
                             done();
                         });
                     });
