@@ -1,4 +1,5 @@
 export const PACKAGE_NAME = 'react-gn';
+export const PACKAGE_VERSION = '1.0.14';
 
 export const COMMAND = {
     INIT: 'init',
@@ -18,7 +19,12 @@ export const COMMAND_FLAG = {
     COMPONENT_NAME: '--name',
 };
 
-export const ENUMERABLE_FLAGS = ['--state', '--action', '--reducer'];
+export const ENUMERABLE_FLAG_ID = '[]';
+export const ENUMERABLE_FLAGS = [
+    `--state${ENUMERABLE_FLAG_ID}`,
+    `--action${ENUMERABLE_FLAG_ID}`,
+    `--reducer${ENUMERABLE_FLAG_ID}`
+];
 export const MAIN_COMMANDS = ['init', 'create'];
 export const ALLOWED_LANGUAGE_TYPE_FLAGS = ['--js', '--ts'];
 export const FLAGS_WITH_TEMPLATES = {

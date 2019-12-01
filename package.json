@@ -1,9 +1,8 @@
 {
   "name": "@react-gn/react-gn",
-  "version": "1.0.13",
-  "preinstall": "npm i -g create-react-app",
+  "version": "1.0.14",
   "main": "dist/index.js",
-  "types" : "dist/index.d.ts",
+  "types": "dist/index.d.ts",
   "bin": {
     "react-gn": "./dist/index.js"
   },
@@ -18,9 +17,10 @@
     "watch-ts": "tsc -w",
     "lint": "tsc --noEmit && eslint \"src/**/*.ts\"",
     "test": "jest --forceExit --coverage",
-    "test-ci": "export TEST_ENV=CI && sudo npm link && yarn test",
     "test-unit": "npm run test ./test/unit/",
+    "test-unit-ci": "export TEST_ENV=CI && npm run test ./test/unit/",
     "test-feature": "npm run test ./test/feature/",
+    "test-feature-ci": "export TEST_ENV=CI && sudo npm link && npm run test ./test/feature/",
     "watch-test": "npm run test -- --watchAll"
   },
   "devDependencies": {
@@ -30,7 +30,6 @@
     "@typescript-eslint/parser": "^2.2.0",
     "eslint": "^6.4.0",
     "jest": "^24.9.0",
-    "npm": "^6.11.3",
     "ts-jest": "^24.1.0",
     "typescript": "^3.6.3"
   }
