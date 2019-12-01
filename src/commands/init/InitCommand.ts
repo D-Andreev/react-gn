@@ -249,7 +249,7 @@ export default class InitCommand implements IInitCommand {
                                 ];
                                 this.userInterface.showOutput(output, noop);
                                 this.childProcess.execSync(
-                                    `cd ${this.getAppPath()}${sep} && npm install`);
+                                    `cd ${this.getAppPath()}${sep} && rm -rf ./node_modules && npm install`);
                             } catch (e) {
                                 return this.onError(e, done);
                             }
