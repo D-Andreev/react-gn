@@ -156,7 +156,7 @@ export default class ComponentCommand implements ICommand {
         const output: Output[] = [
             new Output(
                 `${this.transformedFilePaths[fileIndex]} was created successfully`,
-                OUTPUT_TYPE.NORMAL
+                OUTPUT_TYPE.SUCCESS
             )
         ];
         this.userInterface.showOutput(output, noop);
