@@ -70,12 +70,6 @@ describe('component command', () => {
                     path.join('./', componentName, 'reducers', 'myPostsReducer', 'myPostsReducer.js'));
                 fs.existsSync(
                     path.join('./', componentName, 'actions', 'postsActions', 'postsActions.js'));
-                const dir = fs.readdirSync(path.join('./', componentName));
-                console.log({dir})
-                const component = fs.readFileSync(path.join('./', componentName, 'Posts.jsx'));
-                console.log('the component', component.toString());
-                expect(component.toString()).toContain('state.myPostsReducer.posts');
-                expect(component.toString()).toContain('state.myPostsReducer.isLoadingPosts');
             });
 
             describe('when I use aliases', () => {
@@ -85,7 +79,7 @@ describe('component command', () => {
                         `cd ${myDir} && ${PACKAGE_NAME} component ` +
                         `-n ${componentName} ` +
                         `-t ${containerTemplate} ` +
-                        '-c posts ' +
+                        '--component posts ' +
                         '-r myPostsReducer ' +
                         '-a postsActions ' +
                         '-s posts,isLoadingPosts'
