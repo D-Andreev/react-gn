@@ -74,7 +74,10 @@ export default class ComponentCommand implements ICommand {
             if (ComponentCommand.isEnumerableFlag(flag)) {
                 const split: string[] = flag.value.split(',');
                 for (let j = 0; j < split.length; j++) {
-                    placeholders.push({name: `${flag.name}${j + 1}`, value: split[j]});
+                    placeholders.push({
+                        name: `${flag.name.replace(ENUMERABLE_FLAG_ID, '')}${j + 1}`,
+                        value: split[j]
+                    });
                 }
                 continue;
             }
