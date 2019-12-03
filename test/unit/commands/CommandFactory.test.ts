@@ -1,4 +1,5 @@
 import childProcess from 'child_process';
+import path from 'path';
 import CommandFactory from '../../../src/commands/CommandFactory';
 import ICommand from '../../../src/commands/interfaces/ICommand';
 import {COMMAND, PACKAGE_NAME} from '../../../src/constants';
@@ -281,7 +282,7 @@ describe('CommandFactory', () => {
                     // @ts-ignore
                     expect(command.flags).toEqual([
                         {name: '--name', value: 'MyComponent'},
-                        {name: '--template', value: '../template/path'},
+                        {name: '--template', value: path.normalize('../template/path')},
                         {name: '--path', value: '../component/path'},
                         {name: '--action[]', value: 'action1,action2'},
                         {name: '--state[]', value: 'state1,state2'},
@@ -308,7 +309,7 @@ describe('CommandFactory', () => {
                     // @ts-ignore
                     expect(command.flags).toEqual([
                         {name: '--name', value: 'MyComponent'},
-                        {name: '--template', value: '../template/path'},
+                        {name: '--template', value: path.normalize('../template/path')},
                         {name: '--path', value: '../component/path'},
                         {name: '--enum-flag[]', value: '1,2,3'},
                     ]);

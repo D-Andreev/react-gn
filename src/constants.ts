@@ -1,5 +1,5 @@
 export const PACKAGE_NAME = 'react-gn';
-export const PACKAGE_VERSION = '1.0.15';
+export const PACKAGE_VERSION = '1.0.16';
 
 export const COMMAND = {
     INIT: 'init',

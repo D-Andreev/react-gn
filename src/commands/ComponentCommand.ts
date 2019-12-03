@@ -1,3 +1,4 @@
+import path from 'path';
 import ICommand from './interfaces/ICommand';
 import Flag from './Flag';
 import IStorage from '../services/interfaces/IStorage';
@@ -14,7 +15,7 @@ import {noop} from '../utils';
 import {sep} from 'path';
 
 export default class ComponentCommand implements ICommand {
-    public readonly flags: Flag[];
+    public flags: Flag[];
     public readonly componentName: string;
     public readonly path: string;
     private readonly storage: IStorage;
@@ -24,7 +25,6 @@ export default class ComponentCommand implements ICommand {
     private placeholders: Flag[];
     private targetPath: string;
     private templateName: string;
-    private separator: string;
 
     constructor(
         storage: IStorage,
@@ -40,7 +40,6 @@ export default class ComponentCommand implements ICommand {
         this.componentName = componentName;
         this.flags = flags;
         this.path = path;
-        this.separator = sep;
     }
 
     private static isEnumerableFlag(flag: Flag): boolean {
@@ -57,6 +56,12 @@ export default class ComponentCommand implements ICommand {
         }
 
         return input;
+    }
+
+    private static getTemplateParts(templatePath: string): string[] {
+        return templatePath
+            .split(sep)
+            .filter((part: string) => part.length);
     }
 
     private getPlaceholderFlags(): Flag[] {
@@ -79,20 +84,6 @@ export default class ComponentCommand implements ICommand {
         return placeholders;
     }
 
-    private getTemplateParts(templatePath: string): string[] {
-        return templatePath
-            .split(this.separator)
-            .filter((part: string) => part.length);
-    }
-
-    private setSeparator(path: string): void {
-        if (path.indexOf('/') !== -1) {
-            this.separator = '/';
-        } else if (path.indexOf('\\') !== -1) {
-            this.separator = '\\'
-        }
-    }
-
     private onError(err: Error | ErrorEvent, done: Function): void {
         const output: Output[] = [new Output(err.message, OUTPUT_TYPE.ERROR)];
         this.userInterface.showOutput(output, noop);
@@ -108,20 +99,20 @@ export default class ComponentCommand implements ICommand {
             const regex = new RegExp(`${this.templateName}(.*)`, 'gi');
             const matchComponentPath = filePath.match(regex);
             const componentPath = matchComponentPath[0]
-                .replace(`${this.templateName}${this.separator}`, '');
-            let generatedPath = `${this.targetPath}${this.separator}${componentName}${this.separator}${componentPath}`;
+                .replace(`${this.templateName}${sep}`, '');
+            let generatedPath = `${this.targetPath}${sep}${componentName}${sep}${componentPath}`;
             generatedPath = ComponentCommand.replacePlaceholdersWithData(generatedPath, this.placeholders);
-            let componentParts = generatedPath.split(this.separator);
+            let componentParts = generatedPath.split(sep);
             const indexOfMainPath = componentParts.indexOf(componentName);
             componentParts = componentParts.slice(indexOfMainPath);
-            return componentParts.join(this.separator);
+            return componentParts.join(sep);
         });
     }
 
     private renderTemplate(templatePath: string, transformedFilePath: string, i: number, done: Function): void {
         const renderedTemplatePath = ComponentCommand
             .replacePlaceholdersWithData(transformedFilePath, this.placeholders);
-        const parts: string[] = renderedTemplatePath.split(this.separator);
+        const parts: string[] = renderedTemplatePath.split(sep);
         if (!parts || !parts.length) {
             return done(new Error(NEW_COMPONENT_MESSAGE.INVALID_NAME));
         }
@@ -165,7 +156,7 @@ export default class ComponentCommand implements ICommand {
         const output: Output[] = [
             new Output(
                 `${this.transformedFilePaths[fileIndex]} was created successfully`,
-                OUTPUT_TYPE.NORMAL
+                OUTPUT_TYPE.SUCCESS
             )
         ];
         this.userInterface.showOutput(output, noop);
@@ -185,7 +176,7 @@ export default class ComponentCommand implements ICommand {
             const err = new Error(NEW_COMPONENT_MESSAGE.INVALID_TEMPLATE_PATH);
             return this.onError(err, done);
         }
-
+        templatePath.value = path.normalize(templatePath.value);
         this.storage.directoryExists(templatePath.value, (err: ErrorEvent) => {
             if (err) {
                 return this.onError(new Error(NEW_COMPONENT_MESSAGE.INVALID_TEMPLATE_PATH), done);
@@ -202,8 +193,7 @@ export default class ComponentCommand implements ICommand {
                 if (err) {
                     return this.onError(err, done);
                 }
-                this.setSeparator(templatePath.value);
-                const templateParts: string[] = this.getTemplateParts(templatePath.value);
+                const templateParts: string[] = ComponentCommand.getTemplateParts(templatePath.value);
                 this.templateName = templateParts[templateParts.length - 1];
                 this.placeholders = this.getPlaceholderFlags();
                 this.transformedFilePaths = this.transformFilePaths(filePaths, componentNameArg.value);
