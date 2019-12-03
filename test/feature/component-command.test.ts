@@ -70,7 +70,7 @@ describe('component command', () => {
                     path.join('./', componentName, 'reducers', 'myPostsReducer', 'myPostsReducer.js'));
                 fs.existsSync(
                     path.join('./', componentName, 'actions', 'postsActions', 'postsActions.js'));
-                const dir = fs.readdirSync(path.join('./', componentName, 'Posts.jsx'));
+                const dir = fs.readdirSync(path.join('./', componentName));
                 console.log({dir})
                 const component = fs.readFileSync(path.join('./', componentName, 'Posts.jsx'));
                 console.log('the component', component.toString());
