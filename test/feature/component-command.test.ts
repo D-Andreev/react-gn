@@ -79,7 +79,7 @@ describe('component command', () => {
                         `cd ${myDir} && ${PACKAGE_NAME} component ` +
                         `-n ${componentName} ` +
                         `-t ${containerTemplate} ` +
-                        '-c posts ' +
+                        '--component posts ' +
                         '-r myPostsReducer ' +
                         '-a postsActions ' +
                         '-s posts,isLoadingPosts'
