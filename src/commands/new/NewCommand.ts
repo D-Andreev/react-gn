@@ -3,13 +3,16 @@ import IStorage from '../../services/interfaces/IStorage';
 import IUserInterface from '../../user-interface/interfaces/IUserInterface';
 import ICra from '../../services/interfaces/ICra';
 import Flag from '../Flag';
-import {CRA_EVENT, FLAGS_WITH_TEMPLATES, OUTPUT_TYPE} from '../../constants';
+import {CRA_EVENT, FLAGS_WITH_TEMPLATES, LANGUAGE_TYPE, OUTPUT_TYPE, QUESTION} from '../../constants';
 import Output from '../Output';
-import {noop} from '../../utils';
-import IInitCommand from '../interfaces/IInitCommand';
+import {isAffirmativeAnswer, noop} from '../../utils';
 import ITemplate, {IDependency, IFile} from '../interfaces/ITemplate';
+import * as path from 'path';
+import ICommand from '../interfaces/ICommand';
+import steed from 'steed';
+import INewCommandAnswers from '../interfaces/INewCommandAnswers';
 
-export default class InitCommand implements IInitCommand {
+export default class NewCommand implements ICommand {
     public readonly storage: IStorage;
     public readonly userInterface: IUserInterface;
     public readonly cra: ICra;
@@ -17,6 +20,14 @@ export default class InitCommand implements IInitCommand {
     public readonly flags: Flag[];
     public readonly path: string;
     public readonly childProcess: typeof import('child_process');
+
+    private static getLanguageType(input: string): string {
+        if (!input) {
+            return LANGUAGE_TYPE.JS;
+        }
+
+        return input === LANGUAGE_TYPE.TS ? LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS;
+    }
 
     private getTemplateByFlag(flagWithTemplate: string): ITemplate {
         let template: ITemplate = null;
@@ -135,75 +146,7 @@ export default class InitCommand implements IInitCommand {
         this.removeFile(0, filesToBeRemoved, done);
     }
 
-    constructor(
-        storage: IStorage,
-        userInterface: IUserInterface,
-        cra: ICra,
-        childProcess: typeof import('child_process'),
-        appName: string,
-        flags: Flag[],
-        path: string
-    ) {
-        this.storage = storage;
-        this.userInterface = userInterface;
-        this.cra = cra;
-        this.appName = appName;
-        this.flags = flags;
-        this.path = path;
-        this.childProcess = childProcess;
-    }
-
-    initApp(args: string[], done: Function): void {
-        this.cra.createApp(this.appName, this.path, args);
-        this.cra.on(CRA_EVENT.INIT_ERROR, (err: ErrorEvent) => {
-            const output: Output[] = [new Output(err.toString(), OUTPUT_TYPE.ERROR)];
-            this.userInterface.showOutput(output, noop);
-            done(err);
-        });
-        this.cra.on(CRA_EVENT.INIT_DATA, (data: string) => {
-            this.userInterface.showOutput([new Output(data, OUTPUT_TYPE.NORMAL)], noop);
-        });
-        this.cra.on(CRA_EVENT.INIT_CLOSE, (code: number) => {
-            if (code === 0) {
-                const contents = `${this.appName} was generated successfully!`;
-                const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
-                this.userInterface.showOutput(output, noop);
-                done();
-            } else {
-                const contents = `CRA exited with ${code}`;
-                const output: Output[] = [new Output(contents, OUTPUT_TYPE.ERROR)];
-                this.userInterface.showOutput(output, noop);
-                done(new Error(contents));
-            }
-        });
-    }
-
-    ejectApp(path: string, done: Function): void {
-        this.cra.ejectApp(path);
-        this.cra.on(CRA_EVENT.EJECT_ERROR, (err: ErrorEvent) => {
-            const output: Output[] = [new Output(err.toString(), OUTPUT_TYPE.ERROR)];
-            this.userInterface.showOutput(output, noop);
-            done(err);
-        });
-        this.cra.on(CRA_EVENT.EJECT_DATA, (data: string) => {
-            this.userInterface.showOutput([new Output(data, OUTPUT_TYPE.NORMAL)], noop);
-        });
-        this.cra.on(CRA_EVENT.EJECT_CLOSE, (code: number) => {
-            if (code === 0) {
-                const contents = `${this.appName} was ejected successfully!`;
-                const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
-                this.userInterface.showOutput(output, noop);
-                done();
-            } else {
-                const contents = `CRA exited with ${code}`;
-                const output: Output[] = [new Output(contents, OUTPUT_TYPE.ERROR)];
-                this.userInterface.showOutput(output, noop);
-                done(new Error(contents));
-            }
-        });
-    }
-
-    applyConfigOptions(languageType: string, done: Function): void {
+    private applyConfigOptions(languageType: string, done: Function): void {
         const flagsWithTemplates: string[] = this.getFlagsWithTemplates();
         if (!flagsWithTemplates.length) {
             return done(new Error('No flags with templates found'));
@@ -263,5 +206,119 @@ export default class InitCommand implements IInitCommand {
                 });
             });
         }
+    }
+
+    private askQuestions(done: Function): void {
+        const input = [QUESTION.TS, QUESTION.REDUX, QUESTION.EJECTED];
+        steed.mapSeries(input, (question: string, cb: Function) => {
+            this.userInterface.askQuestion(question, cb);
+        }, (err, results) => {
+            if (err) {
+                return done(err);
+            }
+
+            done(null, results);
+        });
+    }
+
+    private initApp(args: string[], done: Function): void {
+        this.cra.createApp(this.appName, this.path, args);
+        this.cra.on(CRA_EVENT.INIT_ERROR, (err: ErrorEvent) => {
+            const output: Output[] = [new Output(err.toString(), OUTPUT_TYPE.ERROR)];
+            this.userInterface.showOutput(output, noop);
+            done(err);
+        });
+        this.cra.on(CRA_EVENT.INIT_DATA, (data: string) => {
+            this.userInterface.showOutput([new Output(data, OUTPUT_TYPE.NORMAL)], noop);
+        });
+        this.cra.on(CRA_EVENT.INIT_CLOSE, (code: number) => {
+            if (code === 0) {
+                const contents = `${this.appName} was generated successfully!`;
+                const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
+                this.userInterface.showOutput(output, noop);
+                done();
+            } else {
+                const contents = `CRA exited with ${code}`;
+                const output: Output[] = [new Output(contents, OUTPUT_TYPE.ERROR)];
+                this.userInterface.showOutput(output, noop);
+                done(new Error(contents));
+            }
+        });
+    }
+
+    private ejectApp(path: string, done: Function): void {
+        this.cra.ejectApp(path);
+        this.cra.on(CRA_EVENT.EJECT_ERROR, (err: ErrorEvent) => {
+            const output: Output[] = [new Output(err.toString(), OUTPUT_TYPE.ERROR)];
+            this.userInterface.showOutput(output, noop);
+            done(err);
+        });
+        this.cra.on(CRA_EVENT.EJECT_DATA, (data: string) => {
+            this.userInterface.showOutput([new Output(data, OUTPUT_TYPE.NORMAL)], noop);
+        });
+        this.cra.on(CRA_EVENT.EJECT_CLOSE, (code: number) => {
+            if (code === 0) {
+                const contents = `${this.appName} was ejected successfully!`;
+                const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
+                this.userInterface.showOutput(output, noop);
+                done();
+            } else {
+                const contents = `CRA exited with ${code}`;
+                const output: Output[] = [new Output(contents, OUTPUT_TYPE.ERROR)];
+                this.userInterface.showOutput(output, noop);
+                done(new Error(contents));
+            }
+        });
+    }
+
+    constructor(
+        storage: IStorage,
+        userInterface: IUserInterface,
+        cra: ICra,
+        childProcess: typeof import('child_process'),
+        appName: string,
+        flags: Flag[],
+        path: string
+    ) {
+        this.storage = storage;
+        this.userInterface = userInterface;
+        this.cra = cra;
+        this.appName = appName;
+        this.flags = flags;
+        this.path = path;
+        this.childProcess = childProcess;
+    }
+
+    execute(done: Function): void {
+        let languageType = '';
+        steed.waterfall([
+            (next: Function) => this.askQuestions(next),
+            (answers: INewCommandAnswers, next: Function) => {
+                languageType = NewCommand.getLanguageType(answers.languageType);
+                const args = [];
+                if (languageType === LANGUAGE_TYPE.TS) {
+                    args.push('--typescript');
+                }
+                this.initApp(args, (err: ErrorEvent) => next(err, answers));
+            },
+            (answers: INewCommandAnswers, next: Function) => {
+                languageType = NewCommand.getLanguageType(answers.languageType);
+                const ejected = isAffirmativeAnswer(answers.ejected);
+                if (isAffirmativeAnswer(answers.withRedux)) {
+                    this.flags.push({name: FLAGS_WITH_TEMPLATES.WITH_REDUX, value: ''});
+                }
+                if (ejected) {
+                    this.ejectApp(path.join(this.path, this.appName), (err: Error) => {
+                        if (err) {
+                            return next(err);
+                        }
+
+                        this.applyConfigOptions(languageType, next);
+                    });
+                } else {
+                    this.applyConfigOptions(languageType, next);
+                }
+            }
+        ], (err: ErrorEvent) => done(err));
     }
 }

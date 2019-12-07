@@ -2,10 +2,12 @@ export const PACKAGE_NAME = 'react-gn';
 export const PACKAGE_VERSION = '1.0.17';
 
 export const COMMAND = {
-    INIT: 'init',
+    NEW: 'new',
     UNKNOWN: 'unknown',
     COMPONENT: 'component',
 };
+
+export const AFFIRMATIVE_ANSWERS = ['y', 'yes'];
 
 export const COMMAND_FLAG = {
     JS: '--js',
@@ -19,6 +21,12 @@ export const COMMAND_FLAG = {
     COMPONENT_NAME: '--name',
 };
 
+export const QUESTION = {
+    TS: 'Do you want to use typescript? (Default: js) (Y/n)',
+    REDUX: 'Do you want to use redux? (Default: no) (Y/n)',
+    EJECTED: 'Do you want to eject create-react-app (Default: no) (Y/n)'
+};
+
 export const ENUMERABLE_FLAG_ID = '[]';
 export const ENUMERABLE_FLAGS = [
     `--state${ENUMERABLE_FLAG_ID}`,
@@ -29,6 +37,9 @@ export const MAIN_COMMANDS = ['init', 'create'];
 export const ALLOWED_LANGUAGE_TYPE_FLAGS = ['--js', '--ts'];
 export const FLAGS_WITH_TEMPLATES = {
     WITH_REDUX: '--withRedux',
+};
+export const ALIAS: {[key: string]: string} = {
+    HELP: '-h',
 };
 export const COMMAND_ALIAS: {[alias: string]: string} = {
     '-h': COMMAND_FLAG.HELP,

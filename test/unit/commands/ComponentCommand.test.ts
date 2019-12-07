@@ -1,16 +1,15 @@
 import EventEmitter from 'events';
-import InitCommand from '../../../src/commands/init/InitCommand';
 import IStorage from '../../../src/services/interfaces/IStorage';
 import IUserInterface from '../../../src/user-interface/interfaces/IUserInterface';
 import ICra from '../../../src/services/interfaces/ICra';
 import MockStorage from '../../mock/MockStorage';
 import Flag from '../../../src/commands/Flag';
 import childProcess from 'child_process';
-import ComponentCommand from '../../../src/commands/ComponentCommand';
+import ComponentCommand from '../../../src/commands/generate/ComponentCommand';
 import ICommand from '../../../src/commands/interfaces/ICommand';
 import {NEW_COMPONENT_MESSAGE} from '../../../src/constants';
 
-describe('InitCommand', () => {
+describe('generate command', () => {
     let storage: IStorage;
     let userInterface: IUserInterface;
     let componentCommand: ICommand;

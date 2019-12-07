@@ -1,25 +1,22 @@
 import readline from 'readline';
 import ICommand from './interfaces/ICommand';
 import {
+    ALIAS,
     ALLOWED_FLAGS,
-    ALLOWED_LANGUAGE_TYPE_FLAGS,
     COMMAND, COMMAND_ALIAS,
     COMMAND_FLAG,
     FLAG_INDICATOR,
     FLAGS_MIN_INDEX
 } from '../constants';
-import TsAppCommand from './init/TsAppCommand';
 import UnknownCommand from './UnknownCommand';
 import IStorage from '../services/interfaces/IStorage';
-import JsAppCommand from './init/JsAppCommand';
 import {ICommandFactory} from './interfaces/ICommandFactory';
 import Cli from '../user-interface/Cli';
-import IUserInterface from '../user-interface/interfaces/IUserInterface';
-import ILanguageTypeMap from './interfaces/ILanguageTypeMap';
 import Flag from './Flag';
 import VersionCommand from './VersionCommand';
 import ICra from '../services/interfaces/ICra';
-import ComponentCommand from './ComponentCommand';
+import ComponentCommand from './generate/ComponentCommand';
+import NewCommand from './new/NewCommand';
 
 export default class CommandFactory implements ICommandFactory{
     private readonly storage: IStorage;
@@ -69,27 +66,9 @@ export default class CommandFactory implements ICommandFactory{
         return flags;
     }
 
-    private static getLanguageTypeFlag(commandArguments: string[], languageTypeMap: ILanguageTypeMap): string {
-        const intersection: string[] = commandArguments
-            .filter(arg => ALLOWED_LANGUAGE_TYPE_FLAGS.indexOf(arg) !== -1);
-
-        if (intersection && intersection.length > 0 && languageTypeMap.hasOwnProperty(intersection[0])) {
-            return intersection[0];
-        }
-
-        return COMMAND_FLAG.JS;
-    }
-
-    private getCommand(
-        commandArguments: string[], languageTypeMap: ILanguageTypeMap, userInterface: IUserInterface
-    ): ICommand {
-        const appName: string = commandArguments[3];
-        const flags: Flag[] = CommandFactory.parseFlags(commandArguments);
-        const languageType: string = CommandFactory.getLanguageTypeFlag(commandArguments, languageTypeMap);
-
-        return new languageTypeMap[languageType](
-            this.storage, userInterface, this.cra, this.childProcess, appName, flags, process.cwd()
-        );
+    private static containsHelpArg(commandArguments: string[]): boolean {
+        return commandArguments.includes(COMMAND_FLAG.HELP) ||
+            commandArguments.includes(Object.keys(COMMAND_ALIAS).find((alias: string) => alias === ALIAS.HELP));
     }
 
     constructor(storage: IStorage, cra: ICra, childProcess: typeof import('child_process')) {
@@ -106,7 +85,7 @@ export default class CommandFactory implements ICommandFactory{
         if (!commandArguments.length) {
             return unknownCommand;
         }
-        if (commandArguments[2] === COMMAND_FLAG.HELP) {
+        if (CommandFactory.containsHelpArg(commandArguments)) {
             command.execute(done);
             return command;
         }
@@ -116,17 +95,18 @@ export default class CommandFactory implements ICommandFactory{
             return command;
         }
 
-        const languageTypeMap: ILanguageTypeMap = {
-            [COMMAND_FLAG.JS]: JsAppCommand,
-            [COMMAND_FLAG.TS]: TsAppCommand,
-        };
-
         switch (commandArguments[2]) {
-            case COMMAND.INIT:
+            case COMMAND.NEW:
                 if (!commandArguments[3]) {
                     command = unknownCommand;
                 } else {
-                    command = this.getCommand(commandArguments, languageTypeMap, userInterface);
+
+                    const appName: string = commandArguments[3];
+                    const flags: Flag[] = CommandFactory.parseFlags(commandArguments);
+
+                    command = new NewCommand(
+                        this.storage, userInterface, this.cra, this.childProcess, appName, flags, process.cwd()
+                    );
                 }
                 break;
             case COMMAND.COMPONENT:

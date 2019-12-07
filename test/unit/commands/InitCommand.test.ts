@@ -1,19 +1,19 @@
 import EventEmitter from 'events';
-import InitCommand from '../../../src/commands/init/InitCommand';
+import InitCommand from '../../../src/commands/new/NewCommand';
 import IStorage from '../../../src/services/interfaces/IStorage';
 import IUserInterface from '../../../src/user-interface/interfaces/IUserInterface';
 import ICra from '../../../src/services/interfaces/ICra';
 import MockStorage from '../../mock/MockStorage';
 import Flag from '../../../src/commands/Flag';
-import IInitCommand from '../../../src/commands/interfaces/IInitCommand';
+import INewCommand from '../../../src/commands/interfaces/INewCommand';
 import childProcess from 'child_process';
 import {LANGUAGE_TYPE} from '../../../src/constants';
 import {sep} from 'path';
 
-describe('InitCommand', () => {
+describe('new command', () => {
     let storage: IStorage;
     let userInterface: IUserInterface;
-    let initCommand: IInitCommand;
+    let initCommand: INewCommand;
     let cra: ICra;
     let appName: string;
     let flags: Flag[];
