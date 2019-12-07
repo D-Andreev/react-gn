@@ -26,8 +26,8 @@ jobs:
           name: yarn install
           command: yarn install
       - run:
-          name: install npx
-          command: yarn global add npx
+          name: install cra
+          command: yarn global add create-react-app
       - run:
           name: cra version
           command: create-react-app -V
