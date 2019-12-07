@@ -286,7 +286,6 @@ export default class NewCommand implements ICommand {
     }
 
     execute(done: Function): void {
-        let languageType = '';
         steed.waterfall([
             (next: Function) => this.askQuestions(next),
             (answers: INewCommandAnswers, next: Function) => {
@@ -297,27 +296,19 @@ export default class NewCommand implements ICommand {
                 this.initApp(args, (err: ErrorEvent) => next(err, answers));
             },
             (answers: INewCommandAnswers, next: Function) => {
-            console.log({answers})
-                console.log({
-                    languageTye: answers.languageType,
-                    ejected: answers.ejected,
-                    a: answers.withRedux,
-                    answers
-                });
                 if (answers.withRedux) {
                     this.flags.push({name: FLAGS_WITH_TEMPLATES.WITH_REDUX, value: ''});
                 }
-                if (answers.ejected) {
-                    this.ejectApp(path.join(this.path, this.appName), (err: Error) => {
-                        if (err) {
-                            return next(err);
-                        }
-
-                        this.applyConfigOptions(languageType, next);
-                    });
-                } else {
-                    this.applyConfigOptions(languageType, next);
+                if (!answers.ejected) {
+                    return this.applyConfigOptions(answers.languageType, next);
                 }
+                this.ejectApp(path.join(this.path, this.appName), (err: Error) => {
+                    if (err) {
+                        return next(err);
+                    }
+
+                    this.applyConfigOptions(answers.languageType, next);
+                });
             }
         ], (err: ErrorEvent) => done(err));
     }
