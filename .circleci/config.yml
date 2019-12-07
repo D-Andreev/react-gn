@@ -29,9 +29,6 @@ jobs:
           name: install cra
           command: yarn global add create-react-app
       - run:
-          name: cra version
-          command: create-react-app -V
-      - run:
           name: Build JS
           command: yarn build
       - run:
