@@ -34,7 +34,7 @@ export default class Cra extends EventEmitter implements ICra {
                 return;
             }
 
-            const command = `cd ${path} && npx create-react-app`;
+            const command = `cd ${path} && create-react-app`;
             let commandArguments = [name];
             if (args) {
                 commandArguments = commandArguments.concat(args);
