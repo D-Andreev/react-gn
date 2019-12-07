@@ -8,5 +8,7 @@ export function isAffirmativeAnswer(answer: string, isDefaultAnswerAffirmative =
     if (isDefaultAnswerAffirmative && (!answer || answer === '')) {
         return true;
     }
-    return !answer || AFFIRMATIVE_ANSWERS.includes(answer.toLowerCase());
+    if (!answer) return isDefaultAnswerAffirmative;
+
+    return AFFIRMATIVE_ANSWERS.includes(answer.toLowerCase());
 }

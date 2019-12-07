@@ -1,5 +1,5 @@
 export default interface INewCommandAnswers {
     languageType: string;
-    ejected: string;
-    withRedux: string;
+    ejected: boolean;
+    withRedux: boolean;
 }

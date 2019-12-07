@@ -21,14 +21,6 @@ export default class NewCommand implements ICommand {
     public readonly path: string;
     public readonly childProcess: typeof import('child_process');
 
-    private static getLanguageType(input: string): string {
-        if (!input) {
-            return LANGUAGE_TYPE.JS;
-        }
-
-        return input === LANGUAGE_TYPE.TS ? LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS;
-    }
-
     private getTemplateByFlag(flagWithTemplate: string): ITemplate {
         let template: ITemplate = null;
 
@@ -212,12 +204,16 @@ export default class NewCommand implements ICommand {
         const input = [QUESTION.TS, QUESTION.REDUX, QUESTION.EJECTED];
         steed.mapSeries(input, (question: string, cb: Function) => {
             this.userInterface.askQuestion(question, cb);
-        }, (err, results) => {
+        }, (err: ErrorEvent, results: string[]) => {
             if (err) {
                 return done(err);
             }
-
-            done(null, results);
+            const answers: INewCommandAnswers = {
+                languageType: results[0] === LANGUAGE_TYPE.TS ? LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS,
+                withRedux: isAffirmativeAnswer(results[1]),
+                ejected: isAffirmativeAnswer(results[2])
+            };
+            done(null, answers);
         });
     }
 
@@ -294,20 +290,24 @@ export default class NewCommand implements ICommand {
         steed.waterfall([
             (next: Function) => this.askQuestions(next),
             (answers: INewCommandAnswers, next: Function) => {
-                languageType = NewCommand.getLanguageType(answers.languageType);
                 const args = [];
-                if (languageType === LANGUAGE_TYPE.TS) {
+                if (answers.languageType === LANGUAGE_TYPE.TS) {
                     args.push('--typescript');
                 }
                 this.initApp(args, (err: ErrorEvent) => next(err, answers));
             },
             (answers: INewCommandAnswers, next: Function) => {
-                languageType = NewCommand.getLanguageType(answers.languageType);
-                const ejected = isAffirmativeAnswer(answers.ejected);
-                if (isAffirmativeAnswer(answers.withRedux)) {
+            console.log({answers})
+                console.log({
+                    languageTye: answers.languageType,
+                    ejected: answers.ejected,
+                    a: answers.withRedux,
+                    answers
+                });
+                if (answers.withRedux) {
                     this.flags.push({name: FLAGS_WITH_TEMPLATES.WITH_REDUX, value: ''});
                 }
-                if (ejected) {
+                if (answers.ejected) {
                     this.ejectApp(path.join(this.path, this.appName), (err: Error) => {
                         if (err) {
                             return next(err);

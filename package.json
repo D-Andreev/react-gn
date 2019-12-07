@@ -32,5 +32,9 @@
     "jest": "^24.9.0",
     "ts-jest": "^24.1.0",
     "typescript": "^3.6.3"
+  },
+  "dependencies": {
+    "@types/inquirer": "^6.5.0",
+    "create-react-app": "^3.3.0"
   }
 }
