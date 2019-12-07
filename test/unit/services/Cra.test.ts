@@ -59,7 +59,7 @@ describe('Cra', () => {
             describe('when arguments are empty', () => {
                 it('executes the command with arguments', (done) => {
                     cra.createApp('test', './');
-                    const expectedCommand = 'cd ./ && create-react-app';
+                    const expectedCommand = 'cd ./ && npx create-react-app';
                     const args = ['test'];
                     expect(childProcess.spawn).toHaveBeenCalledWith(expectedCommand, args, {shell: true});
                     done();
@@ -69,7 +69,7 @@ describe('Cra', () => {
             describe('when arguments are not empty', () => {
                 it('executes the command with arguments', (done) => {
                     cra.createApp('test', './', ['--typescript']);
-                    const expectedCommand = 'cd ./ && create-react-app';
+                    const expectedCommand = 'cd ./ && npx create-react-app';
                     const args = ['test', '--typescript'];
                     expect(childProcess.spawn).toHaveBeenCalledWith(expectedCommand, args, {shell: true});
                     done();
