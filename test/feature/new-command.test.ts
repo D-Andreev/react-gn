@@ -63,6 +63,6 @@ describe('new command', () => {
 
         it('creates an ejected app with redux and typescript', (done) => {
             createNewApp(appName, ['y', 'y', 'y'], done);
-        });
+        }, 30000000);
     });
 });
