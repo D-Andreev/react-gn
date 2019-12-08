@@ -13,7 +13,7 @@ import {
 } from '../../constants';
 import Output from '../Output';
 import {isAffirmativeAnswer, noop} from '../../utils';
-import ITemplate, {IDependency, IFile} from '../interfaces/ITemplate';
+import ITemplate, {IDependency} from '../interfaces/ITemplate';
 import * as path from 'path';
 import ICommand from '../interfaces/ICommand';
 import steed from 'steed';
