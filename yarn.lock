@@ -366,6 +366,11 @@
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-1.0.1.tgz#0a851d3bd96498fa25c33ab7278ed3bd65f06c3e"
   integrity sha512-l42BggppR6zLmpfU6fq9HEa2oGPEI8yrSPL3GITjfRInppYFahObbIQOQK3UGxEnyQpltZLaPe75046NOZQikw==
 
+"@types/steed@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@types/steed/-/steed-1.1.2.tgz#109e3f585bdcb7f80b880f2a9f615c6fb35b17ac"
+  integrity sha1-EJ4/WFvct/gLiA8qn2Fcb7NbF6w=
+
 "@types/yargs-parser@*":
   version "13.1.0"
   resolved "https://registry.yarnpkg.com/@types/yargs-parser/-/yargs-parser-13.1.0.tgz#c563aa192f39350a1d18da36c5a8da382bbd8228"

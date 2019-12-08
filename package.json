@@ -34,6 +34,7 @@
     "typescript": "^3.6.3"
   },
   "dependencies": {
+    "@types/steed": "^1.1.2",
     "create-react-app": "^3.3.0",
     "steed": "^1.1.3"
   }
