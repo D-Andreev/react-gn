@@ -3,7 +3,14 @@ import IStorage from '../../services/interfaces/IStorage';
 import IUserInterface from '../../user-interface/interfaces/IUserInterface';
 import ICra from '../../services/interfaces/ICra';
 import Flag from '../Flag';
-import {CRA_EVENT, FLAGS_WITH_TEMPLATES, LANGUAGE_TYPE, OUTPUT_TYPE, QUESTION} from '../../constants';
+import {
+    CRA_EVENT,
+    FLAGS_WITH_TEMPLATES,
+    FLAGS_WITH_TEMPLATES_WITH_REDUX_NAME,
+    LANGUAGE_TYPE,
+    OUTPUT_TYPE,
+    QUESTION
+} from '../../constants';
 import Output from '../Output';
 import {isAffirmativeAnswer, noop} from '../../utils';
 import ITemplate, {IDependency, IFile} from '../interfaces/ITemplate';
@@ -26,8 +33,8 @@ export default class NewCommand implements ICommand {
 
         switch (flagWithTemplate) {
             case FLAGS_WITH_TEMPLATES.WITH_REDUX:
-                const contents = `Adding ${flagWithTemplate}`;
-                const output: Output[] = [new Output(contents, OUTPUT_TYPE.INFO)];
+                const contents = `Installing ${FLAGS_WITH_TEMPLATES_WITH_REDUX_NAME[flagWithTemplate]}...`;
+                const output: Output[] = [new Output(contents, OUTPUT_TYPE.NORMAL)];
                 this.userInterface.showOutput(output, noop);
                 template = require('./templates/with-redux').default;
                 break;
@@ -84,9 +91,8 @@ export default class NewCommand implements ICommand {
         return `${this.path}${sep}${this.appName}`;
     }
 
-    private installTemplateDependencies(templateDependencies: IDependency[] | IFile[], done: Function): void {
-        for (let i = 0; i < templateDependencies.length; i++) {
-            const current: any = templateDependencies[i];
+    private installTemplateDependencies(templateDependencies: IDependency[], done: Function): void {
+        steed.mapSeries(templateDependencies, (current: IDependency, next: Function) => {
             const version = current.version ? `@${current.version}` : '';
             const devFlag = current.isDev ? '--save-dev' : '';
             try {
@@ -95,11 +101,14 @@ export default class NewCommand implements ICommand {
             } catch (e) {
                 const output: Output[] = [new Output(e.message, OUTPUT_TYPE.ERROR)];
                 this.userInterface.showOutput(output, noop);
-                return done(e);
+                next(e);
             }
-        }
-
-        done();
+            const output: Output[] = [
+                new Output(`Installed ${current.name} successfully!`, OUTPUT_TYPE.SUCCESS)
+            ];
+            this.userInterface.showOutput(output, noop);
+            next();
+        }, (err: ErrorEvent) => done(err));
     }
 
     private getFilePaths(template: ITemplate, languageType: string): string[] {
@@ -109,33 +118,35 @@ export default class NewCommand implements ICommand {
                 key !== 'dependencies' && template[key].hasOwnProperty(languageType));
     }
 
-    private removeFile(i: number, filesToBeRemoved: string[], done: Function) {
-        if (i === filesToBeRemoved.length) {
-            return done();
-        }
-
-        this.storage.delete(filesToBeRemoved[i], (err: Error) => {
-            if (err) {
-                return done(err);
-            }
-
-            this.removeFile(++i, filesToBeRemoved, done);
-        });
-    }
-
     private removeFiles(template: any, paths: string[], languageType: string, done: Function): void {
         let filesToBeRemoved: string[] = [];
-        for (let i = 0; i < paths.length; i++) {
-            const removeFilesList = template[paths[i]][languageType].removeFiles;
-            if (removeFilesList && removeFilesList.length) {
-                filesToBeRemoved = filesToBeRemoved.concat(removeFilesList);
-            }
-        }
-        filesToBeRemoved = filesToBeRemoved.map((file: string) =>
-            `${this.getAppPath()}${sep}${file}`
-        );
+        paths.reduce((acc: string[], path: string) => {
+            return acc.concat(template[path][languageType].removeFiles || []);
+        }, filesToBeRemoved);
+        filesToBeRemoved = filesToBeRemoved
+            .filter(f => f.length)
+            .map(file => `${this.getAppPath()}${sep}${file}`)
+            .filter((v, i) => filesToBeRemoved.indexOf(v) === i);
+        steed.mapSeries(filesToBeRemoved, (filePath: string, next: Function) => {
+            this.storage.delete(filePath, next);
+        }, (err: ErrorEvent) => done(err));
+    }
 
-        this.removeFile(0, filesToBeRemoved, done);
+    private installNodeModules(done: Function): void {
+        try {
+            const output: Output[] = [
+                new Output('Installing node_modules', OUTPUT_TYPE.NORMAL)
+            ];
+            this.userInterface.showOutput(output, noop);
+            this.childProcess.execSync(
+                `cd ${this.getAppPath()}${sep} && rm -rf ./node_modules && npm install`);
+        } catch (e) {
+            return this.onError(e, done);
+        }
+
+        const contents = `${this.appName} has been created successfully!`;
+        const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
+        this.userInterface.showOutput(output, () => done());
     }
 
     private applyConfigOptions(languageType: string, done: Function): void {
@@ -143,61 +154,31 @@ export default class NewCommand implements ICommand {
         if (!flagsWithTemplates.length) {
             return done(new Error('No flags with templates found'));
         }
-
-        for (let i = 0; i < flagsWithTemplates.length; i++) {
-            const flagWithTemplate: string = flagsWithTemplates[i];
+        const contents = 'Applying configurations...';
+        const output: Output[] = [new Output(contents, OUTPUT_TYPE.NORMAL)];
+        this.userInterface.showOutput(output, done);
+        steed.mapSeries(flagsWithTemplates, (flag: string, cb: Function) => {
             let template: any = null;
             try {
-                template = this.getTemplateByFlag(flagWithTemplate);
+                template = this.getTemplateByFlag(flag);
             } catch (e) {
-                return this.onError(e, done);
+                return this.onError(e, cb);
             }
 
             const paths: string[] = this.getFilePaths(template, languageType);
-            this.removeFiles(template, paths, languageType, (err: Error) => {
-                if (err) {
-                    return this.onError(err, done);
-                }
-
-                this.storage.createPaths(this.getAppPath(), paths, (err: Error) => {
-                    if (err) {
-                        return this.onError(err, done);
-                    }
-
-                    const output: Output[] = [
-                        new Output('Installing dependencies...', OUTPUT_TYPE.NORMAL)
-                    ];
-                    this.userInterface.showOutput(output, noop);
-                    this.installTemplateDependencies(template.dependencies[languageType], (err: Error) => {
-                        if (err) {
-                            return this.onError(err, done);
-                        }
-
-                        this.saveFiles(0, languageType, paths, template, (err: Error) => {
-                            if (err) {
-                                return this.onError(err, done);
-                            }
-
-                            try {
-                                const output: Output[] = [
-                                    new Output('Installing node_modules', OUTPUT_TYPE.NORMAL)
-                                ];
-                                this.userInterface.showOutput(output, noop);
-                                this.childProcess.execSync(
-                                    `cd ${this.getAppPath()}${sep} && rm -rf ./node_modules && npm install`);
-                            } catch (e) {
-                                return this.onError(e, done);
-                            }
-
-                            const contents = 'node_modules were installed successfully!';
-                            const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
-                            this.userInterface.showOutput(output, noop);
-                            done();
-                        });
-                    });
-                });
-            });
-        }
+            steed.waterfall([
+                (next: Function) => this.removeFiles(template, paths, languageType, next),
+                (next: Function) => this.storage.createPaths(this.getAppPath(), paths, next),
+                (next: Function) => this.installTemplateDependencies(template.dependencies[languageType], next),
+                (next: Function) =>
+                    this.saveFiles(flagsWithTemplates.indexOf(flag), languageType, paths, template, next)
+            ], (err: ErrorEvent) => cb(err));
+        }, (err: ErrorEvent) => {
+            if (err) {
+                return done(err);
+            }
+            this.installNodeModules((err: ErrorEvent) => done(err));
+        });
     }
 
     private askQuestions(done: Function): void {
@@ -209,7 +190,7 @@ export default class NewCommand implements ICommand {
                 return done(err);
             }
             const answers: INewCommandAnswers = {
-                languageType: results[0] === LANGUAGE_TYPE.TS ? LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS,
+                languageType: isAffirmativeAnswer(results[0]) ? LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS,
                 withRedux: isAffirmativeAnswer(results[1]),
                 ejected: isAffirmativeAnswer(results[2])
             };
@@ -231,8 +212,7 @@ export default class NewCommand implements ICommand {
             if (code === 0) {
                 const contents = `${this.appName} was generated successfully!`;
                 const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
-                this.userInterface.showOutput(output, noop);
-                done();
+                this.userInterface.showOutput(output, done);
             } else {
                 const contents = `CRA exited with ${code}`;
                 const output: Output[] = [new Output(contents, OUTPUT_TYPE.ERROR)];
@@ -291,7 +271,7 @@ export default class NewCommand implements ICommand {
             (answers: INewCommandAnswers, next: Function) => {
                 const args = [];
                 if (answers.languageType === LANGUAGE_TYPE.TS) {
-                    args.push('--typescript');
+                    args.push('--template typescript');
                 }
                 this.initApp(args, (err: ErrorEvent) => next(err, answers));
             },
