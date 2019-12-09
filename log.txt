@@ -1,0 +1,7 @@
+yarn run v1.12.3
+$ npm run test ./test/feature/ "--testNamePattern=new command"
+
+> @react-gn/react-gn@1.0.17 test C:\workspace\react-gn
+> jest --forceExit --coverage "./test/feature/"
+
+Terminate batch job (Y/N)? 
