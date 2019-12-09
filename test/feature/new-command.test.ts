@@ -4,15 +4,17 @@ import fs from 'fs';
 import {ASCII_ART, PACKAGE_NAME, QUESTION} from '../../src/constants';
 import {buildPackage} from './utils';
 
+const TIMEOUT = 120000;
+
 function verifyAppIsCreated(appName: string) {
     expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
     execSync('npm run build');
 }
 
 function createNewApp(appName: string, answers: any, done: Function) {
-    console.log(process.env);
-    process.exit()
-    // execSync('git stash && git clean -fd');
+    if (process.env.TEST_ENV === 'CI') {
+        execSync('git stash && git clean -fd');
+    }
     let answerCounter = 0;
     let currentQuestion = Object.keys(answers)[answerCounter];
     let currentAnswer = answers[currentQuestion];
@@ -71,6 +73,6 @@ describe('new command', () => {
                 [QUESTION.REDUX]: `n${EOL}`,
                 [QUESTION.EJECTED]: `n${EOL}`,
             }, done);
-        }, 120000);
+        }, TIMEOUT);
     });
 });
