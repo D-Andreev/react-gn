@@ -81,6 +81,6 @@ describe('new command', () => {
                 expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
                 verifyAppIsCreated(appName);
             });
-        }, TIMEOUT * 2);
+        }, TIMEOUT * 3);
     });
 });
