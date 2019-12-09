@@ -32,7 +32,7 @@ function createNewApp(appName: string, answers: any, done: Function) {
         }
     });
     child.stderr.on('data', (err) => {
-        return done(err);
+        return done(err.data.toString());
     });
 }
 
