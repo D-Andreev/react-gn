@@ -1,18 +1,46 @@
 import { spawn, execSync } from 'child_process';
 import {EOL} from 'os';
 import fs from 'fs';
-import {ASCII_ART, PACKAGE_NAME} from '../../src/constants';
+import {ASCII_ART, PACKAGE_NAME, QUESTION} from '../../src/constants';
 import {buildPackage} from './utils';
 
 function verifyAppIsCreated(appName: string) {
-    execSync(`cd ${appName} && npm install && npm run build`);
+    expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
+    execSync('npm run build');
+}
+
+function createNewApp(appName: string, answers: any, done: Function) {
+    // execSync('git stash && git clean -fd');
+    let answerCounter = 0;
+    let currentQuestion = Object.keys(answers)[answerCounter];
+    let currentAnswer = answers[currentQuestion];
+    console.log({currentQuestion, currentAnswer});
+    const child = spawn(PACKAGE_NAME, ['new', appName], {shell: true});
+    child.stdin.setDefaultEncoding('utf8');
+    child.stdout.on('data', (data) => {
+        console.log('data', data.toString());
+        if (data.toString().indexOf(currentQuestion) >= 0) {
+            child.stdin.write(Buffer.from(currentAnswer), 'utf8');
+            currentQuestion = Object.keys(answers)[++answerCounter];
+            currentAnswer = answers[currentQuestion];
+        }
+        console.log(data.toString());
+        data.toString().indexOf(`${appName} has been created successfully!`);
+        if (data.toString().indexOf(`${appName} has been created successfully!`) >= 0) {
+            verifyAppIsCreated(appName);
+            done();
+        }
+    });
+    child.stderr.on('data', (err) => {
+        return done(err);
+    });
 }
 
 describe('new command', () => {
     let appName: string;
     beforeAll(() => {
-        buildPackage();
         appName = `${Date.now()}my-app`;
+        buildPackage();
     });
 
     afterAll(() => {
@@ -30,7 +58,7 @@ describe('new command', () => {
         });
     });
 
-    describe('when I say yes to every question', () => {
+    describe('when I answer "no" to every question', () => {
         beforeAll(() => {
             appName = `${Date.now()}my-app`;
         });
@@ -39,31 +67,11 @@ describe('new command', () => {
         });
 
         it('creates an ejected app with redux and typescript', (done) => {
-            console.log('asdasd')
-            // execSync('git stash && git clean -fd');
-            const result = spawn(PACKAGE_NAME, ['new', appName], {shell: true});
-            result.stdin.setDefaultEncoding('utf8');
-            result.stdout.on('data', (data) => {
-                console.log(data.toString())
-                if (data.toString().indexOf('Do yo') >= 0) {
-                    console.log('answering...')
-                    result.stdin.write(Buffer.from(`n${EOL}`), 'utf8');
-                }
-            })
-            result.stderr.on('data', (err) => {
-                console.log('err', err)
-            })
-            result.on('close', () => {
-                console.log('close')
-                expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
-                done();
-            })
-            /*expect(result.toString()).toContain(`${appName} was generated successfully!`);
-            expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
-            expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeTruthy();
-            expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
-            execSync('npm run build');
-            done();*/
-        });
+            createNewApp(appName,{
+                [QUESTION.TS]: `n${EOL}`,
+                [QUESTION.REDUX]: `n${EOL}`,
+                [QUESTION.EJECTED]: `n${EOL}`,
+            }, done);
+        }, 120000);
     });
 });

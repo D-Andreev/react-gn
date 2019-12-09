@@ -132,6 +132,13 @@ export default class NewCommand implements ICommand {
         }, (err: ErrorEvent) => done(err));
     }
 
+    private appCreated(done: Function): void {
+        const contents = `${this.appName} has been created successfully!`;
+        const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
+        this.userInterface.showOutput(output, () => done());
+        done();
+    }
+
     private installNodeModules(done: Function): void {
         try {
             const output: Output[] = [
@@ -144,16 +151,10 @@ export default class NewCommand implements ICommand {
             return this.onError(e, done);
         }
 
-        const contents = `${this.appName} has been created successfully!`;
-        const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
-        this.userInterface.showOutput(output, () => done());
+        return this.appCreated(done);
     }
 
-    private applyConfigOptions(languageType: string, done: Function): void {
-        const flagsWithTemplates: string[] = this.getFlagsWithTemplates();
-        if (!flagsWithTemplates.length) {
-            return done(new Error('No flags with templates found'));
-        }
+    private applyConfigOptions(flagsWithTemplates: string[], languageType: string, done: Function): void {
         const contents = 'Applying configurations...';
         const output: Output[] = [new Output(contents, OUTPUT_TYPE.NORMAL)];
         this.userInterface.showOutput(output, done);
@@ -177,7 +178,7 @@ export default class NewCommand implements ICommand {
             if (err) {
                 return done(err);
             }
-            this.installNodeModules((err: ErrorEvent) => done(err));
+            return this.installNodeModules((err: ErrorEvent) => done(err));
         });
     }
 
@@ -210,9 +211,9 @@ export default class NewCommand implements ICommand {
         });
         this.cra.on(CRA_EVENT.INIT_CLOSE, (code: number) => {
             if (code === 0) {
-                const contents = `${this.appName} was generated successfully!`;
+                const contents = 'create-react-app has been generated!';
                 const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
-                this.userInterface.showOutput(output, done);
+                this.userInterface.showOutput(output, () => done());
             } else {
                 const contents = `CRA exited with ${code}`;
                 const output: Output[] = [new Output(contents, OUTPUT_TYPE.ERROR)];
@@ -279,17 +280,27 @@ export default class NewCommand implements ICommand {
                 if (answers.withRedux) {
                     this.flags.push({name: FLAGS_WITH_TEMPLATES.WITH_REDUX, value: ''});
                 }
+                const flagsWithTemplates: string[] = this.getFlagsWithTemplates();
+                if (!flagsWithTemplates.length) {
+                    return next();
+                }
                 if (!answers.ejected) {
-                    return this.applyConfigOptions(answers.languageType, next);
+                    return this.applyConfigOptions(flagsWithTemplates, answers.languageType, next);
                 }
                 this.ejectApp(path.join(this.path, this.appName), (err: Error) => {
                     if (err) {
                         return next(err);
                     }
 
-                    this.applyConfigOptions(answers.languageType, next);
+                    this.applyConfigOptions(flagsWithTemplates, answers.languageType, next);
                 });
             }
-        ], (err: ErrorEvent) => done(err));
+        ], (err: ErrorEvent) => {
+            if (err) {
+                return done(err);
+            }
+
+            return this.appCreated(done);
+        });
     }
 }
