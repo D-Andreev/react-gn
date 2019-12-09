@@ -33,7 +33,6 @@ function createNewApp(appName: string, answers: any, done: Function) {
     });
     child.stderr.on('data', (err) => {
         console.log('on error', err.toString());
-        return done(err.toString());
     });
 }
 
