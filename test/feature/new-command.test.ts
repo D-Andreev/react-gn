@@ -4,7 +4,7 @@ import fs from 'fs';
 import {ASCII_ART, PACKAGE_NAME, QUESTION} from '../../src/constants';
 import {buildPackage} from './utils';
 
-const TIMEOUT = 120000;
+const TIMEOUT = 60000 * 4;
 
 function verifyAppIsCreated(appName: string) {
     expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
@@ -58,52 +58,6 @@ describe('new command', () => {
         });
     });
 
-    describe('when I answer "no" to every question', () => {
-        beforeAll(() => {
-            appName = `${Date.now()}my-app`;
-        });
-        afterAll(() => {
-            execSync(`rm -rf ./${appName}`);
-        });
-
-        it('does not apply any of the configurations', (done) => {
-            createNewApp(appName,{
-                [QUESTION.TS]: `n${EOL}`,
-                [QUESTION.REDUX]: `n${EOL}`,
-                [QUESTION.EJECTED]: `n${EOL}`,
-            }, (err: ErrorEvent) => {
-                if (err) {
-                    return done(err);
-                }
-
-                verifyAppIsCreated(appName);
-            });
-        }, TIMEOUT);
-    });
-
-    describe('when I press enter for all of the questions', () => {
-        beforeAll(() => {
-            appName = `${Date.now()}my-app`;
-        });
-        afterAll(() => {
-            execSync(`rm -rf ./${appName}`);
-        });
-
-        it('does not apply any of the configurations', (done) => {
-            createNewApp(appName,{
-                [QUESTION.TS]: `${EOL}`,
-                [QUESTION.REDUX]: `${EOL}`,
-                [QUESTION.EJECTED]: `${EOL}`,
-            }, (err: ErrorEvent) => {
-                if (err) {
-                    return done(err);
-                }
-
-                verifyAppIsCreated(appName);
-            });
-        }, TIMEOUT);
-    });
-
     describe('when I answer "yes" to everything', () => {
         beforeAll(() => {
             appName = `${Date.now()}my-app`;
@@ -119,6 +73,7 @@ describe('new command', () => {
                 [QUESTION.EJECTED]: `y${EOL}`,
             }, (err: ErrorEvent) => {
                 if (err) {
+                    console.log('err', err);
                     return done(err);
                 }
 
