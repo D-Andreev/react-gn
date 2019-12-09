@@ -10,21 +10,20 @@ function verifyAppIsCreated(appName: string) {
 }
 
 function createNewApp(appName: string, answers: any, done: Function) {
+    console.log(process.env);
+    process.exit()
     // execSync('git stash && git clean -fd');
     let answerCounter = 0;
     let currentQuestion = Object.keys(answers)[answerCounter];
     let currentAnswer = answers[currentQuestion];
-    console.log({currentQuestion, currentAnswer});
     const child = spawn(PACKAGE_NAME, ['new', appName], {shell: true});
     child.stdin.setDefaultEncoding('utf8');
     child.stdout.on('data', (data) => {
-        console.log('data', data.toString());
         if (data.toString().indexOf(currentQuestion) >= 0) {
             child.stdin.write(Buffer.from(currentAnswer), 'utf8');
             currentQuestion = Object.keys(answers)[++answerCounter];
             currentAnswer = answers[currentQuestion];
         }
-        console.log(data.toString());
         data.toString().indexOf(`${appName} has been created successfully!`);
         if (data.toString().indexOf(`${appName} has been created successfully!`) >= 0) {
             verifyAppIsCreated(appName);
