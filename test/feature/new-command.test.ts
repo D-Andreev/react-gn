@@ -21,19 +21,14 @@ function createNewApp(appName: string, answers: any, done: Function) {
     const child = spawn(PACKAGE_NAME, ['new', appName], {shell: true});
     child.stdin.setDefaultEncoding('utf8');
     child.stdout.on('data', (data) => {
-        console.log({currentQuestion, data: data.toString()});
         if (currentQuestion && data.toString().indexOf(currentQuestion) >= 0) {
             child.stdin.write(Buffer.from(currentAnswer), 'utf8');
             currentQuestion = Object.keys(answers)[++answerCounter];
             currentAnswer = answers[currentQuestion];
         }
-        data.toString().indexOf(`${appName} has been created successfully!`);
         if (data.toString().indexOf(`${appName} has been created successfully!`) >= 0) {
             done();
         }
-    });
-    child.stderr.on('data', (err) => {
-        console.log('on error', err.toString());
     });
 }
 
