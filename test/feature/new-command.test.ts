@@ -26,6 +26,7 @@ function createNewApp(appName: string, answers: any, done: Function) {
             currentQuestion = Object.keys(answers)[++answerCounter];
             currentAnswer = answers[currentQuestion];
         }
+        data.toString().indexOf(`${appName} has been created successfully!`);
         if (data.toString().indexOf(`${appName} has been created successfully!`) >= 0) {
             done();
         }
@@ -73,7 +74,58 @@ describe('new command', () => {
                 }
 
                 verifyAppIsCreated(appName);
+                done();
             });
         }, TIMEOUT);
+    });
+
+    describe('when I press enter for all of the questions', () => {
+        beforeAll(() => {
+            appName = `${Date.now()}my-app`;
+        });
+        afterAll(() => {
+            execSync(`rm -rf ./${appName}`);
+        });
+
+        it('does not apply any of the configurations', (done) => {
+            createNewApp(appName,{
+                [QUESTION.TS]: `${EOL}`,
+                [QUESTION.REDUX]: `${EOL}`,
+                [QUESTION.EJECTED]: `${EOL}`,
+            }, (err: ErrorEvent) => {
+                if (err) {
+                    return done(err);
+                }
+
+                verifyAppIsCreated(appName);
+                done();
+            });
+        }, TIMEOUT);
+    });
+
+    describe('when I answer "yes" to everything', () => {
+        beforeAll(() => {
+            appName = `${Date.now()}my-app`;
+        });
+        afterAll(() => {
+            execSync(`rm -rf ./${appName}`);
+        });
+
+        it('sets up all the configurations', (done) => {
+            createNewApp(appName,{
+                [QUESTION.TS]: `y${EOL}`,
+                [QUESTION.REDUX]: `yes${EOL}`,
+                [QUESTION.EJECTED]: `y${EOL}`,
+            }, (err: ErrorEvent) => {
+                if (err) {
+                    return done(err);
+                }
+
+                expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeTruthy();
+                expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
+                verifyAppIsCreated(appName);
+                done();
+            });
+        }, TIMEOUT * 2);
     });
 });
