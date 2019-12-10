@@ -4,7 +4,7 @@ import fs from 'fs';
 import {ASCII_ART, PACKAGE_NAME, QUESTION} from '../../src/constants';
 import {buildPackage} from './utils';
 
-const TIMEOUT = 60000 * 4;
+const TIMEOUT = 60000 * 5;
 
 function verifyAppIsCreated(appName: string) {
     expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
