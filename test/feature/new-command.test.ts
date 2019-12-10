@@ -4,7 +4,7 @@ import fs from 'fs';
 import {ASCII_ART, PACKAGE_NAME, QUESTION} from '../../src/constants';
 import {buildPackage} from './utils';
 
-const TIMEOUT = 60000 * 5;
+const TIMEOUT = 60000 * 3;
 
 function verifyAppIsCreated(appName: string) {
     expect(fs.existsSync(`./${appName}/package.json`)).toBeTruthy();
@@ -21,6 +21,7 @@ function createNewApp(appName: string, answers: any, done: Function) {
     const child = spawn(PACKAGE_NAME, ['new', appName], {shell: true});
     child.stdin.setDefaultEncoding('utf8');
     child.stdout.on('data', (data) => {
+        console.log({currentQuestion, data: data.toString()});
         if (currentQuestion && data.toString().indexOf(currentQuestion) >= 0) {
             child.stdin.write(Buffer.from(currentAnswer), 'utf8');
             currentQuestion = Object.keys(answers)[++answerCounter];
@@ -127,6 +128,6 @@ describe('new command', () => {
                 expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
                 verifyAppIsCreated(appName);
             });
-        }, TIMEOUT * 2);
+        }, TIMEOUT * 5);
     });
 });
