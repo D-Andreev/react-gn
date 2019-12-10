@@ -126,6 +126,6 @@ describe('new command', () => {
                 verifyAppIsCreated(appName);
                 done();
             });
-        }, TIMEOUT * 2);
+        }, TIMEOUT);
     });
 });
