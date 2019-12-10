@@ -133,6 +133,7 @@ export default class NewCommand implements ICommand {
     }
 
     private appCreated(done: Function): void {
+        console.log('what?');
         const contents = `${this.appName} has been created successfully!`;
         const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
         this.userInterface.showOutput(output, done);
@@ -150,7 +151,7 @@ export default class NewCommand implements ICommand {
             return this.onError(e, done);
         }
 
-        return this.appCreated(done);
+        done();
     }
 
     private applyConfigOptions(flagsWithTemplates: string[], languageType: string, done: Function): void {
