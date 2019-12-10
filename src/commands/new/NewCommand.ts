@@ -106,8 +106,7 @@ export default class NewCommand implements ICommand {
             const output: Output[] = [
                 new Output(`Installed ${current.name} successfully!`, OUTPUT_TYPE.SUCCESS)
             ];
-            this.userInterface.showOutput(output, noop);
-            next();
+            this.userInterface.showOutput(output, next);
         }, (err: ErrorEvent) => done(err));
     }
 
