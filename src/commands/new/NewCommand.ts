@@ -300,7 +300,7 @@ export default class NewCommand implements ICommand {
             if (err) {
                 return done(err);
             }
-
+            console.log('look');
             return this.appCreated(done);
         });
     }
