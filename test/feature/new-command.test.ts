@@ -58,6 +58,52 @@ describe('new command', () => {
         });
     });
 
+    describe('when I answer "no" to every question', () => {
+        beforeAll(() => {
+            appName = `${Date.now()}my-app`;
+        });
+        afterAll(() => {
+            execSync(`rm -rf ./${appName}`);
+        });
+
+        it('does not apply any of the configurations', (done) => {
+            createNewApp(appName,{
+                [QUESTION.TS]: `n${EOL}`,
+                [QUESTION.REDUX]: `n${EOL}`,
+                [QUESTION.EJECTED]: `n${EOL}`,
+            }, (err: ErrorEvent) => {
+                if (err) {
+                    return done(err);
+                }
+
+                verifyAppIsCreated(appName);
+            });
+        }, TIMEOUT);
+    });
+
+    describe('when I press enter for all of the questions', () => {
+        beforeAll(() => {
+            appName = `${Date.now()}my-app`;
+        });
+        afterAll(() => {
+            execSync(`rm -rf ./${appName}`);
+        });
+
+        it('does not apply any of the configurations', (done) => {
+            createNewApp(appName,{
+                [QUESTION.TS]: `${EOL}`,
+                [QUESTION.REDUX]: `${EOL}`,
+                [QUESTION.EJECTED]: `${EOL}`,
+            }, (err: ErrorEvent) => {
+                if (err) {
+                    return done(err);
+                }
+
+                verifyAppIsCreated(appName);
+            });
+        }, TIMEOUT);
+    });
+
     describe('when I answer "yes" to everything', () => {
         beforeAll(() => {
             appName = `${Date.now()}my-app`;
@@ -81,6 +127,6 @@ describe('new command', () => {
                 expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
                 verifyAppIsCreated(appName);
             });
-        }, TIMEOUT * 5);
+        }, TIMEOUT * 2);
     });
 });
