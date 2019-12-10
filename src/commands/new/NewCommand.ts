@@ -133,7 +133,6 @@ export default class NewCommand implements ICommand {
     }
 
     private appCreated(done: Function): void {
-        console.log('what?');
         const contents = `${this.appName} has been created successfully!`;
         const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
         this.userInterface.showOutput(output, done);
@@ -179,7 +178,6 @@ export default class NewCommand implements ICommand {
                     this.saveFiles(flagsWithTemplates.indexOf(flag), languageType, paths, template, next)
             ], (err: ErrorEvent) => cb(err));
         }, (err: ErrorEvent) => {
-            console.log('here', err);
             if (err) {
                 return done(err);
             }
@@ -301,7 +299,6 @@ export default class NewCommand implements ICommand {
             if (err) {
                 return done(err);
             }
-            console.log('look');
             return this.appCreated(done);
         });
     }
