@@ -157,7 +157,7 @@ export default class NewCommand implements ICommand {
     private applyConfigOptions(flagsWithTemplates: string[], languageType: string, done: Function): void {
         const contents = 'Applying configurations...';
         const output: Output[] = [new Output(contents, OUTPUT_TYPE.NORMAL)];
-        this.userInterface.showOutput(output, done);
+        this.userInterface.showOutput(output, noop);
         steed.mapSeries(flagsWithTemplates, (flag: string, cb: Function) => {
             let template: any = null;
             try {
