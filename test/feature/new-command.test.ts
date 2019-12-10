@@ -128,4 +128,30 @@ describe('new command', () => {
             });
         }, TIMEOUT);
     });
+
+    describe('when I answer "yes" only to eject the app', () => {
+        beforeAll(() => {
+            appName = `${Date.now()}my-app`;
+        });
+        afterAll(() => {
+            execSync(`rm -rf ./${appName}`);
+        });
+
+        it('sets up all the configurations', (done) => {
+            createNewApp(appName,{
+                [QUESTION.TS]: `n${EOL}`,
+                [QUESTION.REDUX]: `${EOL}`,
+                [QUESTION.EJECTED]: `y${EOL}`,
+            }, (err: ErrorEvent) => {
+                if (err) {
+                    return done(err);
+                }
+
+                expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeFalsy();
+                expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
+                verifyAppIsCreated(appName);
+                done();
+            });
+        }, TIMEOUT);
+    });
 });
