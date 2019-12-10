@@ -42,7 +42,6 @@ export default class Cli implements IUserInterface {
             input: process.stdin,
             output: process.stdout
         });
-
         readlineInterface.question(question, (answer: string) => {
             readlineInterface.close();
             done(null, answer);

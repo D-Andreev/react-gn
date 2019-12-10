@@ -2,10 +2,12 @@ export const PACKAGE_NAME = 'react-gn';
 export const PACKAGE_VERSION = '1.0.17';
 
 export const COMMAND = {
-    INIT: 'init',
+    NEW: 'new',
     UNKNOWN: 'unknown',
     COMPONENT: 'component',
 };
+
+export const AFFIRMATIVE_ANSWERS = ['y', 'yes'];
 
 export const COMMAND_FLAG = {
     JS: '--js',
@@ -19,6 +21,12 @@ export const COMMAND_FLAG = {
     COMPONENT_NAME: '--name',
 };
 
+export const QUESTION = {
+    TS: 'Do you want to use typescript? (Y/n) ',
+    REDUX: 'Do you want to use redux? (Y/n) ',
+    EJECTED: 'Do you want to eject create-react-app (Y/n) '
+};
+
 export const ENUMERABLE_FLAG_ID = '[]';
 export const ENUMERABLE_FLAGS = [
     `--state${ENUMERABLE_FLAG_ID}`,
@@ -29,6 +37,12 @@ export const MAIN_COMMANDS = ['init', 'create'];
 export const ALLOWED_LANGUAGE_TYPE_FLAGS = ['--js', '--ts'];
 export const FLAGS_WITH_TEMPLATES = {
     WITH_REDUX: '--withRedux',
+};
+export const FLAGS_WITH_TEMPLATES_WITH_REDUX_NAME = {
+    [FLAGS_WITH_TEMPLATES.WITH_REDUX]: 'Redux',
+};
+export const ALIAS: {[key: string]: string} = {
+    HELP: '-h',
 };
 export const COMMAND_ALIAS: {[alias: string]: string} = {
     '-h': COMMAND_FLAG.HELP,
@@ -54,16 +68,12 @@ export const NON_PLACEHOLDER_FLAGS = [
 ].concat(ALLOWED_LANGUAGE_TYPE_FLAGS);
 
 export const ALLOWED_FLAGS_DESCRIPTIONS: {[flag: string]: string} = {
-    '--help': 'Shows the help.',
-    '--js': 'Use javascript.',
-    '--ts': 'Use typescript.',
-    '--config': 'File path to config file.',
-    '--ejected': 'Creates an already ejected app',
-    '--withRedux': 'Add redux setup to the app',
+    '--help (Alias: -h)': 'Shows the help.',
+    '--version (Alias: -v)': 'Shows the help.',
 };
 export const MAIN_COMMANDS_DESCRIPTIONS: {[flag: string]: string} = {
-    'init': `Initialize react application. (${PACKAGE_NAME} init my-app)`,
-    'create': `Create react component. (${PACKAGE_NAME} create my-component)`,
+    'new': 'Create a new react application.',
+    'generate': 'Generate a new component.',
 };
 
 export const ASCII_ART = {

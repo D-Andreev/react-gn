@@ -1,6 +1,7 @@
 export interface IDependency {
     name: string;
     version: string;
+    isDev: boolean;
 }
 
 export interface IFile {

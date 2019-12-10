@@ -1,17 +1,17 @@
 import path from 'path';
-import ICommand from './interfaces/ICommand';
-import Flag from './Flag';
-import IStorage from '../services/interfaces/IStorage';
-import IUserInterface from '../user-interface/interfaces/IUserInterface';
+import ICommand from '../interfaces/ICommand';
+import Flag from '../Flag';
+import IStorage from '../../services/interfaces/IStorage';
+import IUserInterface from '../../user-interface/interfaces/IUserInterface';
 import {
     COMMAND_FLAG, ENUMERABLE_FLAG_ID,
     FLAG_INDICATOR,
     NEW_COMPONENT_MESSAGE,
     NON_PLACEHOLDER_FLAGS,
     OUTPUT_TYPE
-} from '../constants';
-import Output from './Output';
-import {noop} from '../utils';
+} from '../../constants';
+import Output from '../Output';
+import {noop} from '../../utils';
 import {sep} from 'path';
 
 export default class ComponentCommand implements ICommand {
