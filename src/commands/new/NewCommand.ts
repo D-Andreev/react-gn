@@ -135,8 +135,7 @@ export default class NewCommand implements ICommand {
     private appCreated(done: Function): void {
         const contents = `${this.appName} has been created successfully!`;
         const output: Output[] = [new Output(contents, OUTPUT_TYPE.SUCCESS)];
-        this.userInterface.showOutput(output, () => done());
-        done();
+        this.userInterface.showOutput(output, done);
     }
 
     private installNodeModules(done: Function): void {
@@ -175,6 +174,7 @@ export default class NewCommand implements ICommand {
                     this.saveFiles(flagsWithTemplates.indexOf(flag), languageType, paths, template, next)
             ], (err: ErrorEvent) => cb(err));
         }, (err: ErrorEvent) => {
+            console.log('here', err);
             if (err) {
                 return done(err);
             }
