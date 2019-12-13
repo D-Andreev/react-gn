@@ -5,3 +5,6 @@ demos
 my-app
 coverage
 .idea
+test
+TODO.txt
+.circleci
