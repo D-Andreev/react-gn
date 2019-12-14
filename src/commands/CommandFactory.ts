@@ -15,7 +15,7 @@ import Cli from '../user-interface/Cli';
 import Flag from './Flag';
 import VersionCommand from './VersionCommand';
 import ICra from '../services/interfaces/ICra';
-import ComponentCommand from './generate/ComponentCommand';
+import GenerateCommand from './generate/GenerateCommand';
 import NewCommand from './new/NewCommand';
 
 export default class CommandFactory implements ICommandFactory{
@@ -114,7 +114,7 @@ export default class CommandFactory implements ICommandFactory{
                     command = unknownCommand;
                 } else {
                     const flags: Flag[] = CommandFactory.parseFlags(commandArguments, false);
-                    command = new ComponentCommand(
+                    command = new GenerateCommand(
                         this.storage,
                         userInterface,
                         this.childProcess,
