@@ -52,7 +52,7 @@ describe('new command', () => {
             execSync(`rm -rf ./${appName} ${disableInteractive}`);
         });
 
-        it('does not apply any of the configurations', (done) => {
+        it('does not apply any of the configurations', () => {
             execSync(`${PACKAGE_NAME} new ${appName} -i false`);
             verifyAppIsCreated(appName);
         }, TIMEOUT);
@@ -66,7 +66,7 @@ describe('new command', () => {
             execSync(`rm -rf ./${appName} ${disableInteractive}`);
         });
 
-        it('sets up all the configurations', (done) => {
+        it('sets up all the configurations', () => {
             execSync(`${PACKAGE_NAME} new ${appName} -i false --ts -wr -e`);
         }, TIMEOUT);
     });
@@ -79,7 +79,7 @@ describe('new command', () => {
             execSync(`rm -rf ./${appName} ${disableInteractive}`);
         });
 
-        it('sets up all the configurations', (done) => {
+        it('sets up all the configurations', () => {
             execSync(`${PACKAGE_NAME} new ${appName} -i false -e`);
         }, TIMEOUT);
     });
