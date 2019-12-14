@@ -88,9 +88,9 @@ describe('new command', () => {
 
         it('does not apply any of the configurations', (done) => {
             createNewApp(appName,{
-                [NEW_COMMAND_QUESTION_MESSAGES.USE_TS]: `${EOL}`,
-                [NEW_COMMAND_QUESTION_MESSAGES.USE_REDUX]: `${EOL}`,
-                [NEW_COMMAND_QUESTION_MESSAGES.EJECT_APP]: `${EOL}`,
+                [NEW_COMMAND_QUESTION_MESSAGES.USE_TS]: false,
+                [NEW_COMMAND_QUESTION_MESSAGES.USE_REDUX]: false,
+                [NEW_COMMAND_QUESTION_MESSAGES.EJECT_APP]: false,
             }, (err: ErrorEvent) => {
                 if (err) {
                     return done(err);
@@ -112,9 +112,9 @@ describe('new command', () => {
 
         it('sets up all the configurations', (done) => {
             createNewApp(appName,{
-                [NEW_COMMAND_QUESTION_MESSAGES.USE_TS]: `y${EOL}`,
-                [NEW_COMMAND_QUESTION_MESSAGES.USE_REDUX]: `yes${EOL}`,
-                [NEW_COMMAND_QUESTION_MESSAGES.EJECT_APP]: `y${EOL}`,
+                [NEW_COMMAND_QUESTION_MESSAGES.USE_TS]: true,
+                [NEW_COMMAND_QUESTION_MESSAGES.USE_REDUX]: true,
+                [NEW_COMMAND_QUESTION_MESSAGES.EJECT_APP]: true,
             }, (err: ErrorEvent) => {
                 if (err) {
                     return done(err);
@@ -138,9 +138,9 @@ describe('new command', () => {
 
         it('sets up all the configurations', (done) => {
             createNewApp(appName,{
-                [NEW_COMMAND_QUESTION_MESSAGES.USE_TS]: `n${EOL}`,
-                [NEW_COMMAND_QUESTION_MESSAGES.USE_REDUX]: `${EOL}`,
-                [NEW_COMMAND_QUESTION_MESSAGES.EJECT_APP]: `y${EOL}`,
+                [NEW_COMMAND_QUESTION_MESSAGES.USE_TS]: false,
+                [NEW_COMMAND_QUESTION_MESSAGES.USE_REDUX]: false,
+                [NEW_COMMAND_QUESTION_MESSAGES.EJECT_APP]: true,
             }, (err: ErrorEvent) => {
                 if (err) {
                     return done(err);
