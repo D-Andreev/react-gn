@@ -21,8 +21,13 @@ function createNewApp(appName: string, answers: any, done: Function) {
     if (process.env.TEST_ENV === 'CI') {
         execSync('git stash && git clean -fd');
     }
-    execSync(`${PACKAGE_NAME} new ${appName} -i false ${answers[0] ? COMMAND_FLAG.TS : ''}` +
-    `${answers[1] ? FLAGS_WITH_TEMPLATES.WITH_REDUX : ''} ${answers[2] ? COMMAND_FLAG.EJECTED : ''}`);
+    try {
+        execSync(`${PACKAGE_NAME} new ${appName} -i false ${answers[0] ? COMMAND_FLAG.TS : ''}` +
+            `${answers[1] ? FLAGS_WITH_TEMPLATES.WITH_REDUX : ''} ${answers[2] ? COMMAND_FLAG.EJECTED : ''}`);
+        done();
+    } catch (e) {
+        return done(e);
+    }
 }
 
 describe('new command', () => {
