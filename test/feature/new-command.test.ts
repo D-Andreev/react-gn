@@ -1,7 +1,13 @@
 import { spawn, execSync } from 'child_process';
 import {EOL} from 'os';
 import fs from 'fs';
-import {ASCII_ART, PACKAGE_NAME, QUESTION} from '../../src/constants';
+import {
+    ASCII_ART,
+    COMMAND_FLAG,
+    FLAGS_WITH_TEMPLATES,
+    NEW_COMMAND_QUESTION_MESSAGES,
+    PACKAGE_NAME
+} from '../../src/constants';
 import {buildPackage} from './utils';
 
 const TIMEOUT = 60000 * 3;
@@ -15,27 +21,15 @@ function createNewApp(appName: string, answers: any, done: Function) {
     if (process.env.TEST_ENV === 'CI') {
         execSync('git stash && git clean -fd');
     }
-    let answerCounter = 0;
-    let currentQuestion = Object.keys(answers)[answerCounter];
-    let currentAnswer = answers[currentQuestion];
-    const child = spawn(PACKAGE_NAME, ['new', appName], {shell: true});
-    child.stdin.setDefaultEncoding('utf8');
-    child.stdout.on('data', (data) => {
-        if (currentQuestion && data.toString().indexOf(currentQuestion) >= 0) {
-            child.stdin.write(Buffer.from(currentAnswer), 'utf8');
-            currentQuestion = Object.keys(answers)[++answerCounter];
-            currentAnswer = answers[currentQuestion];
-        }
-        data.toString().indexOf(`${appName} has been created successfully!`);
-        if (data.toString().indexOf(`${appName} has been created successfully!`) >= 0) {
-            done();
-        }
-    });
+    execSync(`${PACKAGE_NAME} new ${appName} -i false ${answers[0] ? COMMAND_FLAG.TS : ''}` +
+    `${answers[1] ? FLAGS_WITH_TEMPLATES.WITH_REDUX : ''} ${answers[2] ? COMMAND_FLAG.EJECTED : ''}`);
 }
 
 describe('new command', () => {
     let appName: string;
+    let disableInteractive: string;
     beforeAll(() => {
+        disableInteractive = '-i false';
         appName = `${Date.now()}my-app`;
         buildPackage();
     });
@@ -60,14 +54,14 @@ describe('new command', () => {
             appName = `${Date.now()}my-app`;
         });
         afterAll(() => {
-            execSync(`rm -rf ./${appName}`);
+            execSync(`rm -rf ./${appName} ${disableInteractive}`);
         });
 
         it('does not apply any of the configurations', (done) => {
             createNewApp(appName,{
-                [QUESTION.TS]: `n${EOL}`,
-                [QUESTION.REDUX]: `n${EOL}`,
-                [QUESTION.EJECTED]: `n${EOL}`,
+                [NEW_COMMAND_QUESTION_MESSAGES.USE_TS]: false,
+                [NEW_COMMAND_QUESTION_MESSAGES.USE_REDUX]: false,
+                [NEW_COMMAND_QUESTION_MESSAGES.EJECT_APP]: false,
             }, (err: ErrorEvent) => {
                 if (err) {
                     return done(err);
@@ -84,14 +78,14 @@ describe('new command', () => {
             appName = `${Date.now()}my-app`;
         });
         afterAll(() => {
-            execSync(`rm -rf ./${appName}`);
+            execSync(`rm -rf ./${appName} ${disableInteractive}`);
         });
 
         it('does not apply any of the configurations', (done) => {
             createNewApp(appName,{
-                [QUESTION.TS]: `${EOL}`,
-                [QUESTION.REDUX]: `${EOL}`,
-                [QUESTION.EJECTED]: `${EOL}`,
+                [NEW_COMMAND_QUESTION_MESSAGES.USE_TS]: `${EOL}`,
+                [NEW_COMMAND_QUESTION_MESSAGES.USE_REDUX]: `${EOL}`,
+                [NEW_COMMAND_QUESTION_MESSAGES.EJECT_APP]: `${EOL}`,
             }, (err: ErrorEvent) => {
                 if (err) {
                     return done(err);
@@ -108,14 +102,14 @@ describe('new command', () => {
             appName = `${Date.now()}my-app`;
         });
         afterAll(() => {
-            execSync(`rm -rf ./${appName}`);
+            execSync(`rm -rf ./${appName} ${disableInteractive}`);
         });
 
         it('sets up all the configurations', (done) => {
             createNewApp(appName,{
-                [QUESTION.TS]: `y${EOL}`,
-                [QUESTION.REDUX]: `yes${EOL}`,
-                [QUESTION.EJECTED]: `y${EOL}`,
+                [NEW_COMMAND_QUESTION_MESSAGES.USE_TS]: `y${EOL}`,
+                [NEW_COMMAND_QUESTION_MESSAGES.USE_REDUX]: `yes${EOL}`,
+                [NEW_COMMAND_QUESTION_MESSAGES.EJECT_APP]: `y${EOL}`,
             }, (err: ErrorEvent) => {
                 if (err) {
                     return done(err);
@@ -134,14 +128,14 @@ describe('new command', () => {
             appName = `${Date.now()}my-app`;
         });
         afterAll(() => {
-            execSync(`rm -rf ./${appName}`);
+            execSync(`rm -rf ./${appName} ${disableInteractive}`);
         });
 
         it('sets up all the configurations', (done) => {
             createNewApp(appName,{
-                [QUESTION.TS]: `n${EOL}`,
-                [QUESTION.REDUX]: `${EOL}`,
-                [QUESTION.EJECTED]: `y${EOL}`,
+                [NEW_COMMAND_QUESTION_MESSAGES.USE_TS]: `n${EOL}`,
+                [NEW_COMMAND_QUESTION_MESSAGES.USE_REDUX]: `${EOL}`,
+                [NEW_COMMAND_QUESTION_MESSAGES.EJECT_APP]: `y${EOL}`,
             }, (err: ErrorEvent) => {
                 if (err) {
                     return done(err);

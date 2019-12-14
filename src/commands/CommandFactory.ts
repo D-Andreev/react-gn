@@ -1,3 +1,4 @@
+import inquirer from 'inquirer';
 import readline from 'readline';
 import ICommand from './interfaces/ICommand';
 import {
@@ -78,7 +79,7 @@ export default class CommandFactory implements ICommandFactory{
     }
 
     createCommand(commandArguments: string[], done: Function): ICommand {
-        const userInterface = new Cli(process.stdout, readline);
+        const userInterface = new Cli(process.stdout, readline, inquirer);
         const unknownCommand: ICommand = new UnknownCommand(userInterface);
         let command = unknownCommand;
         commandArguments = CommandFactory.convertAliasesToFullCommand(commandArguments);

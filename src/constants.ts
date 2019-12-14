@@ -1,3 +1,5 @@
+import {CheckboxQuestion} from 'inquirer';
+
 export const PACKAGE_NAME = 'react-gn';
 export const PACKAGE_VERSION = '1.0.20';
 
@@ -19,13 +21,33 @@ export const COMMAND_FLAG = {
     TEMPLATE: '--template',
     COMPONENT_TARGET_PATH: '--path',
     COMPONENT_NAME: '--name',
+    INTERACTIVE: '--interactive'
 };
 
-export const QUESTION = {
-    TS: 'Do you want to use typescript? (Y/n) ',
-    REDUX: 'Do you want to use redux? (Y/n) ',
-    EJECTED: 'Do you want to eject create-react-app (Y/n) '
+export const NEW_COMMAND_QUESTION_MESSAGES = {
+    USE_TS: 'Use Typescript',
+    USE_REDUX: 'Use Redux',
+    EJECT_APP: 'Eject the app',
 };
+
+export const NEW_COMMAND_QUESTIONS: CheckboxQuestion[] = [
+    {
+        type: 'checkbox',
+        message: 'Select any of the following options',
+        name: 'options',
+        choices: [
+            {
+                name: NEW_COMMAND_QUESTION_MESSAGES.USE_TS
+            },
+            {
+                name: NEW_COMMAND_QUESTION_MESSAGES.USE_REDUX
+            },
+            {
+                name: NEW_COMMAND_QUESTION_MESSAGES.EJECT_APP
+            }
+        ]
+    }
+];
 
 export const ENUMERABLE_FLAG_ID = '[]';
 export const ENUMERABLE_FLAGS = [
@@ -52,12 +74,13 @@ export const COMMAND_ALIAS: {[alias: string]: string} = {
     '-t': COMMAND_FLAG.TEMPLATE,
     '-p': COMMAND_FLAG.COMPONENT_TARGET_PATH,
     '-n': COMMAND_FLAG.COMPONENT_NAME,
+    '-i': COMMAND_FLAG.INTERACTIVE,
     '-s': ENUMERABLE_FLAGS[0],
     '-a': ENUMERABLE_FLAGS[1],
     '-r': ENUMERABLE_FLAGS[2],
     '-wr': FLAGS_WITH_TEMPLATES.WITH_REDUX,
 };
-export const ALLOWED_FLAGS = ['--config', '--ejected']
+export const ALLOWED_FLAGS = ['--config', '--ejected', '--interactive']
     .concat(Object.values(FLAGS_WITH_TEMPLATES))
     .concat(ALLOWED_LANGUAGE_TYPE_FLAGS);
 
@@ -70,6 +93,7 @@ export const NON_PLACEHOLDER_FLAGS = [
 export const ALLOWED_FLAGS_DESCRIPTIONS: {[flag: string]: string} = {
     '--help (Alias: -h)': 'Shows the help.',
     '--version (Alias: -v)': 'Shows the help.',
+    '--interactive (Alias: -i)': 'When false, disables interactive input prompts.',
 };
 export const MAIN_COMMANDS_DESCRIPTIONS: {[flag: string]: string} = {
     'new': 'Create a new react application.',

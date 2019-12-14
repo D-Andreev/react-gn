@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@types/ejs": "^3.0.0",
+    "@types/inquirer": "^6.5.0",
     "@types/jest": "^24.0.18",
     "@types/node": "^12.7.5",
     "@types/steed": "^1.1.2",
@@ -37,6 +38,7 @@
   },
   "dependencies": {
     "ejs": "^3.0.1",
+    "inquirer": "^7.0.0",
     "steed": "^1.1.3"
   }
 }

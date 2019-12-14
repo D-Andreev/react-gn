@@ -5,13 +5,15 @@ import {ERROR, OUTPUT_TYPE} from '../constants';
 import Output from '../commands/Output';
 import {FgBlue, FgGreen, FgRed, FgWhite} from './colors';
 import WriteStream = NodeJS.WriteStream;
+import {Question} from 'inquirer';
 
 export default class Cli implements IUserInterface {
     private readonly stdout: WriteStream;
     private readonly readline: typeof import('readline');
     private readonly colorsMap: { [type: string]: string };
+    private readonly inquirer: typeof import('inquirer');
 
-    constructor(stdout: WriteStream, readline: typeof import('readline')) {
+    constructor(stdout: WriteStream, readline: typeof import('readline'), inquirer: typeof import('inquirer')) {
         this.stdout = stdout;
         this.readline = readline;
         this.colorsMap = {
@@ -20,6 +22,7 @@ export default class Cli implements IUserInterface {
             [OUTPUT_TYPE.SUCCESS]: FgGreen,
             [OUTPUT_TYPE.ERROR]: FgRed,
         };
+        this.inquirer = inquirer;
     }
 
     showOutput(output: Output[], done: Function) {
@@ -46,5 +49,11 @@ export default class Cli implements IUserInterface {
             readlineInterface.close();
             done(null, answer);
         });
+    }
+
+    prompt(question: Question, done: Function): void {
+        this.inquirer.prompt([question])
+            .then(answers => done(null, answers))
+            .catch(err => done(err));
     }
 }
