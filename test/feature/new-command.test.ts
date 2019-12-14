@@ -17,19 +17,6 @@ function verifyAppIsCreated(appName: string) {
     execSync('npm run build');
 }
 
-function createNewApp(appName: string, answers: any, done: Function) {
-    if (process.env.TEST_ENV === 'CI') {
-        execSync('git stash && git clean -fd');
-    }
-    try {
-        execSync(`${PACKAGE_NAME} new ${appName} -i false ${answers[0] ? COMMAND_FLAG.TS : ''}` +
-            `${answers[1] ? FLAGS_WITH_TEMPLATES.WITH_REDUX : ''} ${answers[2] ? COMMAND_FLAG.EJECTED : ''}`);
-        done();
-    } catch (e) {
-        return done(e);
-    }
-}
-
 describe('new command', () => {
     let appName: string;
     let disableInteractive: string;
@@ -45,6 +32,9 @@ describe('new command', () => {
 
     beforeEach(() => {
         execSync(`rm -rf ./${appName}`);
+        if (process.env.TEST_ENV === 'CI') {
+            execSync('git stash && git clean -fd');
+        }
     });
 
     describe('when I do not enter app name', () => {
@@ -63,42 +53,8 @@ describe('new command', () => {
         });
 
         it('does not apply any of the configurations', (done) => {
-            createNewApp(appName,{
-                [NEW_COMMAND_QUESTION_MESSAGES.USE_TS]: false,
-                [NEW_COMMAND_QUESTION_MESSAGES.USE_REDUX]: false,
-                [NEW_COMMAND_QUESTION_MESSAGES.EJECT_APP]: false,
-            }, (err: ErrorEvent) => {
-                if (err) {
-                    return done(err);
-                }
-
-                verifyAppIsCreated(appName);
-                done();
-            });
-        }, TIMEOUT);
-    });
-
-    describe('when I press enter for all of the questions', () => {
-        beforeAll(() => {
-            appName = `${Date.now()}my-app`;
-        });
-        afterAll(() => {
-            execSync(`rm -rf ./${appName} ${disableInteractive}`);
-        });
-
-        it('does not apply any of the configurations', (done) => {
-            createNewApp(appName,{
-                [NEW_COMMAND_QUESTION_MESSAGES.USE_TS]: false,
-                [NEW_COMMAND_QUESTION_MESSAGES.USE_REDUX]: false,
-                [NEW_COMMAND_QUESTION_MESSAGES.EJECT_APP]: false,
-            }, (err: ErrorEvent) => {
-                if (err) {
-                    return done(err);
-                }
-
-                verifyAppIsCreated(appName);
-                done();
-            });
+            execSync(`${PACKAGE_NAME} new ${appName} -i false`);
+            verifyAppIsCreated(appName);
         }, TIMEOUT);
     });
 
@@ -111,20 +67,7 @@ describe('new command', () => {
         });
 
         it('sets up all the configurations', (done) => {
-            createNewApp(appName,{
-                [NEW_COMMAND_QUESTION_MESSAGES.USE_TS]: true,
-                [NEW_COMMAND_QUESTION_MESSAGES.USE_REDUX]: true,
-                [NEW_COMMAND_QUESTION_MESSAGES.EJECT_APP]: true,
-            }, (err: ErrorEvent) => {
-                if (err) {
-                    return done(err);
-                }
-
-                expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeTruthy();
-                expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
-                verifyAppIsCreated(appName);
-                done();
-            });
+            execSync(`${PACKAGE_NAME} new ${appName} -i false --ts -wr -e`);
         }, TIMEOUT);
     });
 
@@ -137,20 +80,7 @@ describe('new command', () => {
         });
 
         it('sets up all the configurations', (done) => {
-            createNewApp(appName,{
-                [NEW_COMMAND_QUESTION_MESSAGES.USE_TS]: false,
-                [NEW_COMMAND_QUESTION_MESSAGES.USE_REDUX]: false,
-                [NEW_COMMAND_QUESTION_MESSAGES.EJECT_APP]: true,
-            }, (err: ErrorEvent) => {
-                if (err) {
-                    return done(err);
-                }
-
-                expect(fs.existsSync(`./${appName}/tsconfig.json`)).toBeFalsy();
-                expect(fs.existsSync(`./${appName}/scripts/build.js`)).toBeTruthy();
-                verifyAppIsCreated(appName);
-                done();
-            });
+            execSync(`${PACKAGE_NAME} new ${appName} -i false -e`);
         }, TIMEOUT);
     });
 });
