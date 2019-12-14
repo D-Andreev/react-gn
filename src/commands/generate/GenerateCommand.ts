@@ -14,7 +14,7 @@ import Output from '../Output';
 import {noop} from '../../utils';
 import {sep} from 'path';
 
-export default class ComponentCommand implements ICommand {
+export default class GenerateCommand implements ICommand {
     public flags: Flag[];
     public readonly componentName: string;
     public readonly path: string;
@@ -71,7 +71,7 @@ export default class ComponentCommand implements ICommand {
             if (NON_PLACEHOLDER_FLAGS.indexOf(flag.name) !== -1) {
                 continue;
             }
-            if (ComponentCommand.isEnumerableFlag(flag)) {
+            if (GenerateCommand.isEnumerableFlag(flag)) {
                 const split: string[] = flag.value.split(',');
                 for (let j = 0; j < split.length; j++) {
                     placeholders.push({
@@ -104,7 +104,7 @@ export default class ComponentCommand implements ICommand {
             const componentPath = matchComponentPath[0]
                 .replace(`${this.templateName}${sep}`, '');
             let generatedPath = `${this.targetPath}${sep}${componentName}${sep}${componentPath}`;
-            generatedPath = ComponentCommand.replacePlaceholdersWithData(generatedPath, this.placeholders);
+            generatedPath = GenerateCommand.replacePlaceholdersWithData(generatedPath, this.placeholders);
             let componentParts = generatedPath.split(sep);
             const indexOfMainPath = componentParts.indexOf(componentName);
             componentParts = componentParts.slice(indexOfMainPath);
@@ -113,7 +113,7 @@ export default class ComponentCommand implements ICommand {
     }
 
     private renderTemplate(templatePath: string, transformedFilePath: string, i: number, done: Function): void {
-        const renderedTemplatePath = ComponentCommand
+        const renderedTemplatePath = GenerateCommand
             .replacePlaceholdersWithData(transformedFilePath, this.placeholders);
         const parts: string[] = renderedTemplatePath.split(sep);
         if (!parts || !parts.length) {
@@ -129,7 +129,7 @@ export default class ComponentCommand implements ICommand {
                     if (err) {
                         return done(err);
                     }
-                    const renderedContents: string = ComponentCommand
+                    const renderedContents: string = GenerateCommand
                         .replacePlaceholdersWithData(contents.toString(), this.placeholders);
 
                     this.storage.create(generatedPath, renderedContents, (err: ErrorEvent) => {
@@ -196,7 +196,7 @@ export default class ComponentCommand implements ICommand {
                 if (err) {
                     return this.onError(err, done);
                 }
-                const templateParts: string[] = ComponentCommand.getTemplateParts(templatePath.value);
+                const templateParts: string[] = GenerateCommand.getTemplateParts(templatePath.value);
                 this.templateName = templateParts[templateParts.length - 1];
                 this.placeholders = this.getPlaceholderFlags();
                 this.transformedFilePaths = this.transformFilePaths(filePaths, componentNameArg.value);

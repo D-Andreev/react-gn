@@ -24,6 +24,8 @@
     "watch-test": "npm run test -- --watchAll"
   },
   "devDependencies": {
+    "@types/ejs": "^3.0.0",
+    "@types/inquirer": "^6.5.0",
     "@types/jest": "^24.0.18",
     "@types/node": "^12.7.5",
     "@types/steed": "^1.1.2",
@@ -35,6 +37,8 @@
     "typescript": "^3.6.3"
   },
   "dependencies": {
+    "ejs": "^3.0.1",
+    "inquirer": "^7.0.0",
     "steed": "^1.1.3"
   }
 }

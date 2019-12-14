@@ -9,15 +9,16 @@ import {
     FLAGS_WITH_TEMPLATES_WITH_REDUX_NAME,
     LANGUAGE_TYPE,
     OUTPUT_TYPE,
-    QUESTION
+    NEW_COMMAND_QUESTIONS, NEW_COMMAND_QUESTION_MESSAGES, COMMAND_FLAG
 } from '../../constants';
 import Output from '../Output';
-import {isAffirmativeAnswer, noop} from '../../utils';
+import {noop} from '../../utils';
 import ITemplate, {IDependency} from '../interfaces/ITemplate';
 import * as path from 'path';
 import ICommand from '../interfaces/ICommand';
 import steed from 'steed';
-import INewCommandAnswers from '../interfaces/INewCommandAnswers';
+import INewAnswers from '../interfaces/INewAnswers';
+import {Answers, CheckboxQuestion} from 'inquirer';
 
 export default class NewCommand implements ICommand {
     public readonly storage: IStorage;
@@ -184,23 +185,6 @@ export default class NewCommand implements ICommand {
         });
     }
 
-    private askQuestions(done: Function): void {
-        const input = [QUESTION.TS, QUESTION.REDUX, QUESTION.EJECTED];
-        steed.mapSeries(input, (question: string, cb: Function) => {
-            this.userInterface.askQuestion(question, cb);
-        }, (err: ErrorEvent, results: string[]) => {
-            if (err) {
-                return done(err);
-            }
-            const answers: INewCommandAnswers = {
-                languageType: isAffirmativeAnswer(results[0]) ? LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS,
-                withRedux: isAffirmativeAnswer(results[1]),
-                ejected: isAffirmativeAnswer(results[2])
-            };
-            done(null, answers);
-        });
-    }
-
     private initApp(args: string[], done: Function): void {
         this.cra.createApp(this.appName, this.path, args);
         this.cra.on(CRA_EVENT.INIT_ERROR, (err: ErrorEvent) => {
@@ -250,6 +234,31 @@ export default class NewCommand implements ICommand {
         });
     }
 
+    private askQuestions(done: Function): void {
+        if (this.flags.find((f: Flag) => f.name === COMMAND_FLAG.INTERACTIVE && f.value === 'false')) {
+            return done(null, {
+                languageType: this.flags.find((f: Flag) => f.name === COMMAND_FLAG.TS) ?
+                    LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS,
+                withRedux: this.flags.find((f: Flag) => f.name === FLAGS_WITH_TEMPLATES.WITH_REDUX),
+                ejected: this.flags.find((f: Flag) => f.name === COMMAND_FLAG.EJECTED),
+            });
+        }
+        steed.mapSeries(NEW_COMMAND_QUESTIONS, (question: CheckboxQuestion, cb: Function) => {
+            this.userInterface.prompt(question, cb);
+        }, (err: ErrorEvent, results: Answers) => {
+            if (err) {
+                return done(err);
+            }
+            const answers: INewAnswers = {
+                languageType: results[0].options.indexOf(NEW_COMMAND_QUESTION_MESSAGES.USE_TS) ?
+                    LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS,
+                withRedux: results[0].options.indexOf(NEW_COMMAND_QUESTION_MESSAGES.USE_REDUX) !== -1,
+                ejected: results[0].options.indexOf(NEW_COMMAND_QUESTION_MESSAGES.EJECT_APP) !== -1
+            };
+            done(null, answers);
+        });
+    }
+
     constructor(
         storage: IStorage,
         userInterface: IUserInterface,
@@ -271,14 +280,14 @@ export default class NewCommand implements ICommand {
     execute(done: Function): void {
         steed.waterfall([
             (next: Function) => this.askQuestions(next),
-            (answers: INewCommandAnswers, next: Function) => {
+            (answers: INewAnswers, next: Function) => {
                 const args = [];
                 if (answers.languageType === LANGUAGE_TYPE.TS) {
                     args.push('--template typescript');
                 }
                 this.initApp(args, (err: ErrorEvent) => next(err, answers));
             },
-            (answers: INewCommandAnswers, next: Function) => {
+            (answers: INewAnswers, next: Function) => {
                 if (answers.withRedux) {
                     this.flags.push({name: FLAGS_WITH_TEMPLATES.WITH_REDUX, value: ''});
                 }

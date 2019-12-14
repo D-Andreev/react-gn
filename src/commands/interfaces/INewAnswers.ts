@@ -1,4 +1,4 @@
-export default interface INewCommandAnswers {
+export default interface INewAnswers {
     languageType: string;
     ejected: boolean;
     withRedux: boolean;
