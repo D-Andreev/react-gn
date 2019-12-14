@@ -3,6 +3,7 @@ import Cli from '../../../src/user-interface/Cli';
 import IUserInterface from '../../../src/user-interface/interfaces/IUserInterface';
 import {ERROR, OUTPUT_TYPE} from '../../../src/constants';
 import {FgWhite} from '../../../src/user-interface/colors';
+import inquirer from 'inquirer';
 
 describe('Cli', () => {
     let cli: IUserInterface;
@@ -12,7 +13,7 @@ describe('Cli', () => {
     beforeEach(() => {
         stdout = process.stdout;
         stdout.write = jest.fn();
-        cli = new Cli(stdout, readline);
+        cli = new Cli(stdout, readline, inquirer);
         done = jest.fn();
     });
 
