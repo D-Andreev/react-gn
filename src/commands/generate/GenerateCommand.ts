@@ -10,7 +10,7 @@ import {
     ENUMERABLE_FLAG_ID,
     FLAG_INDICATOR,
     FLAGS_WITH_TEMPLATES,
-    GENERATE_COMMAND_QUESTIONS,
+    GENERATE_COMMAND_QUESTIONS, GENERATE_QUESTION_NAME,
     LANGUAGE_TYPE,
     NEW_COMPONENT_MESSAGE,
     NON_PLACEHOLDER_FLAGS,
@@ -214,26 +214,13 @@ export default class GenerateCommand implements ICommand {
                 return done(err);
             }
 
-            if (!results) {
-                return {
-                    targetPath: process.cwd(),
-                    componentName: DEFAULT_COMPONENT_NAME,
-                    languageType: LANGUAGE_TYPE.JS,
-                    isClassComponent: false,
-                    withPropTypes: false,
-                    withStyledComponents: false,
-                    withState: false,
-                    withRedux: false,
-                    withHooks: false,
-                };
-            }
             console.log({results});
             const answers: IGenerateAnswers = {
-                targetPath: './',
-                componentName: DEFAULT_COMPONENT_NAME,
-                languageType: LANGUAGE_TYPE.JS,
-                isClassComponent: false,
-                withPropTypes: false,
+                targetPath: results[GENERATE_QUESTION_NAME.TARGET_PATH],
+                componentName: results[GENERATE_QUESTION_NAME.COMPONENT_NAME],
+                languageType: results[GENERATE_QUESTION_NAME.USE_TS] ? LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS,
+                isClassComponent: results[GENERATE_QUESTION_NAME.IS_CLASS_COMPONENT],
+                withPropTypes: results[GENERATE_QUESTION_NAME.OPTIONS].find((o: any) => o.name === ''),
                 withStyledComponents: false,
                 withState: false,
                 withRedux: false,
