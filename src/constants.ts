@@ -1,12 +1,14 @@
-import {CheckboxQuestion} from 'inquirer';
+import {CheckboxQuestion, ConfirmQuestion, InputQuestion} from 'inquirer';
+import fs from 'fs';
 
 export const PACKAGE_NAME = 'react-gn';
 export const PACKAGE_VERSION = '1.0.21';
+export const DEFAULT_COMPONENT_NAME = 'MyComponent';
 
 export const COMMAND = {
     NEW: 'new',
     UNKNOWN: 'unknown',
-    COMPONENT: 'component',
+    GENERATE: 'generate',
 };
 
 export const COMMAND_FLAG = {
@@ -23,7 +25,6 @@ export const COMMAND_FLAG = {
 
     WITH_STATE: '--withState',
     WITH_PROP_TYPES: '--withPropTypes',
-    WITH_DEFAULT_PROPS: '--withDefaultProps',
     WITH_STYLED_COMPONENTS: '--withStyledComponents',
     IS_CLASS_COMPONENT: '--isClass',
     WITH_HOOKS: '--withHooks'
@@ -51,6 +52,83 @@ export const NEW_COMMAND_QUESTIONS: CheckboxQuestion[] = [
                 name: NEW_COMMAND_QUESTION_MESSAGES.EJECT_APP
             }
         ]
+    }
+];
+
+export const GENERATE_COMMAND_QUESTION_MESSAGES = {
+    TARGET_DIR: 'Enter the target dir for the component.',
+    USE_TS: 'Do you want to use typescript?',
+    COMPONENT_NAME: 'Enter component name.',
+    IS_CLASS_COMPONENT: 'Should it be a class component?',
+    WITH_HOOKS: 'Do you want to use hooks',
+    WITH_REDUX: 'Do you want the component to be connected to redux?',
+    WITH_STATE: 'Does your component have state?',
+    WITH_PROP_TYPES: 'Do you want to add propTypes?',
+    WITH_STYLED_COMPONENTS: 'Do you want to add styled components?',
+};
+
+export const GENERATE_COMMON_CHOICES = [
+    { name: GENERATE_COMMAND_QUESTION_MESSAGES.WITH_PROP_TYPES },
+    { name: GENERATE_COMMAND_QUESTION_MESSAGES.WITH_STYLED_COMPONENTS },
+];
+
+export const GENERATE_COMMAND_QUESTIONS: (CheckboxQuestion | InputQuestion | ConfirmQuestion)[] = [
+    {
+        type: 'input',
+        name: 'target dir',
+        message: GENERATE_COMMAND_QUESTION_MESSAGES.TARGET_DIR,
+        default: './',
+        validate: (input: any): boolean | string | Promise<boolean | string> => {
+            if (!fs.existsSync(input)) {
+                return 'Please enter an existing directory.'
+            }
+
+            return true;
+        }
+    },
+    {
+        type: 'input',
+        name: 'component name',
+        message: GENERATE_COMMAND_QUESTION_MESSAGES.COMPONENT_NAME,
+        default: DEFAULT_COMPONENT_NAME
+    },
+    {
+        type: 'confirm',
+        name: 'use ts',
+        message: GENERATE_COMMAND_QUESTION_MESSAGES.USE_TS,
+        default: false
+    },
+    {
+        type: 'confirm',
+        name: 'is class component',
+        message: GENERATE_COMMAND_QUESTION_MESSAGES.IS_CLASS_COMPONENT,
+        default: false,
+    },
+    {
+        type: 'checkbox',
+        message: 'Select any of the following options',
+        name: 'options',
+        choices: [
+            { name: GENERATE_COMMAND_QUESTION_MESSAGES.WITH_HOOKS },
+            ...GENERATE_COMMON_CHOICES,
+        ],
+        when: function(answers) {
+            console.log('see22', answers);
+            return answers.comments !== 'Nope, all good!';
+        }
+    },
+    {
+        type: 'checkbox',
+        message: 'Select any of the following options2',
+        name: 'options',
+        choices: [
+            { name: GENERATE_COMMAND_QUESTION_MESSAGES.WITH_STATE },
+            ...GENERATE_COMMON_CHOICES
+        ],
+        when: function(answers) {
+            console.log('see', answers);
+            return answers.comments !== 'Nope, all good!';
+        }
     }
 ];
 
@@ -86,7 +164,6 @@ export const COMMAND_ALIAS: {[alias: string]: string} = {
     '-wr': FLAGS_WITH_TEMPLATES.WITH_REDUX,
     '-ws': COMMAND_FLAG.WITH_STATE,
     '-wpt': COMMAND_FLAG.WITH_PROP_TYPES,
-    '-wdp': COMMAND_FLAG.WITH_DEFAULT_PROPS,
     '-wsc': COMMAND_FLAG.WITH_STYLED_COMPONENTS,
     '-wh': COMMAND_FLAG.WITH_HOOKS,
     '-class': COMMAND_FLAG.IS_CLASS_COMPONENT,
@@ -151,11 +228,6 @@ export const LANGUAGE_TYPE = {
     TS: 'ts',
 };
 
-export const DEFAULT_CONFIG = {
-    language: LANGUAGE_TYPE.JS,
-    ejected: false,
-};
-
 export const CRA_EVENT = {
     INIT_ERROR: 'INIT_ERROR',
     INIT_DATA: 'INIT_DATA',
@@ -164,5 +236,3 @@ export const CRA_EVENT = {
     EJECT_DATA: 'EJECT_DATA',
     EJECT_CLOSE: 'EJECT_CLOSE'
 };
-
-export const RETURN_STATEMENT_MIN_MATCH_COUNT = 3;

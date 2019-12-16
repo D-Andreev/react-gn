@@ -110,20 +110,16 @@ export default class CommandFactory implements ICommandFactory{
                     );
                 }
                 break;
-            case COMMAND.COMPONENT:
-                if (!commandArguments[3]) {
-                    command = unknownCommand;
-                } else {
-                    const flags: Flag[] = CommandFactory.parseFlags(commandArguments, false);
-                    command = new GenerateCommand(
-                        this.storage,
-                        userInterface,
-                        this.childProcess,
-                        commandArguments[3],
-                        flags,
-                        process.cwd()
-                    );
-                }
+            case COMMAND.GENERATE:
+                const flags: Flag[] = CommandFactory.parseFlags(commandArguments, false);
+                command = new GenerateCommand(
+                    this.storage,
+                    userInterface,
+                    this.childProcess,
+                    commandArguments[3],
+                    flags,
+                    process.cwd()
+                );
                 break;
             default:
                 command = unknownCommand;

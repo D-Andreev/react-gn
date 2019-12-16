@@ -18,7 +18,7 @@ import * as path from 'path';
 import ICommand from '../interfaces/ICommand';
 import steed from 'steed';
 import INewAnswers from '../interfaces/INewAnswers';
-import {Answers, CheckboxQuestion} from 'inquirer';
+import {Answers} from 'inquirer';
 
 export default class NewCommand implements ICommand {
     public readonly storage: IStorage;
@@ -234,8 +234,12 @@ export default class NewCommand implements ICommand {
         });
     }
 
+    private isInteractiveModeDisabled(): boolean {
+        return !!this.flags.find((f: Flag) => f.name === COMMAND_FLAG.INTERACTIVE && f.value === 'false');
+    }
+
     private askQuestions(done: Function): void {
-        if (this.flags.find((f: Flag) => f.name === COMMAND_FLAG.INTERACTIVE && f.value === 'false')) {
+        if (this.isInteractiveModeDisabled()) {
             return done(null, {
                 languageType: this.flags.find((f: Flag) => f.name === COMMAND_FLAG.TS) ?
                     LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS,
@@ -243,9 +247,8 @@ export default class NewCommand implements ICommand {
                 ejected: this.flags.find((f: Flag) => f.name === COMMAND_FLAG.EJECTED),
             });
         }
-        steed.mapSeries(NEW_COMMAND_QUESTIONS, (question: CheckboxQuestion, cb: Function) => {
-            this.userInterface.prompt(question, cb);
-        }, (err: ErrorEvent, results: Answers) => {
+
+        this.userInterface.prompt(NEW_COMMAND_QUESTIONS, (err: ErrorEvent, results: Answers) => {
             if (err) {
                 return done(err);
             }

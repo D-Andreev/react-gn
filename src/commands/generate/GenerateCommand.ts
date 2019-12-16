@@ -4,8 +4,14 @@ import Flag from '../Flag';
 import IStorage from '../../services/interfaces/IStorage';
 import IUserInterface from '../../user-interface/interfaces/IUserInterface';
 import {
-    COMMAND_FLAG, ENUMERABLE_FLAG_ID,
-    FLAG_INDICATOR, FLAGS_WITH_TEMPLATES, LANGUAGE_TYPE, NEW_COMMAND_QUESTION_MESSAGES, NEW_COMMAND_QUESTIONS,
+    ALLOWED_LANGUAGE_TYPE_FLAGS,
+    COMMAND_FLAG,
+    DEFAULT_COMPONENT_NAME,
+    ENUMERABLE_FLAG_ID,
+    FLAG_INDICATOR,
+    FLAGS_WITH_TEMPLATES,
+    GENERATE_COMMAND_QUESTIONS,
+    LANGUAGE_TYPE,
     NEW_COMPONENT_MESSAGE,
     NON_PLACEHOLDER_FLAGS,
     OUTPUT_TYPE
@@ -13,9 +19,8 @@ import {
 import Output from '../Output';
 import {noop} from '../../utils';
 import {sep} from 'path';
-import {Answers, CheckboxQuestion} from 'inquirer';
-import INewAnswers from '../interfaces/INewAnswers';
-import * as path from "path";
+import {Answers} from 'inquirer';
+import IGenerateAnswers from '../interfaces/IGenerateAnswers';
 
 export default class GenerateCommand implements ICommand {
     public flags: Flag[];
@@ -176,26 +181,63 @@ export default class GenerateCommand implements ICommand {
         return componentTargetPathArg ? componentTargetPathArg.value : this.path;
     }
 
+    private isInteractiveModeDisabled(): boolean {
+        return !!this.flags.find((f: Flag) => f.name === COMMAND_FLAG.INTERACTIVE && f.value === 'false');
+    }
+
+    private getFlagValue(flagName: string): string {
+        const flag: Flag | undefined = this.flags.find((f: Flag) => f.name === flagName);
+        if (!flag) {
+            return '';
+        }
+
+        return flag.value;
+    }
+
     private askQuestions(done: Function): void {
-        if (this.flags.find((f: Flag) => f.name === COMMAND_FLAG.INTERACTIVE && f.value === 'false')) {
+        if (this.isInteractiveModeDisabled()) {
             return done(null, {
-                languageType: this.flags.find((f: Flag) => f.name === COMMAND_FLAG.TS) ?
-                    LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS,
-                withRedux: this.flags.find((f: Flag) => f.name === FLAGS_WITH_TEMPLATES.WITH_REDUX),
-                ejected: this.flags.find((f: Flag) => f.name === COMMAND_FLAG.EJECTED),
+                targetPath: this.getFlagValue(COMMAND_FLAG.COMPONENT_TARGET_PATH),
+                componentName: this.getFlagValue(COMMAND_FLAG.COMPONENT_NAME),
+                languageType: !!this.getFlagValue(ALLOWED_LANGUAGE_TYPE_FLAGS[1]) ? LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS,
+                isClassComponent: !!this.getFlagValue(COMMAND_FLAG.IS_CLASS_COMPONENT),
+                withPropTypes: !!this.getFlagValue(COMMAND_FLAG.WITH_PROP_TYPES),
+                withStyledComponents: !!this.getFlagValue(COMMAND_FLAG.WITH_STYLED_COMPONENTS),
+                withState: !!this.getFlagValue(COMMAND_FLAG.WITH_STATE),
+                withRedux: !!this.getFlagValue(FLAGS_WITH_TEMPLATES.WITH_REDUX),
+                withHooks: !!this.getFlagValue(COMMAND_FLAG.WITH_HOOKS),
             });
         }
-        steed.mapSeries(NEW_COMMAND_QUESTIONS, (question: CheckboxQuestion, cb: Function) => {
-            this.userInterface.prompt(question, cb);
-        }, (err: ErrorEvent, results: Answers) => {
+
+        this.userInterface.prompt(GENERATE_COMMAND_QUESTIONS, (err: ErrorEvent, results: Answers) => {
             if (err) {
                 return done(err);
             }
-            const answers: INewAnswers = {
-                languageType: results && results[0].options.indexOf(NEW_COMMAND_QUESTION_MESSAGES.USE_TS) !== -1 ?
-                    LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS,
-                withRedux: results && results[0].options.indexOf(NEW_COMMAND_QUESTION_MESSAGES.USE_REDUX) !== -1,
-                ejected: results && results[0].options.indexOf(NEW_COMMAND_QUESTION_MESSAGES.EJECT_APP) !== -1
+
+            if (!results) {
+                return {
+                    targetPath: process.cwd(),
+                    componentName: DEFAULT_COMPONENT_NAME,
+                    languageType: LANGUAGE_TYPE.JS,
+                    isClassComponent: false,
+                    withPropTypes: false,
+                    withStyledComponents: false,
+                    withState: false,
+                    withRedux: false,
+                    withHooks: false,
+                };
+            }
+            console.log({results});
+            const answers: IGenerateAnswers = {
+                targetPath: './',
+                componentName: DEFAULT_COMPONENT_NAME,
+                languageType: LANGUAGE_TYPE.JS,
+                isClassComponent: false,
+                withPropTypes: false,
+                withStyledComponents: false,
+                withState: false,
+                withRedux: false,
+                withHooks: false,
             };
             done(null, answers);
         });
@@ -204,9 +246,9 @@ export default class GenerateCommand implements ICommand {
     execute(done: Function): void {
         steed.waterfall([
             (next: Function) => this.askQuestions(next),
-            (answers: INewAnswers, next: Function) => {
-
-
+            (answers: IGenerateAnswers, next: Function) => {
+                console.log('answers', answers);
+                next();
             },
         ], (err: ErrorEvent) => {
             if (err) {
