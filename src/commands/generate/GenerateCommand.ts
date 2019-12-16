@@ -6,7 +6,6 @@ import IUserInterface from '../../user-interface/interfaces/IUserInterface';
 import {
     ALLOWED_LANGUAGE_TYPE_FLAGS,
     COMMAND_FLAG,
-    DEFAULT_COMPONENT_NAME,
     ENUMERABLE_FLAG_ID,
     FLAG_INDICATOR,
     FLAGS_WITH_TEMPLATES,
@@ -214,7 +213,6 @@ export default class GenerateCommand implements ICommand {
                 return done(err);
             }
 
-            console.log({results});
             const answers: IGenerateAnswers = {
                 targetPath: results[GENERATE_QUESTION_NAME.TARGET_PATH],
                 componentName: results[GENERATE_QUESTION_NAME.COMPONENT_NAME],
