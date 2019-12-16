@@ -1,11 +1,11 @@
-import path from 'path';
+import steed from 'steed';
 import ICommand from '../interfaces/ICommand';
 import Flag from '../Flag';
 import IStorage from '../../services/interfaces/IStorage';
 import IUserInterface from '../../user-interface/interfaces/IUserInterface';
 import {
     COMMAND_FLAG, ENUMERABLE_FLAG_ID,
-    FLAG_INDICATOR,
+    FLAG_INDICATOR, FLAGS_WITH_TEMPLATES, LANGUAGE_TYPE, NEW_COMMAND_QUESTION_MESSAGES, NEW_COMMAND_QUESTIONS,
     NEW_COMPONENT_MESSAGE,
     NON_PLACEHOLDER_FLAGS,
     OUTPUT_TYPE
@@ -13,6 +13,9 @@ import {
 import Output from '../Output';
 import {noop} from '../../utils';
 import {sep} from 'path';
+import {Answers, CheckboxQuestion} from 'inquirer';
+import INewAnswers from '../interfaces/INewAnswers';
+import * as path from "path";
 
 export default class GenerateCommand implements ICommand {
     public flags: Flag[];
@@ -173,47 +176,44 @@ export default class GenerateCommand implements ICommand {
         return componentTargetPathArg ? componentTargetPathArg.value : this.path;
     }
 
-    execute(done: Function): void {
-        const templatePath: Flag | undefined = this.getFlag(COMMAND_FLAG.TEMPLATE);
-        if (!templatePath) {
-            const err = new Error(NEW_COMPONENT_MESSAGE.INVALID_TEMPLATE_PATH);
-            return this.onError(err, done);
-        }
-        templatePath.value = path.normalize(templatePath.value);
-        this.storage.directoryExists(templatePath.value, (err: ErrorEvent) => {
-            if (err) {
-                return this.onError(new Error(NEW_COMPONENT_MESSAGE.INVALID_TEMPLATE_PATH), done);
-            }
-
-            this.targetPath = this.getComponentTargetPath();
-            const componentNameArg: Flag | undefined = this.getFlag(COMMAND_FLAG.COMPONENT_NAME);
-            if (!componentNameArg) {
-                const err = new Error(NEW_COMPONENT_MESSAGE.INVALID_NAME);
-                return this.onError(err, done);
-            }
-
-            this.storage.scanDirectory(templatePath.value, (err: ErrorEvent, filePaths: string[]) => {
-                if (err) {
-                    return this.onError(err, done);
-                }
-                const templateParts: string[] = GenerateCommand.getTemplateParts(templatePath.value);
-                this.templateName = templateParts[templateParts.length - 1];
-                this.placeholders = this.getPlaceholderFlags();
-                this.transformedFilePaths = this.transformFilePaths(filePaths, componentNameArg.value);
-                this.storage.createPaths(this.targetPath, this.transformedFilePaths, (err: Error) => {
-                    if (err) {
-                        return this.onError(err, done);
-                    }
-                    const isSuccessful = true;
-                    for (let i = 0; i < this.transformedFilePaths.length; i++) {
-                        this.renderTemplate(
-                            filePaths[i],
-                            this.transformedFilePaths[i],
-                            i,
-                            (err: ErrorEvent) => this.onTemplateRendered(err, i, isSuccessful, done));
-                    }
-                });
+    private askQuestions(done: Function): void {
+        if (this.flags.find((f: Flag) => f.name === COMMAND_FLAG.INTERACTIVE && f.value === 'false')) {
+            return done(null, {
+                languageType: this.flags.find((f: Flag) => f.name === COMMAND_FLAG.TS) ?
+                    LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS,
+                withRedux: this.flags.find((f: Flag) => f.name === FLAGS_WITH_TEMPLATES.WITH_REDUX),
+                ejected: this.flags.find((f: Flag) => f.name === COMMAND_FLAG.EJECTED),
             });
+        }
+        steed.mapSeries(NEW_COMMAND_QUESTIONS, (question: CheckboxQuestion, cb: Function) => {
+            this.userInterface.prompt(question, cb);
+        }, (err: ErrorEvent, results: Answers) => {
+            if (err) {
+                return done(err);
+            }
+            const answers: INewAnswers = {
+                languageType: results && results[0].options.indexOf(NEW_COMMAND_QUESTION_MESSAGES.USE_TS) !== -1 ?
+                    LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS,
+                withRedux: results && results[0].options.indexOf(NEW_COMMAND_QUESTION_MESSAGES.USE_REDUX) !== -1,
+                ejected: results && results[0].options.indexOf(NEW_COMMAND_QUESTION_MESSAGES.EJECT_APP) !== -1
+            };
+            done(null, answers);
+        });
+    }
+
+    execute(done: Function): void {
+        steed.waterfall([
+            (next: Function) => this.askQuestions(next),
+            (answers: INewAnswers, next: Function) => {
+
+
+            },
+        ], (err: ErrorEvent) => {
+            if (err) {
+                return done(err);
+            }
+
+            done();
         });
     }
 }

@@ -1,15 +1,13 @@
 import {CheckboxQuestion} from 'inquirer';
 
 export const PACKAGE_NAME = 'react-gn';
-export const PACKAGE_VERSION = '1.0.20';
+export const PACKAGE_VERSION = '1.0.21';
 
 export const COMMAND = {
     NEW: 'new',
     UNKNOWN: 'unknown',
     COMPONENT: 'component',
 };
-
-export const AFFIRMATIVE_ANSWERS = ['y', 'yes'];
 
 export const COMMAND_FLAG = {
     JS: '--js',
@@ -21,7 +19,14 @@ export const COMMAND_FLAG = {
     TEMPLATE: '--template',
     COMPONENT_TARGET_PATH: '--path',
     COMPONENT_NAME: '--name',
-    INTERACTIVE: '--interactive'
+    INTERACTIVE: '--interactive',
+
+    WITH_STATE: '--withState',
+    WITH_PROP_TYPES: '--withPropTypes',
+    WITH_DEFAULT_PROPS: '--withDefaultProps',
+    WITH_STYLED_COMPONENTS: '--withStyledComponents',
+    IS_CLASS_COMPONENT: '--isClass',
+    WITH_HOOKS: '--withHooks'
 };
 
 export const NEW_COMMAND_QUESTION_MESSAGES = {
@@ -55,7 +60,7 @@ export const ENUMERABLE_FLAGS = [
     `--action${ENUMERABLE_FLAG_ID}`,
     `--reducer${ENUMERABLE_FLAG_ID}`
 ];
-export const MAIN_COMMANDS = ['init', 'create'];
+export const MAIN_COMMANDS = ['new', 'generate'];
 export const ALLOWED_LANGUAGE_TYPE_FLAGS = ['--js', '--ts'];
 export const FLAGS_WITH_TEMPLATES = {
     WITH_REDUX: '--withRedux',
@@ -79,6 +84,12 @@ export const COMMAND_ALIAS: {[alias: string]: string} = {
     '-a': ENUMERABLE_FLAGS[1],
     '-r': ENUMERABLE_FLAGS[2],
     '-wr': FLAGS_WITH_TEMPLATES.WITH_REDUX,
+    '-ws': COMMAND_FLAG.WITH_STATE,
+    '-wpt': COMMAND_FLAG.WITH_PROP_TYPES,
+    '-wdp': COMMAND_FLAG.WITH_DEFAULT_PROPS,
+    '-wsc': COMMAND_FLAG.WITH_STYLED_COMPONENTS,
+    '-wh': COMMAND_FLAG.WITH_HOOKS,
+    '-class': COMMAND_FLAG.IS_CLASS_COMPONENT,
 };
 export const ALLOWED_FLAGS = ['--config', '--ejected', '--interactive']
     .concat(Object.values(FLAGS_WITH_TEMPLATES))
@@ -92,8 +103,10 @@ export const NON_PLACEHOLDER_FLAGS = [
 
 export const ALLOWED_FLAGS_DESCRIPTIONS: {[flag: string]: string} = {
     '--help (Alias: -h)': 'Shows the help.',
-    '--version (Alias: -v)': 'Shows the help.',
+    '--version (Alias: -v)': 'Shows the current version.',
     '--interactive (Alias: -i)': 'When false, disables interactive input prompts.',
+    '--withState (Alias: -ws)': 'When true, adds state to the component.',
+    '--withHooks (Alias: -wh)': 'When true, adds state to the component.',
 };
 export const MAIN_COMMANDS_DESCRIPTIONS: {[flag: string]: string} = {
     'new': 'Create a new react application.',
