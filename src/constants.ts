@@ -1,15 +1,15 @@
-import {CheckboxQuestion} from 'inquirer';
+import {CheckboxQuestion, ConfirmQuestion, InputQuestion} from 'inquirer';
+import fs from 'fs';
 
 export const PACKAGE_NAME = 'react-gn';
-export const PACKAGE_VERSION = '1.0.20';
+export const PACKAGE_VERSION = '1.0.21';
+export const DEFAULT_COMPONENT_NAME = 'MyComponent';
 
 export const COMMAND = {
     NEW: 'new',
     UNKNOWN: 'unknown',
-    COMPONENT: 'component',
+    GENERATE: 'generate',
 };
-
-export const AFFIRMATIVE_ANSWERS = ['y', 'yes'];
 
 export const COMMAND_FLAG = {
     JS: '--js',
@@ -21,7 +21,13 @@ export const COMMAND_FLAG = {
     TEMPLATE: '--template',
     COMPONENT_TARGET_PATH: '--path',
     COMPONENT_NAME: '--name',
-    INTERACTIVE: '--interactive'
+    INTERACTIVE: '--interactive',
+
+    WITH_STATE: '--withState',
+    WITH_PROP_TYPES: '--withPropTypes',
+    WITH_STYLED_COMPONENTS: '--withStyledComponents',
+    IS_CLASS_COMPONENT: '--isClass',
+    WITH_HOOKS: '--withHooks'
 };
 
 export const NEW_COMMAND_QUESTION_MESSAGES = {
@@ -49,13 +55,97 @@ export const NEW_COMMAND_QUESTIONS: CheckboxQuestion[] = [
     }
 ];
 
+export const GENERATE_COMMAND_QUESTION_MESSAGES = {
+    TARGET_DIR: 'Enter the target dir for the component.',
+    USE_TS: 'Do you want to use typescript?',
+    COMPONENT_NAME: 'Enter component name.',
+    IS_CLASS_COMPONENT: 'Should it be a class component?',
+    WITH_HOOKS: 'Do you want to use hooks',
+    WITH_REDUX: 'Do you want the component to be connected to redux?',
+    WITH_STATE: 'Does your component have state?',
+    WITH_PROP_TYPES: 'Do you want to add propTypes?',
+    WITH_STYLED_COMPONENTS: 'Do you want to add styled components?',
+};
+
+export const GENERATE_COMMON_CHOICES = [
+    { name: GENERATE_COMMAND_QUESTION_MESSAGES.WITH_REDUX },
+    { name: GENERATE_COMMAND_QUESTION_MESSAGES.WITH_PROP_TYPES },
+    { name: GENERATE_COMMAND_QUESTION_MESSAGES.WITH_STYLED_COMPONENTS },
+];
+
+export const GENERATE_QUESTION_NAME = {
+    TARGET_PATH: 'targetPath',
+    COMPONENT_NAME: 'componentName',
+    USE_TS: 'useTs',
+    IS_CLASS_COMPONENT: 'isClassComponent',
+    OPTIONS: 'options',
+};
+
+export const GENERATE_COMMAND_QUESTIONS: (CheckboxQuestion | InputQuestion | ConfirmQuestion)[] = [
+    {
+        type: 'input',
+        name: GENERATE_QUESTION_NAME.TARGET_PATH,
+        message: GENERATE_COMMAND_QUESTION_MESSAGES.TARGET_DIR,
+        default: './',
+        validate: (input: any): boolean | string | Promise<boolean | string> => {
+            if (!fs.existsSync(input)) {
+                return 'Please enter an existing directory.'
+            }
+
+            return true;
+        }
+    },
+    {
+        type: 'input',
+        name: GENERATE_QUESTION_NAME.COMPONENT_NAME,
+        message: GENERATE_COMMAND_QUESTION_MESSAGES.COMPONENT_NAME,
+        default: DEFAULT_COMPONENT_NAME
+    },
+    {
+        type: 'confirm',
+        name: GENERATE_QUESTION_NAME.USE_TS,
+        message: GENERATE_COMMAND_QUESTION_MESSAGES.USE_TS,
+        default: false
+    },
+    {
+        type: 'confirm',
+        name: GENERATE_QUESTION_NAME.IS_CLASS_COMPONENT,
+        message: GENERATE_COMMAND_QUESTION_MESSAGES.IS_CLASS_COMPONENT,
+        default: false,
+    },
+    {
+        type: 'checkbox',
+        message: 'Select any of the following options.',
+        name: GENERATE_QUESTION_NAME.OPTIONS,
+        choices: [
+            { name: GENERATE_COMMAND_QUESTION_MESSAGES.WITH_HOOKS },
+            ...GENERATE_COMMON_CHOICES,
+        ],
+        when: function(answers) {
+            return !answers[GENERATE_QUESTION_NAME.IS_CLASS_COMPONENT];
+        }
+    },
+    {
+        type: 'checkbox',
+        message: 'Select any of the following options.',
+        name: GENERATE_QUESTION_NAME.OPTIONS,
+        choices: [
+            { name: GENERATE_COMMAND_QUESTION_MESSAGES.WITH_STATE },
+            ...GENERATE_COMMON_CHOICES
+        ],
+        when: function(answers) {
+            return answers[GENERATE_QUESTION_NAME.IS_CLASS_COMPONENT];
+        }
+    }
+];
+
 export const ENUMERABLE_FLAG_ID = '[]';
 export const ENUMERABLE_FLAGS = [
     `--state${ENUMERABLE_FLAG_ID}`,
     `--action${ENUMERABLE_FLAG_ID}`,
     `--reducer${ENUMERABLE_FLAG_ID}`
 ];
-export const MAIN_COMMANDS = ['init', 'create'];
+export const MAIN_COMMANDS = ['new', 'generate'];
 export const ALLOWED_LANGUAGE_TYPE_FLAGS = ['--js', '--ts'];
 export const FLAGS_WITH_TEMPLATES = {
     WITH_REDUX: '--withRedux',
@@ -79,6 +169,11 @@ export const COMMAND_ALIAS: {[alias: string]: string} = {
     '-a': ENUMERABLE_FLAGS[1],
     '-r': ENUMERABLE_FLAGS[2],
     '-wr': FLAGS_WITH_TEMPLATES.WITH_REDUX,
+    '-ws': COMMAND_FLAG.WITH_STATE,
+    '-wpt': COMMAND_FLAG.WITH_PROP_TYPES,
+    '-wsc': COMMAND_FLAG.WITH_STYLED_COMPONENTS,
+    '-wh': COMMAND_FLAG.WITH_HOOKS,
+    '-class': COMMAND_FLAG.IS_CLASS_COMPONENT,
 };
 export const ALLOWED_FLAGS = ['--config', '--ejected', '--interactive']
     .concat(Object.values(FLAGS_WITH_TEMPLATES))
@@ -92,8 +187,10 @@ export const NON_PLACEHOLDER_FLAGS = [
 
 export const ALLOWED_FLAGS_DESCRIPTIONS: {[flag: string]: string} = {
     '--help (Alias: -h)': 'Shows the help.',
-    '--version (Alias: -v)': 'Shows the help.',
+    '--version (Alias: -v)': 'Shows the current version.',
     '--interactive (Alias: -i)': 'When false, disables interactive input prompts.',
+    '--withState (Alias: -ws)': 'When true, adds state to the component.',
+    '--withHooks (Alias: -wh)': 'When true, adds state to the component.',
 };
 export const MAIN_COMMANDS_DESCRIPTIONS: {[flag: string]: string} = {
     'new': 'Create a new react application.',
@@ -138,11 +235,6 @@ export const LANGUAGE_TYPE = {
     TS: 'ts',
 };
 
-export const DEFAULT_CONFIG = {
-    language: LANGUAGE_TYPE.JS,
-    ejected: false,
-};
-
 export const CRA_EVENT = {
     INIT_ERROR: 'INIT_ERROR',
     INIT_DATA: 'INIT_DATA',
@@ -151,5 +243,3 @@ export const CRA_EVENT = {
     EJECT_DATA: 'EJECT_DATA',
     EJECT_CLOSE: 'EJECT_CLOSE'
 };
-
-export const RETURN_STATEMENT_MIN_MATCH_COUNT = 3;

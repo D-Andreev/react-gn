@@ -51,8 +51,8 @@ export default class Cli implements IUserInterface {
         });
     }
 
-    prompt(question: Question, done: Function): void {
-        this.inquirer.prompt([question])
+    prompt(questions: Question[], done: Function): void {
+        this.inquirer.prompt(questions)
             .then(answers => done(null, answers))
             .catch(err => done(err));
     }
