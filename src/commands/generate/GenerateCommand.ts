@@ -8,7 +8,7 @@ import {
     COMMAND_FLAG,
     ENUMERABLE_FLAG_ID,
     FLAG_INDICATOR,
-    FLAGS_WITH_TEMPLATES,
+    FLAGS_WITH_TEMPLATES, GENERATE_COMMAND_QUESTION_MESSAGES,
     GENERATE_COMMAND_QUESTIONS, GENERATE_QUESTION_NAME,
     LANGUAGE_TYPE,
     NEW_COMPONENT_MESSAGE,
@@ -218,11 +218,18 @@ export default class GenerateCommand implements ICommand {
                 componentName: results[GENERATE_QUESTION_NAME.COMPONENT_NAME],
                 languageType: results[GENERATE_QUESTION_NAME.USE_TS] ? LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS,
                 isClassComponent: results[GENERATE_QUESTION_NAME.IS_CLASS_COMPONENT],
-                withPropTypes: results[GENERATE_QUESTION_NAME.OPTIONS].find((o: any) => o.name === ''),
-                withStyledComponents: false,
-                withState: false,
-                withRedux: false,
-                withHooks: false,
+                withPropTypes:
+                    results[GENERATE_QUESTION_NAME.OPTIONS]
+                        .indexOf(GENERATE_COMMAND_QUESTION_MESSAGES.WITH_PROP_TYPES) !== -1,
+                withStyledComponents:
+                    results[GENERATE_QUESTION_NAME.OPTIONS]
+                        .indexOf(GENERATE_COMMAND_QUESTION_MESSAGES.WITH_STYLED_COMPONENTS) !== -1,
+                withState: results[GENERATE_QUESTION_NAME.OPTIONS]
+                    .indexOf(GENERATE_COMMAND_QUESTION_MESSAGES.WITH_STATE) !== -1,
+                withRedux: results[GENERATE_QUESTION_NAME.OPTIONS]
+                    .indexOf(GENERATE_COMMAND_QUESTION_MESSAGES.WITH_REDUX) !== -1,
+                withHooks: results[GENERATE_QUESTION_NAME.OPTIONS]
+                    .indexOf(GENERATE_COMMAND_QUESTION_MESSAGES.WITH_HOOKS) !== -1,
             };
             done(null, answers);
         });
