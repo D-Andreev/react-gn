@@ -253,10 +253,10 @@ export default class NewCommand implements ICommand {
                 return done(err);
             }
             const answers: INewAnswers = {
-                languageType: results[0].options.indexOf(NEW_COMMAND_QUESTION_MESSAGES.USE_TS) !== -1 ?
+                languageType: results.options.indexOf(NEW_COMMAND_QUESTION_MESSAGES.USE_TS) !== -1 ?
                     LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS,
-                withRedux: results[0].options.indexOf(NEW_COMMAND_QUESTION_MESSAGES.USE_REDUX) !== -1,
-                ejected: results[0].options.indexOf(NEW_COMMAND_QUESTION_MESSAGES.EJECT_APP) !== -1
+                withRedux: results.options.indexOf(NEW_COMMAND_QUESTION_MESSAGES.USE_REDUX) !== -1,
+                ejected: results.options.indexOf(NEW_COMMAND_QUESTION_MESSAGES.EJECT_APP) !== -1
             };
             done(null, answers);
         });
