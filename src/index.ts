@@ -9,7 +9,11 @@ import IStorage from './services/interfaces/IStorage';
 import ICra from './services/interfaces/ICra';
 import Cra from './services/Cra';
 import {noop} from './utils';
+import ITemplateService from './services/interfaces/ITemplateService';
+import TemplateService from './services/Template';
+import ejs from 'ejs';
 
 const storage: IStorage = new StorageService(fs, path);
 const cra: ICra = new Cra(storage, childProcess);
-new CommandFactory(storage, cra, childProcess).createCommand(process.argv, noop);
+const templateService: ITemplateService = new TemplateService(ejs);
+new CommandFactory(storage, templateService, cra, childProcess).createCommand(process.argv, noop);

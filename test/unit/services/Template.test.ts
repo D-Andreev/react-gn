@@ -1,9 +1,9 @@
 import Template from '../../../src/services/Template';
 import ejs from 'ejs';
-import ITemplate from '../../../src/services/interfaces/ITemplate';
+import ITemplateService from '../../../src/services/interfaces/ITemplateService';
 
 describe('Template', () => {
-    let templateService: ITemplate;
+    let templateService: ITemplateService;
     let renderMock: any;
 
     beforeEach(() => {

@@ -1,0 +1,9 @@
+{
+  "withStyledComponents": false,
+  "withRedux": "false",
+  "component": "MyComponent",
+  "Component": "MyComponent",
+  "withHooks": false,
+  "withState": false,
+  "withPropTypes": false
+}

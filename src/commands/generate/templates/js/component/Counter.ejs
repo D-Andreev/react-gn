@@ -1,0 +1,69 @@
+<% if(withHooks){ %>
+    <% if(withRedux){ %>
+        import React, { useState, useEffect, useReducer } from 'react';
+    <% } else{ %>
+        import React, { useState, useEffect } from 'react';
+    <% } %>
+<% } else{ %>
+    import React from 'react';
+<% } %>
+<% if (withPropTypes) { %>
+    import simpleReducer from '../../reducers/simpleReducer';
+<% } %>
+<% if (withPropTypes) { %>
+    import PropTypes from 'prop-types';
+<% } %>
+<% if (withStyledComponents) { %>
+    import './Counter.js';
+<% } %>
+
+
+function Counter({className = ''}) {
+<% if (withHooks) { %>
+    const [count, setCount] = useState(0);
+<% } %>
+<% if (withRedux) { %>
+    const [result] = useReducer(simpleReducer);
+<% } %>
+
+<% if (withHooks) { %>
+    useEffect(() => {
+    document.title = `You clicked ${count} times`;
+    });
+<% } %>
+
+return (
+<div className={className}>
+    <% if(withHooks){ %>
+        <% if(withRedux){ %>
+            <p>You clicked {count} times</p>
+            <StyledButton onClick={() => setCount(count + 1)} primary>
+            Click me
+            </StyledButton>
+            <pre>
+                    {result}
+                </pre>
+        <% } else if (withHooks){ %>
+            <p>You clicked {count} times</p>
+            <StyledButton onClick={() => setCount(count + 1)} primary>
+            Click me
+            </StyledButton>
+            <pre>
+                {count}
+            </pre>
+        <% } else { %>
+            <%= component %>
+        <% } %>
+    <% } else{ %>
+        import React from 'react';
+    <% } %>
+</div>
+);
+}
+<% if (withHooks) { %>
+    Counter.propTypes = {
+    className: PropTypes.string
+    };
+<% } %>
+
+export default React.memo(Counter);

@@ -1,5 +1,6 @@
 import {CheckboxQuestion, ConfirmQuestion, InputQuestion} from 'inquirer';
 import fs from 'fs';
+import * as path from "path";
 
 export const PACKAGE_NAME = 'react-gn';
 export const PACKAGE_VERSION = '1.0.21';

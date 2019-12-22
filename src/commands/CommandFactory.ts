@@ -18,11 +18,13 @@ import VersionCommand from './VersionCommand';
 import ICra from '../services/interfaces/ICra';
 import GenerateCommand from './generate/GenerateCommand';
 import NewCommand from './new/NewCommand';
+import ITemplateService from '../services/interfaces/ITemplateService';
 
 export default class CommandFactory implements ICommandFactory{
     private readonly storage: IStorage;
     private readonly cra: ICra;
     public readonly childProcess: typeof import('child_process');
+    private readonly templateService: ITemplateService;
 
     private static isFlagName(arg: string): boolean {
         return arg.indexOf(FLAG_INDICATOR) !== -1;
@@ -72,10 +74,11 @@ export default class CommandFactory implements ICommandFactory{
             commandArguments.includes(Object.keys(COMMAND_ALIAS).find((alias: string) => alias === ALIAS.HELP));
     }
 
-    constructor(storage: IStorage, cra: ICra, childProcess: typeof import('child_process')) {
+    constructor(storage: IStorage, templateService: ITemplateService,  cra: ICra, childProcess: typeof import('child_process')) {
         this.storage = storage;
         this.cra = cra;
         this.childProcess = childProcess;
+        this.templateService = templateService;
     }
 
     createCommand(commandArguments: string[], done: Function): ICommand {
@@ -118,7 +121,8 @@ export default class CommandFactory implements ICommandFactory{
                     this.childProcess,
                     commandArguments[3],
                     flags,
-                    process.cwd()
+                    process.cwd(),
+                    this.templateService
                 );
                 break;
             default:

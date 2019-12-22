@@ -1,3 +1,4 @@
+import path from 'path';
 import steed from 'steed';
 import ICommand from '../interfaces/ICommand';
 import Flag from '../Flag';
@@ -20,6 +21,8 @@ import {noop} from '../../utils';
 import {sep} from 'path';
 import {Answers} from 'inquirer';
 import IGenerateAnswers from '../interfaces/IGenerateAnswers';
+import ITemplateService from "../../services/interfaces/ITemplateService";
+import {IDependency} from "../interfaces/ITemplate";
 
 export default class GenerateCommand implements ICommand {
     public flags: Flag[];
@@ -32,6 +35,7 @@ export default class GenerateCommand implements ICommand {
     private placeholders: Flag[];
     private targetPath: string;
     private templateName: string;
+    private templateService: ITemplateService;
 
     constructor(
         storage: IStorage,
@@ -39,7 +43,8 @@ export default class GenerateCommand implements ICommand {
         childProcess: typeof import('child_process'),
         componentName: string,
         flags: Flag[],
-        path: string
+        path: string,
+        templateService: ITemplateService
     ) {
         this.storage = storage;
         this.userInterface = userInterface;
@@ -47,137 +52,13 @@ export default class GenerateCommand implements ICommand {
         this.componentName = componentName;
         this.flags = flags;
         this.path = path;
-    }
-
-    private static isEnumerableFlag(flag: Flag): boolean {
-        return flag.name.indexOf(ENUMERABLE_FLAG_ID) !== -1;
-    }
-
-    private static replacePlaceholdersWithData(input: string, placeholders: Flag[]): string {
-        for (let i = 0; i < placeholders.length; i++) {
-            const placeholder = new RegExp(
-                `{${placeholders[i].name.replace(FLAG_INDICATOR, '')}}`,
-                'gi'
-            );
-            input = input.replace(placeholder, placeholders[i].value);
-        }
-
-        return input;
-    }
-
-    private static getTemplateParts(templatePath: string): string[] {
-        return templatePath
-            .split(sep)
-            .filter((part: string) => part.length);
-    }
-
-    private getPlaceholderFlags(): Flag[] {
-        const placeholders: Flag[] = [];
-        for (let i = 0; i < this.flags.length; i++) {
-            const flag: Flag = this.flags[i];
-            if (NON_PLACEHOLDER_FLAGS.indexOf(flag.name) !== -1) {
-                continue;
-            }
-            if (GenerateCommand.isEnumerableFlag(flag)) {
-                const split: string[] = flag.value.split(',');
-                for (let j = 0; j < split.length; j++) {
-                    placeholders.push({
-                        name: `${flag.name.replace(ENUMERABLE_FLAG_ID, '')}${j + 1}`,
-                        value: split[j]
-                    });
-                }
-                continue;
-            }
-
-            placeholders.push(flag);
-        }
-        return placeholders;
+        this.templateService = templateService;
     }
 
     private onError(err: Error | ErrorEvent, done: Function): void {
         const output: Output[] = [new Output(err.message, OUTPUT_TYPE.ERROR)];
         this.userInterface.showOutput(output, noop);
         return done(err);
-    }
-
-    private getFlag(flagName: string): Flag | undefined {
-        return this.flags.find((f: Flag) => f.name === flagName);
-    }
-
-    private transformFilePaths(filePaths: string[], componentName: string): string[] {
-        return filePaths.map((filePath: string) => {
-            const regex = new RegExp(`${this.templateName}(.*)`, 'gi');
-            const matchComponentPath = filePath.match(regex);
-            const componentPath = matchComponentPath[0]
-                .replace(`${this.templateName}${sep}`, '');
-            let generatedPath = `${this.targetPath}${sep}${componentName}${sep}${componentPath}`;
-            generatedPath = GenerateCommand.replacePlaceholdersWithData(generatedPath, this.placeholders);
-            let componentParts = generatedPath.split(sep);
-            const indexOfMainPath = componentParts.indexOf(componentName);
-            componentParts = componentParts.slice(indexOfMainPath);
-            return componentParts.join(sep);
-        });
-    }
-
-    private renderTemplate(templatePath: string, transformedFilePath: string, i: number, done: Function): void {
-        const renderedTemplatePath = GenerateCommand
-            .replacePlaceholdersWithData(transformedFilePath, this.placeholders);
-        const parts: string[] = renderedTemplatePath.split(sep);
-        if (!parts || !parts.length) {
-            return done(new Error(NEW_COMPONENT_MESSAGE.INVALID_NAME));
-        }
-        this.storage.generateFilePath(
-            [this.targetPath, renderedTemplatePath],
-            (err: ErrorEvent, generatedPath: string) => {
-                if (err) {
-                    return done(err);
-                }
-                this.storage.read(templatePath, (err: ErrorEvent, contents: string) => {
-                    if (err) {
-                        return done(err);
-                    }
-                    const renderedContents: string = GenerateCommand
-                        .replacePlaceholdersWithData(contents.toString(), this.placeholders);
-
-                    this.storage.create(generatedPath, renderedContents, (err: ErrorEvent) => {
-                        if (err) {
-                            return done(err);
-                        }
-                        done(null, i);
-                    });
-                });
-            })
-    }
-
-    private onTemplateRendered(err: ErrorEvent, fileIndex: number, isSuccessful: boolean, done: Function) {
-        if (err) {
-            isSuccessful = false;
-            const output: Output[] = [
-                new Output(
-                    `${this.transformedFilePaths[fileIndex]} was not created successfully`,
-                    OUTPUT_TYPE.ERROR
-                )
-            ];
-            this.userInterface.showOutput(output, noop);
-            return done(err);
-        }
-
-
-        const output: Output[] = [
-            new Output(
-                `${this.transformedFilePaths[fileIndex]} was created successfully`,
-                OUTPUT_TYPE.SUCCESS
-            )
-        ];
-        this.userInterface.showOutput(output, noop);
-        if (fileIndex === this.transformedFilePaths.length - 1 && isSuccessful) {
-            return done();
-        }
-    }
-
-    private getComponentTargetPath(): string {
-        const componentTargetPathArg: Flag | undefined = this.getFlag(COMMAND_FLAG.COMPONENT_TARGET_PATH);
-        return componentTargetPathArg ? componentTargetPathArg.value : this.path;
     }
 
     private isInteractiveModeDisabled(): boolean {
@@ -214,7 +95,8 @@ export default class GenerateCommand implements ICommand {
             }
 
             const answers: IGenerateAnswers = {
-                targetPath: results[GENERATE_QUESTION_NAME.TARGET_PATH],
+                targetPath: results[GENERATE_QUESTION_NAME.TARGET_PATH] !== './' ?
+                    results[GENERATE_QUESTION_NAME.TARGET_PATH] : process.cwd(),
                 componentName: results[GENERATE_QUESTION_NAME.COMPONENT_NAME],
                 languageType: results[GENERATE_QUESTION_NAME.USE_TS] ? LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS,
                 isClassComponent: results[GENERATE_QUESTION_NAME.IS_CLASS_COMPONENT],
@@ -239,12 +121,73 @@ export default class GenerateCommand implements ICommand {
         steed.waterfall([
             (next: Function) => this.askQuestions(next),
             (answers: IGenerateAnswers, next: Function) => {
-                console.log('answers', answers);
-                next();
+                const targetPath = path.join(answers.targetPath, answers.componentName);
+                this.storage.directoryExists(targetPath, (err: ErrorEvent) => {
+                    if (err) {
+                        return next(null, answers);
+                    }
+                    console.log('component dir checked', err)
+                    next(new Error(`${answers.componentName} directory already exists`));
+                })
             },
+            (answers: IGenerateAnswers, next: Function) => {
+                console.log('answers', answers);
+                const componentType = answers.isClassComponent ? 'container' : 'component';
+                const templatePath = path.join(
+                    process.cwd(), 'src', 'commands', 'generate', 'templates', answers.languageType, componentType);
+                console.log('template path', templatePath);
+                this.storage.scanDirectory(templatePath, (err: Error, paths: string[]) => {
+                    console.log('dir scanned', {err});
+                    if (err) {
+                        return next(err);
+                    }
+
+                    next(null, answers, paths);
+                });
+            },
+            (answers: IGenerateAnswers, paths: string[], next: Function) => {
+                const dataFilePath = path.join(
+                    process.cwd(), 'src', 'commands', 'generate', 'templates', 'data.json');
+                console.log('data', dataFilePath)
+                this.storage.read(dataFilePath, (err: ErrorEvent, file: string) => {
+                    if (err) {
+                        return next(err);
+                    }
+                    console.log(file.toString())
+                    next(null, answers, paths, JSON.parse(file.toString()));
+                })
+            },
+            (answers: IGenerateAnswers, paths: string[], data: any, next: Function) => {
+                console.log({answers, paths, data});
+                data.withStyledComponents = answers.withStyledComponents;
+                data.withRedux = answers.withRedux;
+                data.component = answers.componentName;
+                data.Component = answers.componentName;
+                data.withHooks = answers.withHooks;
+                data.withPropTypes = answers.withPropTypes;
+                data.withState = answers.withState;
+                const renderedTemplates: string[] = [];
+                steed.mapSeries(paths, (path: string, next: Function) => {
+                    this.storage.read(path, (err: ErrorEvent, file: Buffer) => {
+                        if (err) {
+                            return next(err);
+                        }
+
+                        renderedTemplates.push(this.templateService.render(file.toString(), data));
+                        next();
+                    });
+                }, (err: ErrorEvent) => next(err, paths, renderedTemplates));
+            },
+            (paths: string[], renderedTemplates: string[], next: Function) => {
+                console.log({renderedTemplates});
+                steed.mapSeries(paths, (path: string, next: Function) => {
+                    this.storage.create(path, renderedTemplates[paths.indexOf(path)], next);
+                }, (err: ErrorEvent) => next(err))
+                next();
+            }
         ], (err: ErrorEvent) => {
             if (err) {
-                return done(err);
+                return this.onError(err, done);
             }
 
             done();

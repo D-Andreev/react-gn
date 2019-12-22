@@ -1,9 +1,10 @@
 import React, {PureComponent} from 'react';
 import { connect } from 'react-redux';
-import { count } from './actions/counterAction';
-import './Counter.css';
-import StyledCounter from './StyledCounter';
-import Counter from '../../components/counter/Counter';
+import { count } from './actions/counterAction.ejs';
+<% if (withStyledComponents) { %>
+    import StyledCounter from './StyledCounter.ejs';
+<% } %>
+import './Counter.styles.css';
 
 class CounterContainer extends PureComponent {
     onClick = () => {
@@ -22,7 +23,6 @@ class CounterContainer extends PureComponent {
                     </button>
                 </div>
                 <div>Component counter</div>
-                <Counter className='counter'/>
             </StyledCounter>
         );
     }
