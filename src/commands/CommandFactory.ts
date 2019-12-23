@@ -117,7 +117,14 @@ export default class CommandFactory implements ICommandFactory{
                     const flags: Flag[] = CommandFactory.parseFlags(commandArguments);
 
                     command = new NewCommand(
-                        this.storage, this.userInterface, this.cra, this.childProcess, appName, flags, process.cwd()
+                        this.storage,
+                        this.userInterface,
+                        this.cra,
+                        this.childProcess,
+                        this.packageManager,
+                        appName,
+                        flags,
+                        process.cwd()
                     );
                 }
                 break;
@@ -128,6 +135,7 @@ export default class CommandFactory implements ICommandFactory{
                     this.userInterface,
                     this.childProcess,
                     this.templateService,
+                    this.packageManager,
                     commandArguments[3],
                     flags,
                     process.cwd()
