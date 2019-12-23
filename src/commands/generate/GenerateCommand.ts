@@ -21,6 +21,7 @@ import ITemplateService from '../../services/interfaces/ITemplateService';
 import templates from './templates/templates';
 import {IDependency} from '../interfaces/ITemplate';
 import ITemplateData from '../interfaces/ITemplateData';
+import IPackageManager from '../../services/interfaces/IPackageManager';
 
 export default class GenerateCommand implements ICommand {
     public flags: Flag[];
@@ -30,6 +31,7 @@ export default class GenerateCommand implements ICommand {
     private readonly userInterface: IUserInterface;
     public readonly childProcess: typeof import('child_process');
     private templateService: ITemplateService;
+    private readonly packageManager: IPackageManager;
     private answers: IGenerateAnswers;
 
     constructor(
@@ -37,6 +39,7 @@ export default class GenerateCommand implements ICommand {
         userInterface: IUserInterface,
         childProcess: typeof import('child_process'),
         templateService: ITemplateService,
+        packageManager: IPackageManager,
         componentName: string,
         flags: Flag[],
         path: string
@@ -45,6 +48,7 @@ export default class GenerateCommand implements ICommand {
         this.userInterface = userInterface;
         this.childProcess = childProcess;
         this.templateService = templateService;
+        this.packageManager = packageManager;
         this.componentName = componentName;
         this.flags = flags;
         this.path = path;
@@ -156,12 +160,8 @@ export default class GenerateCommand implements ICommand {
         });
     }
 
-    private installDependencies(paths: string[], parsedData: ITemplateData, done: Function): void {
-        const dependencies: IDependency[] = templates.dependencies[this.answers.languageType].map((d: IDependency) => d);
-        console.log({dependencies})
-        steed.mapSeries(paths, (path: string, next: Function) => {
-            console.log(path, next);
-        }, (err: ErrorEvent) => done(err));
+    getProjectMainDir(): string {
+
     }
 
     execute(done: Function): void {
@@ -170,6 +170,10 @@ export default class GenerateCommand implements ICommand {
             (next: Function) => this.checkTargetDirValidity(next),
             (answers: IGenerateAnswers, next: Function) => this.getTemplateFiles(next),
             (answers: IGenerateAnswers, paths: string[], next: Function) => this.getTemplateData(paths, next),
+            (answers: IGenerateAnswers, paths: string[], data: any, next: Function) => {
+                const dependencies: IDependency[] = templates.dependencies[this.answers.languageType].map((d: IDependency) => d);
+                this.packageManager.installDependencies(dependencies, this.getProejctMainDir())
+            },
             (answers: IGenerateAnswers, paths: string[], data: any, next: Function) => {
                 data = {
                     withStyledComponents: !!answers.withStyledComponents,
@@ -180,7 +184,6 @@ export default class GenerateCommand implements ICommand {
                     component: answers.componentName,
                     Component: answers.componentName,
                 };
-                // TODO: Install dependencies
                 const renderedTemplates: string[] = [];
                 steed.mapSeries(paths, (path: string, next: Function) => {
                     this.storage.read(path, (err: ErrorEvent, file: Buffer) => {

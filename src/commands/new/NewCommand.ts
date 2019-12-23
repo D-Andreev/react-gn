@@ -251,6 +251,7 @@ export default class NewCommand implements ICommand {
         userInterface: IUserInterface,
         cra: ICra,
         childProcess: typeof import('child_process'),
+        packageManager: IPackageManager,
         appName: string,
         flags: Flag[],
         path: string
@@ -258,10 +259,11 @@ export default class NewCommand implements ICommand {
         this.storage = storage;
         this.userInterface = userInterface;
         this.cra = cra;
+        this.childProcess = childProcess;
+        this.packageManager = packageManager;
         this.appName = appName;
         this.flags = flags;
         this.path = path;
-        this.childProcess = childProcess;
     }
 
     execute(done: Function): void {
