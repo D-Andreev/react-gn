@@ -21,7 +21,6 @@ import ITemplateService from '../../services/interfaces/ITemplateService';
 import templates from './templates/templates';
 import {IDependency} from '../interfaces/ITemplate';
 import IPackageManager from '../../services/interfaces/IPackageManager';
-import {EOL} from 'os';
 
 export default class GenerateCommand implements ICommand {
     public flags: Flag[];
