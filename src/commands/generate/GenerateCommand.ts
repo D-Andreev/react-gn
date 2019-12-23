@@ -175,9 +175,6 @@ export default class GenerateCommand implements ICommand {
             (answers: IGenerateAnswers, next: Function) => this.getTemplateFiles(next),
             (answers: IGenerateAnswers, paths: string[], next: Function) => this.getTemplateData(paths, next),
             (answers: IGenerateAnswers, paths: string[], data: any, next: Function) => {
-                this.packageManager.installDependencies()
-            },
-            (answers: IGenerateAnswers, paths: string[], data: any, next: Function) => {
                 data = {
                     withStyledComponents: !!answers.withStyledComponents,
                     withRedux: !!answers.withRedux,
