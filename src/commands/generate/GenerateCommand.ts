@@ -7,13 +7,9 @@ import IUserInterface from '../../user-interface/interfaces/IUserInterface';
 import {
     ALLOWED_LANGUAGE_TYPE_FLAGS,
     COMMAND_FLAG,
-    ENUMERABLE_FLAG_ID,
-    FLAG_INDICATOR,
     FLAGS_WITH_TEMPLATES, GENERATE_COMMAND_QUESTION_MESSAGES,
     GENERATE_COMMAND_QUESTIONS, GENERATE_QUESTION_NAME,
     LANGUAGE_TYPE,
-    NEW_COMPONENT_MESSAGE,
-    NON_PLACEHOLDER_FLAGS,
     OUTPUT_TYPE
 } from '../../constants';
 import Output from '../Output';
@@ -21,8 +17,10 @@ import {noop} from '../../utils';
 import {sep} from 'path';
 import {Answers} from 'inquirer';
 import IGenerateAnswers from '../interfaces/IGenerateAnswers';
-import ITemplateService from "../../services/interfaces/ITemplateService";
-import {IDependency} from "../interfaces/ITemplate";
+import ITemplateService from '../../services/interfaces/ITemplateService';
+import templates from './templates/templates';
+import {IDependency} from '../interfaces/ITemplate';
+import ITemplateData from '../interfaces/ITemplateData';
 
 export default class GenerateCommand implements ICommand {
     public flags: Flag[];
@@ -31,28 +29,25 @@ export default class GenerateCommand implements ICommand {
     private readonly storage: IStorage;
     private readonly userInterface: IUserInterface;
     public readonly childProcess: typeof import('child_process');
-    private transformedFilePaths: string[];
-    private placeholders: Flag[];
-    private targetPath: string;
-    private templateName: string;
     private templateService: ITemplateService;
+    private answers: IGenerateAnswers;
 
     constructor(
         storage: IStorage,
         userInterface: IUserInterface,
         childProcess: typeof import('child_process'),
+        templateService: ITemplateService,
         componentName: string,
         flags: Flag[],
-        path: string,
-        templateService: ITemplateService
+        path: string
     ) {
         this.storage = storage;
         this.userInterface = userInterface;
         this.childProcess = childProcess;
+        this.templateService = templateService;
         this.componentName = componentName;
         this.flags = flags;
         this.path = path;
-        this.templateService = templateService;
     }
 
     private onError(err: Error | ErrorEvent, done: Function): void {
@@ -113,59 +108,79 @@ export default class GenerateCommand implements ICommand {
                 withHooks: results[GENERATE_QUESTION_NAME.OPTIONS]
                     .indexOf(GENERATE_COMMAND_QUESTION_MESSAGES.WITH_HOOKS) !== -1,
             };
-            done(null, answers);
+            this.answers = answers;
+            done(null);
         });
+    }
+
+    private checkTargetDirValidity(done: Function): void {
+        const targetPath = path.join(this.answers.targetPath, this.answers.componentName);
+        this.storage.directoryExists(targetPath, (err: ErrorEvent) => {
+            if (err) {
+                return done(null, this.answers);
+            }
+            done(new Error(`${this.answers.componentName} directory already exists`));
+        });
+    }
+
+    private static getTemplatesPath(): string[] {
+        return [process.cwd(), 'src', 'commands', 'generate', 'templates'];
+    }
+
+    private getTemplateFiles(done: Function): void {
+        const componentType = this.answers.isClassComponent ? 'container' : 'component';
+        const templatePath = path.join(...GenerateCommand.getTemplatesPath(), this.answers.languageType, componentType);
+        this.storage.scanDirectory(templatePath, (err: Error, paths: string[]) => {
+            if (err) {
+                return done(err);
+            }
+
+            done(null, paths);
+        });
+    }
+
+    private getTemplateData(paths: string[], done: Function): void {
+        const dataFilePath = path.join(
+            process.cwd(), ...GenerateCommand.getTemplatesPath(), 'data.json');
+        this.storage.read(dataFilePath, (err: ErrorEvent, file: string) => {
+            if (err) {
+                return done(err);
+            }
+            let parsedData;
+            try {
+                parsedData = JSON.parse(file.toString());
+            } catch (e) {
+                return done(e);
+            }
+            done(null, paths, parsedData);
+        });
+    }
+
+    private installDependencies(paths: string[], parsedData: ITemplateData, done: Function): void {
+        const dependencies: IDependency[] = templates.dependencies[this.answers.languageType].map((d: IDependency) => d);
+        console.log({dependencies})
+        steed.mapSeries(paths, (path: string, next: Function) => {
+            console.log(path, next);
+        }, (err: ErrorEvent) => done(err));
     }
 
     execute(done: Function): void {
         steed.waterfall([
             (next: Function) => this.askQuestions(next),
-            (answers: IGenerateAnswers, next: Function) => {
-                const targetPath = path.join(answers.targetPath, answers.componentName);
-                this.storage.directoryExists(targetPath, (err: ErrorEvent) => {
-                    if (err) {
-                        return next(null, answers);
-                    }
-                    console.log('component dir checked', err)
-                    next(new Error(`${answers.componentName} directory already exists`));
-                })
-            },
-            (answers: IGenerateAnswers, next: Function) => {
-                console.log('answers', answers);
-                const componentType = answers.isClassComponent ? 'container' : 'component';
-                const templatePath = path.join(
-                    process.cwd(), 'src', 'commands', 'generate', 'templates', answers.languageType, componentType);
-                console.log('template path', templatePath);
-                this.storage.scanDirectory(templatePath, (err: Error, paths: string[]) => {
-                    console.log('dir scanned', {err});
-                    if (err) {
-                        return next(err);
-                    }
-
-                    next(null, answers, paths);
-                });
-            },
-            (answers: IGenerateAnswers, paths: string[], next: Function) => {
-                const dataFilePath = path.join(
-                    process.cwd(), 'src', 'commands', 'generate', 'templates', 'data.json');
-                console.log('data', dataFilePath)
-                this.storage.read(dataFilePath, (err: ErrorEvent, file: string) => {
-                    if (err) {
-                        return next(err);
-                    }
-                    console.log(file.toString())
-                    next(null, answers, paths, JSON.parse(file.toString()));
-                })
-            },
+            (next: Function) => this.checkTargetDirValidity(next),
+            (answers: IGenerateAnswers, next: Function) => this.getTemplateFiles(next),
+            (answers: IGenerateAnswers, paths: string[], next: Function) => this.getTemplateData(paths, next),
             (answers: IGenerateAnswers, paths: string[], data: any, next: Function) => {
-                console.log({answers, paths, data});
-                data.withStyledComponents = answers.withStyledComponents;
-                data.withRedux = answers.withRedux;
-                data.component = answers.componentName;
-                data.Component = answers.componentName;
-                data.withHooks = answers.withHooks;
-                data.withPropTypes = answers.withPropTypes;
-                data.withState = answers.withState;
+                data = {
+                    withStyledComponents: !!answers.withStyledComponents,
+                    withRedux: !!answers.withRedux,
+                    withHooks: !!answers.withHooks,
+                    withPropTypes: !!answers.withPropTypes,
+                    withState: !!answers.withState,
+                    component: answers.componentName,
+                    Component: answers.componentName,
+                };
+                // TODO: Install dependencies
                 const renderedTemplates: string[] = [];
                 steed.mapSeries(paths, (path: string, next: Function) => {
                     this.storage.read(path, (err: ErrorEvent, file: Buffer) => {
@@ -176,14 +191,17 @@ export default class GenerateCommand implements ICommand {
                         renderedTemplates.push(this.templateService.render(file.toString(), data));
                         next();
                     });
-                }, (err: ErrorEvent) => next(err, paths, renderedTemplates));
+                }, (err: ErrorEvent) => next(err, paths, answers, renderedTemplates));
             },
-            (paths: string[], renderedTemplates: string[], next: Function) => {
-                console.log({renderedTemplates});
-                steed.mapSeries(paths, (path: string, next: Function) => {
-                    this.storage.create(path, renderedTemplates[paths.indexOf(path)], next);
-                }, (err: ErrorEvent) => next(err))
-                next();
+            (paths: string[], answers: IGenerateAnswers, renderedTemplates: string[], next: Function) => {
+                steed.mapSeries(paths, (currentPath: string, next: Function) => {
+                    let splitPath: string[] = currentPath.split(sep);
+                    const componentType = answers.isClassComponent ? 'container' : 'component';
+                    splitPath = splitPath.splice(splitPath.indexOf(componentType));
+                    const fileName = splitPath[splitPath.length - 1];
+                    this.storage.create(
+                        path.join(answers.targetPath, fileName), renderedTemplates[paths.indexOf(currentPath)], next);
+                }, (err: ErrorEvent) => next(err));
             }
         ], (err: ErrorEvent) => {
             if (err) {

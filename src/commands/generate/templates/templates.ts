@@ -1,11 +1,11 @@
-export default {
+const Template: any = {
     dependencies: {
         js: {
             propTypes: [
                 {name: 'prop-types'},
             ],
             styledComponents: [
-                {name: 'styledComponents'},
+                {name: 'styled-components'},
             ],
         },
         ts: {
@@ -21,20 +21,26 @@ export default {
     },
     js: {
         functionalComponent: {
-            styledComponents: ['./StyledButton.js']
+            main: ['Counter.jsx', 'Counter.styles.css', 'Counter.test.js'],
+            withStyledComponents: ['./StyledButton.js']
         },
         classComponent: {
-            styledComponents: ['./StyledCounter.js'],
-            redux: ['./actions/counterActions.js', './reducers/counterReducer.js'],
+            main: ['Counter.jsx', 'Counter.styles.css', 'Counter.test.js'],
+            withStyledComponents: ['./StyledCounter.js'],
+            withRedux: ['./actions/counterActions.js', './reducers/counterReducer.js'],
         }
     },
     ts: {
         functionalComponent: {
-            styledComponents: ['./StyledButton.ts']
+            main: ['Counter.jsx', 'Counter.styles.css', 'Counter.test.js'],
+            withStyledComponents: ['./StyledButton.ts']
         },
         classComponent: {
-            styledComponents: ['./StyledCounter.ts'],
-            redux: ['./actions/counterActions.ts', './reducers/counterReducer.ts'],
+            main: ['Counter.jsx', 'Counter.styles.css', 'Counter.test.js'],
+            withStyledComponents: ['./StyledCounter.ts'],
+            withRedux: ['./actions/counterActions.ts', './actions/counterActions.ts/reducers/counterReducer.ts'],
         }
     }
-}
+};
+
+export default Template;

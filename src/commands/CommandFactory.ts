@@ -1,5 +1,3 @@
-import inquirer from 'inquirer';
-import readline from 'readline';
 import ICommand from './interfaces/ICommand';
 import {
     ALIAS,
@@ -12,19 +10,22 @@ import {
 import UnknownCommand from './UnknownCommand';
 import IStorage from '../services/interfaces/IStorage';
 import {ICommandFactory} from './interfaces/ICommandFactory';
-import Cli from '../user-interface/Cli';
 import Flag from './Flag';
 import VersionCommand from './VersionCommand';
 import ICra from '../services/interfaces/ICra';
 import GenerateCommand from './generate/GenerateCommand';
 import NewCommand from './new/NewCommand';
 import ITemplateService from '../services/interfaces/ITemplateService';
+import IUserInterface from '../user-interface/interfaces/IUserInterface';
+import IPackageManager from '../services/interfaces/IPackageManager';
 
 export default class CommandFactory implements ICommandFactory{
     private readonly storage: IStorage;
     private readonly cra: ICra;
     public readonly childProcess: typeof import('child_process');
+    private readonly userInterface: IUserInterface;
     private readonly templateService: ITemplateService;
+    private readonly packageManager: IPackageManager;
 
     private static isFlagName(arg: string): boolean {
         return arg.indexOf(FLAG_INDICATOR) !== -1;
@@ -74,16 +75,23 @@ export default class CommandFactory implements ICommandFactory{
             commandArguments.includes(Object.keys(COMMAND_ALIAS).find((alias: string) => alias === ALIAS.HELP));
     }
 
-    constructor(storage: IStorage, templateService: ITemplateService,  cra: ICra, childProcess: typeof import('child_process')) {
+    constructor(
+        storage: IStorage,
+        templateService: ITemplateService,
+        cra: ICra,
+        childProcess: typeof import('child_process'),
+        userInterface: IUserInterface,
+        packageManager: IPackageManager) {
         this.storage = storage;
         this.cra = cra;
         this.childProcess = childProcess;
         this.templateService = templateService;
+        this.userInterface = userInterface;
+        this.packageManager = packageManager;
     }
 
     createCommand(commandArguments: string[], done: Function): ICommand {
-        const userInterface = new Cli(process.stdout, readline, inquirer);
-        const unknownCommand: ICommand = new UnknownCommand(userInterface);
+        const unknownCommand: ICommand = new UnknownCommand(this.userInterface);
         let command = unknownCommand;
         commandArguments = CommandFactory.convertAliasesToFullCommand(commandArguments);
         if (!commandArguments.length) {
@@ -94,7 +102,7 @@ export default class CommandFactory implements ICommandFactory{
             return command;
         }
         if (commandArguments[2] === COMMAND_FLAG.VERSION) {
-            command = new VersionCommand(this.storage, userInterface);
+            command = new VersionCommand(this.storage, this.userInterface);
             command.execute(done);
             return command;
         }
@@ -109,7 +117,7 @@ export default class CommandFactory implements ICommandFactory{
                     const flags: Flag[] = CommandFactory.parseFlags(commandArguments);
 
                     command = new NewCommand(
-                        this.storage, userInterface, this.cra, this.childProcess, appName, flags, process.cwd()
+                        this.storage, this.userInterface, this.cra, this.childProcess, appName, flags, process.cwd()
                     );
                 }
                 break;
@@ -117,12 +125,12 @@ export default class CommandFactory implements ICommandFactory{
                 const flags: Flag[] = CommandFactory.parseFlags(commandArguments, false);
                 command = new GenerateCommand(
                     this.storage,
-                    userInterface,
+                    this.userInterface,
                     this.childProcess,
+                    this.templateService,
                     commandArguments[3],
                     flags,
-                    process.cwd(),
-                    this.templateService
+                    process.cwd()
                 );
                 break;
             default:

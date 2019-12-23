@@ -12,6 +12,12 @@ import IStorage from '../../../src/services/interfaces/IStorage';
 import Cra from '../../../src/services/Cra';
 import VersionCommand from '../../../src/commands/VersionCommand';
 import NewCommand from '../../../src/commands/new/NewCommand';
+import Template from '../../../src/services/Template';
+import ejs from 'ejs';
+import Cli from '../../../src/user-interface/Cli';
+import * as inquirer from 'inquirer';
+import * as readline from 'readline';
+import PackageManager from '../../../src/services/PackageManager';
 
 function noop() {}
 jest.mock('child_process');
@@ -23,7 +29,10 @@ describe('CommandFactory', () => {
     beforeEach(() => {
         const storage: IStorage = new MockStorage();
         cra = new Cra(storage, childProcess);
-        commandFactory = new CommandFactory(storage, cra, childProcess);
+        const templateService = new Template(ejs);
+        const userInterface = new Cli(process.stdout, readline, inquirer);
+        const packageManager = new PackageManager(userInterface, childProcess);
+        commandFactory = new CommandFactory(storage, templateService, cra, childProcess, userInterface, packageManager);
     });
 
     describe(`when ${PACKAGE_NAME} name is not provided`, () => {

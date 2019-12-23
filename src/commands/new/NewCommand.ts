@@ -13,17 +13,19 @@ import {
 } from '../../constants';
 import Output from '../Output';
 import {noop} from '../../utils';
-import ITemplate, {IDependency} from '../interfaces/ITemplate';
+import ITemplate from '../interfaces/ITemplate';
 import * as path from 'path';
 import ICommand from '../interfaces/ICommand';
 import steed from 'steed';
 import INewAnswers from '../interfaces/INewAnswers';
 import {Answers} from 'inquirer';
+import IPackageManager from '../../services/interfaces/IPackageManager';
 
 export default class NewCommand implements ICommand {
     public readonly storage: IStorage;
     public readonly userInterface: IUserInterface;
     public readonly cra: ICra;
+    public readonly packageManager: IPackageManager;
     public readonly appName: string;
     public readonly flags: Flag[];
     public readonly path: string;
@@ -92,25 +94,6 @@ export default class NewCommand implements ICommand {
         return `${this.path}${sep}${this.appName}`;
     }
 
-    private installTemplateDependencies(templateDependencies: IDependency[], done: Function): void {
-        steed.mapSeries(templateDependencies, (current: IDependency, next: Function) => {
-            const version = current.version ? `@${current.version}` : '';
-            const devFlag = current.isDev ? '--save-dev' : '';
-            try {
-                this.childProcess.execSync(
-                    `cd ${this.getAppPath()} && npm install ${current.name}${version}${devFlag}`);
-            } catch (e) {
-                const output: Output[] = [new Output(e.message, OUTPUT_TYPE.ERROR)];
-                this.userInterface.showOutput(output, noop);
-                next(e);
-            }
-            const output: Output[] = [
-                new Output(`Installed ${current.name} successfully!`, OUTPUT_TYPE.SUCCESS)
-            ];
-            this.userInterface.showOutput(output, next);
-        }, (err: ErrorEvent) => done(err));
-    }
-
     private getFilePaths(template: ITemplate, languageType: string): string[] {
         return Object
             .keys(template)
@@ -173,7 +156,8 @@ export default class NewCommand implements ICommand {
             steed.waterfall([
                 (next: Function) => this.removeFiles(template, paths, languageType, next),
                 (next: Function) => this.storage.createPaths(this.getAppPath(), paths, next),
-                (next: Function) => this.installTemplateDependencies(template.dependencies[languageType], next),
+                (next: Function) =>
+                    this.packageManager.installDependencies(template.dependencies[languageType], this.getAppPath(), next),
                 (next: Function) =>
                     this.saveFiles(flagsWithTemplates.indexOf(flag), languageType, paths, template, next)
             ], (err: ErrorEvent) => cb(err));

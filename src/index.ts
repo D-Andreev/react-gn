@@ -12,8 +12,16 @@ import {noop} from './utils';
 import ITemplateService from './services/interfaces/ITemplateService';
 import TemplateService from './services/Template';
 import ejs from 'ejs';
+import IPackageManager from './services/interfaces/IPackageManager';
+import PackageManager from './services/PackageManager';
+import IUserInterface from './user-interface/interfaces/IUserInterface';
+import Cli from './user-interface/Cli';
+import * as readline from 'readline';
+import inquirer from 'inquirer';
 
 const storage: IStorage = new StorageService(fs, path);
 const cra: ICra = new Cra(storage, childProcess);
 const templateService: ITemplateService = new TemplateService(ejs);
-new CommandFactory(storage, templateService, cra, childProcess).createCommand(process.argv, noop);
+const userInterface: IUserInterface = new Cli(process.stdout, readline, inquirer);
+const packageManager: IPackageManager = new PackageManager(userInterface, childProcess);
+new CommandFactory(storage, templateService, cra, childProcess, userInterface, packageManager).createCommand(process.argv, noop);
