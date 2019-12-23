@@ -1,0 +1,3 @@
+- Get unioun from templates files config and all files
+- Put actual file extensions
+- Save all files

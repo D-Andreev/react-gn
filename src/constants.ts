@@ -57,14 +57,14 @@ export const NEW_COMMAND_QUESTIONS: CheckboxQuestion[] = [
 
 export const GENERATE_COMMAND_QUESTION_MESSAGES = {
     TARGET_DIR: 'Enter the target dir for the component.',
-    USE_TS: 'Do you want to use typescript?',
+    USE_TS: 'Use typescript?',
     COMPONENT_NAME: 'Enter component name.',
-    IS_CLASS_COMPONENT: 'Should it be a class component?',
-    WITH_HOOKS: 'Do you want to use hooks',
-    WITH_REDUX: 'Do you want the component to be connected to redux?',
-    WITH_STATE: 'Does your component have state?',
-    WITH_PROP_TYPES: 'Do you want to add propTypes?',
-    WITH_STYLED_COMPONENTS: 'Do you want to add styled components?',
+    IS_CLASS_COMPONENT: 'Is a class component?',
+    WITH_HOOKS: 'Use hooks',
+    WITH_REDUX: 'Use Redux?',
+    WITH_STATE: 'Use state?',
+    WITH_PROP_TYPES: 'Use propTypes?',
+    WITH_STYLED_COMPONENTS: 'Use styled components?',
 };
 
 export const GENERATE_COMMON_CHOICES = [
