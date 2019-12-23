@@ -245,7 +245,6 @@ export default class GenerateCommand implements ICommand {
             if (err) {
                 return this.onError(err, done);
             }
-
             done();
         });
     }
