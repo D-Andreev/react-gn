@@ -160,8 +160,12 @@ export default class GenerateCommand implements ICommand {
         });
     }
 
-    getProjectMainDir(): string {
-
+    private installDependencies(paths: string[], parsedData: ITemplateData, done: Function): void {
+        const dependencies: IDependency[] = templates.dependencies[this.answers.languageType].map((d: IDependency) => d);
+        console.log({dependencies})
+        steed.mapSeries(paths, (path: string, next: Function) => {
+            console.log(path, next);
+        }, (err: ErrorEvent) => done(err));
     }
 
     execute(done: Function): void {
@@ -171,8 +175,7 @@ export default class GenerateCommand implements ICommand {
             (answers: IGenerateAnswers, next: Function) => this.getTemplateFiles(next),
             (answers: IGenerateAnswers, paths: string[], next: Function) => this.getTemplateData(paths, next),
             (answers: IGenerateAnswers, paths: string[], data: any, next: Function) => {
-                const dependencies: IDependency[] = templates.dependencies[this.answers.languageType].map((d: IDependency) => d);
-                this.packageManager.installDependencies(dependencies, this.getProejctMainDir())
+                this.packageManager.installDependencies()
             },
             (answers: IGenerateAnswers, paths: string[], data: any, next: Function) => {
                 data = {
