@@ -14,11 +14,10 @@
     import PropTypes from 'prop-types';
 <% } %>
 <% if (withStyledComponents) { %>
-    import StyledButton from './StyledButton.js';
+    import StyledComponent from './StyledComponent.js';
 <% } %>
 
-
-function Counter({className = ''}) {
+function <%= component %>({children}) {
 <% if (withHooks) { %>
     const [count, setCount] = useState(0);
 <% } %>
@@ -33,21 +32,25 @@ function Counter({className = ''}) {
 <% } %>
 
 return (
-<div className={className}>
+<% if(withStyledComponents){ %>
+    <StyledComponent>
+<% } else{ %>
+    <div>
+<% } %>
     <% if(withHooks){ %>
         <% if(withRedux){ %>
             <p>You clicked {count} times</p>
-            <StyledButton onClick={() => setCount(count + 1)} primary>
+            <button onClick={() => setCount(count + 1)} primary>
             Click me
-            </StyledButton>
+            </button>
             <pre>
                     {result}
                 </pre>
         <% } else if (withHooks){ %>
             <p>You clicked {count} times</p>
-            <StyledButton onClick={() => setCount(count + 1)} primary>
+            <button onClick={() => setCount(count + 1)} primary>
             Click me
-            </StyledButton>
+            </button>
             <pre>
                 {count}
             </pre>
@@ -55,14 +58,20 @@ return (
             <%= component %>
         <% } %>
     <% } else{ %>
-        import React from 'react';
+        <div>
+            <%= component %>
+        </div>
     <% } %>
-</div>
+<% if(withStyledComponents){ %>
+    </StyledComponent>
+<% } else{ %>
+    </div>
+<% } %>
 );
 }
 <% if (withHooks) { %>
-    Counter.propTypes = {
-    className: PropTypes.string
+    <% component %>.propTypes = {
+    children: PropTypes.element
     };
 <% } %>
 

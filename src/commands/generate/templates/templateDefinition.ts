@@ -1,9 +1,9 @@
-import {TEMPLATE_OPTIONS} from '../../../constants';
+import {COMPONENT_NAME_PLACEHOLDER, TEMPLATE_OPTIONS} from '../../../constants';
 
 const main: any = [
-    {path: 'Counter.ejs', extension: 'jsx'},
-    {path: 'Counter.styles.ejs', extension: 'css'},
-    {path: 'Counter.test.ejs', extension: 'js'}
+    {path: `${COMPONENT_NAME_PLACEHOLDER}.ejs`, extension: 'jsx'},
+    {path: `${COMPONENT_NAME_PLACEHOLDER}.styles.ejs`, extension: 'css'},
+    {path: `${COMPONENT_NAME_PLACEHOLDER}.test.ejs`, extension: 'js'}
 ];
 
 const templateDefinition: any = {
@@ -20,8 +20,8 @@ const templateDefinition: any = {
                 {path: 'StyledButton.ejs', extension: 'js'}
             ],
             [TEMPLATE_OPTIONS.WITH_REDUX]: [
-                {path: './actions/counterActions.ejs', extension: 'js'},
-                {path: './reducers/counterReducer.ejs', extension: 'js'}
+                {path: './actions/simpleActions.ejs', extension: 'js'},
+                {path: './reducers/simpleReducer.ejs', extension: 'js'}
             ],
         }
     },
@@ -38,8 +38,8 @@ const templateDefinition: any = {
                 {path: 'StyledButton.ejs', extension: 'js'}
             ],
             [TEMPLATE_OPTIONS.WITH_REDUX]: [
-                {path: './actions/counterActions.ejs', extension: 'js'},
-                {path: './reducers/counterReducer.ejs', extension: 'js'}
+                {path: './actions/simpleActions.ejs', extension: 'js'},
+                {path: './reducers/simpleReducer.ejs', extension: 'js'}
             ],
         }
     }

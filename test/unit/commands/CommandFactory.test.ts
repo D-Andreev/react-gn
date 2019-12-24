@@ -1,5 +1,4 @@
 import childProcess from 'child_process';
-import path from 'path';
 import CommandFactory from '../../../src/commands/CommandFactory';
 import ICommand from '../../../src/commands/interfaces/ICommand';
 import {COMMAND, PACKAGE_NAME} from '../../../src/constants';

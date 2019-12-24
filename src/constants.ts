@@ -4,6 +4,7 @@ import fs from 'fs';
 export const PACKAGE_NAME = 'react-gn';
 export const PACKAGE_VERSION = '1.0.21';
 export const DEFAULT_COMPONENT_NAME = 'MyComponent';
+export const COMPONENT_NAME_PLACEHOLDER = '{Component}';
 
 export const COMMAND = {
     NEW: 'new',

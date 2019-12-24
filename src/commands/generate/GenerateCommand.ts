@@ -6,7 +6,7 @@ import IStorage from '../../services/interfaces/IStorage';
 import IUserInterface from '../../user-interface/interfaces/IUserInterface';
 import {
     ALLOWED_LANGUAGE_TYPE_FLAGS,
-    COMMAND_FLAG,
+    COMMAND_FLAG, COMPONENT_NAME_PLACEHOLDER,
     FLAGS_WITH_TEMPLATES, GENERATE_COMMAND_QUESTION_MESSAGES,
     GENERATE_COMMAND_QUESTIONS, GENERATE_QUESTION_NAME,
     LANGUAGE_TYPE,
@@ -302,7 +302,8 @@ export default class GenerateCommand implements ICommand {
                 this.storage.createDirectory(path.join(this.answers.targetPath, this.answers.componentName), next),
             (next: Function) =>
                 steed.mapSeries(this.renderedTemplates, (template: IRenderedTemplate, next: Function) => {
-                    this.storage.create(template.path, template.content, next);
+                    const fileName = template.path.replace(COMPONENT_NAME_PLACEHOLDER, this.answers.componentName);
+                    this.storage.create(fileName, template.content, next);
                 }, (err: Error) => next(err)),
         ], (err: Error) => {
             if (err) {
