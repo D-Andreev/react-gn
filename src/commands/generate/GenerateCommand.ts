@@ -22,6 +22,7 @@ import templates from './templates/templates';
 import {IDependency} from '../interfaces/ITemplate';
 import IPackageManager from '../../services/interfaces/IPackageManager';
 import IRenderedTemplate from '../interfaces/IRenderedTemplate';
+import ITemplateFile from '../interfaces/ITemplateFile';
 
 export default class GenerateCommand implements ICommand {
     public flags: Flag[];
@@ -191,17 +192,46 @@ export default class GenerateCommand implements ICommand {
         });
     }
 
-    private getFilesForTemplate(): string[] {
+    private getFilesForTemplate(): ITemplateFile[] {
         const componentType = this.answers.isClassComponent ? 'container' : 'component';
         const templateConfig = templates[this.answers.languageType][componentType];
         let shouldInstallFiles = templateConfig.main;
         Object.keys(this.answers).forEach((answerKey: string) => {
             if (templateConfig.hasOwnProperty(answerKey) && this.parsedData[answerKey]) {
-                shouldInstallFiles = shouldInstallFiles.concat(templateConfig[answerKey].name);
+                const options = templateConfig[answerKey].map((t: any) => t.name);
+                shouldInstallFiles = shouldInstallFiles.concat(options);
             }
         });
 
-        return shouldInstallFiles.filter((f: any) => f);
+        return shouldInstallFiles;
+    }
+
+    private setTemplateFiles(files: ITemplateFile[]): void {
+        this.templatePaths = this.templatePaths.filter((p: string) => {
+            const splitPath: string[] = p.split('/');
+            const fileName: string = splitPath[splitPath.length - 1];
+            return files.find(f => f.path === fileName);
+        });
+    }
+
+    private renderTemplates(files: ITemplateFile[], done: Function): void {
+        const renderedTemplates: IRenderedTemplate[] = [];
+        steed.mapSeries(this.templatePaths, (templateFilePath: string, next: Function) => {
+            this.storage.read(templateFilePath, (err: ErrorEvent, file: Buffer) => {
+                if (err) {
+                    return next(err);
+                }
+                const splitFilePath: string[] = templateFilePath.split('/');
+                const templateFile: ITemplateFile =
+                    files.find(f => f.path === splitFilePath[splitFilePath.length - 1]);
+                const fileName = templateFile.path.split('.').slice(0, -1).join('.');
+                renderedTemplates.push({
+                    path: path.join(this.answers.targetPath, `${fileName}.${templateFile.extension}`),
+                    content: this.templateService.render(file.toString(), this.parsedData)
+                });
+                next();
+            });
+        }, (err: ErrorEvent) => done(err, renderedTemplates, files));
     }
 
     execute(done: Function): void {
@@ -220,28 +250,9 @@ export default class GenerateCommand implements ICommand {
             },
             (next: Function) => {
                 this.setParsedData();
-                const renderedTemplates: IRenderedTemplate[] = [];
-                const files: any[] = this.getFilesForTemplate();
-                this.templatePaths = this.templatePaths.filter((p: string) => {
-                    const splitPath: string[] = p.split('/');
-                    const fileName: string = splitPath[splitPath.length - 1];
-                    return files.find(f => f.path === fileName);
-                });
-                steed.mapSeries(this.templatePaths, (templateFilePath: string, next: Function) => {
-                    this.storage.read(templateFilePath, (err: ErrorEvent, file: Buffer) => {
-                        if (err) {
-                            return next(err);
-                        }
-                        const splitFilePath: string[] = templateFilePath.split('/');
-                        const templatePath: any = files.find(f => f.path === splitFilePath[splitFilePath.length - 1]);
-                        const fileName = templatePath.path.split('.').slice(0, -1).join('.');
-                        renderedTemplates.push({
-                            path: path.join(this.answers.targetPath, `${fileName}.${templatePath.extension}`),
-                            content: this.templateService.render(file.toString(), this.parsedData)
-                        });
-                        next();
-                    });
-                }, (err: ErrorEvent) => next(err, renderedTemplates, files));
+                const files: ITemplateFile[] = this.getFilesForTemplate();
+                this.setTemplateFiles(files);
+                this.renderTemplates(files, next);
             },
             (renderedTemplates: IRenderedTemplate[], files: any[], next: Function) => {
                 steed.mapSeries(renderedTemplates, (template: IRenderedTemplate, next: Function) => {
