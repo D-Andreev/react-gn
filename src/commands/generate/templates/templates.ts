@@ -28,28 +28,28 @@ const Template: any = {
     js: {
         component: {
             main: main,
-            withStyledComponents: [{path: 'StyledButton', extension: 'js'}]
+            withStyledComponents: [{path: 'StyledButton.ejs', extension: 'js'}]
         },
         container: {
             main: main,
-            withStyledComponents: [{path: 'StyledButton', extension: 'js'}],
+            withStyledComponents: [{path: 'StyledButton.ejs', extension: 'js'}],
             withRedux: [
-                {path: './actions/counterActions', extension: 'js'},
-                {path: './reducers/counterReducer', extension: 'js'}
+                {path: './actions/counterActions.ejs', extension: 'js'},
+                {path: './reducers/counterReducer.ejs', extension: 'js'}
             ],
         }
     },
     ts: {
         component: {
             main: main,
-            withStyledComponents: [{path: 'StyledButton', extension: 'js'}]
+            withStyledComponents: [{path: 'StyledButton.ejs', extension: 'js'}]
         },
         container: {
             main: main,
-            withStyledComponents: [{path: 'StyledButton', extension: 'js'}],
+            withStyledComponents: [{path: 'StyledButton.ejs', extension: 'js'}],
             withRedux: [
-                {path: './actions/counterActions', extension: 'js'},
-                {path: './reducers/counterReducer', extension: 'js'}
+                {path: './actions/counterActions.ejs', extension: 'js'},
+                {path: './reducers/counterReducer.ejs', extension: 'js'}
             ],
         }
     }

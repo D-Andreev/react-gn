@@ -39,6 +39,7 @@
   "dependencies": {
     "ejs": "^3.0.1",
     "inquirer": "^7.0.0",
+    "prettier": "^1.19.1",
     "steed": "^1.1.3"
   }
 }

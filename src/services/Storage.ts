@@ -39,7 +39,7 @@ export default class Storage implements IStorage {
         });
     };
 
-    private createFolderIfNotExists(folderPath: string): void {
+    public createFolderIfNotExists(folderPath: string): void {
         if (!this.fs.existsSync(folderPath)) {
             this.fs.mkdirSync(folderPath);
         }
@@ -125,5 +125,9 @@ export default class Storage implements IStorage {
 
     generateFilePath(parts: string[], done: Function): void {
         done(null, this.path.join(...parts));
+    }
+
+    createDirectory(path: string, done: Function): void {
+        this.fs.mkdir(path, (err: ErrnoException) => done(err));
     }
 }

@@ -7,4 +7,5 @@ export default interface IStorage {
     scanDirectory(path: string, done: Function): void;
     createPaths(mainPath: string, paths: string[], done: Function): void;
     generateFilePath(parts: string[], done: Function): void;
+    createDirectory(path: string, done: Function): void;
 }

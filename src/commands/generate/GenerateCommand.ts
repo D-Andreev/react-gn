@@ -198,7 +198,7 @@ export default class GenerateCommand implements ICommand {
         let shouldInstallFiles = templateConfig.main;
         Object.keys(this.answers).forEach((answerKey: string) => {
             if (templateConfig.hasOwnProperty(answerKey) && this.parsedData[answerKey]) {
-                const options = templateConfig[answerKey].map((t: any) => t.name);
+                const options = templateConfig[answerKey].map((t: IRenderedTemplate) => t.path);
                 shouldInstallFiles = shouldInstallFiles.concat(options);
             }
         });
@@ -225,8 +225,10 @@ export default class GenerateCommand implements ICommand {
                 const templateFile: ITemplateFile =
                     files.find(f => f.path === splitFilePath[splitFilePath.length - 1]);
                 const fileName = templateFile.path.split('.').slice(0, -1).join('.');
+                const filePath = path.join(
+                    this.answers.targetPath, this.answers.componentName, `${fileName}.${templateFile.extension}`);
                 renderedTemplates.push({
-                    path: path.join(this.answers.targetPath, `${fileName}.${templateFile.extension}`),
+                    path: filePath,
                     content: this.templateService.render(file.toString(), this.parsedData)
                 });
                 next();
@@ -254,7 +256,17 @@ export default class GenerateCommand implements ICommand {
                 this.setTemplateFiles(files);
                 this.renderTemplates(files, next);
             },
-            (renderedTemplates: IRenderedTemplate[], files: any[], next: Function) => {
+            (renderedTemplates: IRenderedTemplate[], files: ITemplateFile[], next: Function) => {
+                const dirPath = path.join(this.answers.targetPath, this.answers.componentName);
+                this.storage.createDirectory(dirPath, (err: ErrorEvent) => {
+                    if (err) {
+                        return next(err);
+                    }
+
+                    next(null, renderedTemplates, files);
+                })
+            },
+            (renderedTemplates: IRenderedTemplate[], files: ITemplateFile[], next: Function) => {
                 steed.mapSeries(renderedTemplates, (template: IRenderedTemplate, next: Function) => {
                     this.storage.create(template.path, template.content, next);
                 }, (err: ErrorEvent) => next(err));
@@ -263,7 +275,9 @@ export default class GenerateCommand implements ICommand {
             if (err) {
                 return this.onError(err, done);
             }
-
+            const message = `${this.answers.componentName} was created successfully!`;
+            const output: Output[] = [new Output(message, OUTPUT_TYPE.SUCCESS)];
+            this.userInterface.showOutput(output, noop);
             done();
         });
     }

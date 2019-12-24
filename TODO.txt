@@ -1,3 +1,1 @@
-- Get unioun from templates files config and all files
-- Put actual file extensions
-- Save all files
+Make template files with names - Counter.jsx.ejs, Counter.test.js.ejs
