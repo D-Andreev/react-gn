@@ -21,6 +21,7 @@ import ITemplateService from '../../services/interfaces/ITemplateService';
 import templates from './templates/templates';
 import {IDependency} from '../interfaces/ITemplate';
 import IPackageManager from '../../services/interfaces/IPackageManager';
+import IRenderedTemplate from '../interfaces/IRenderedTemplate';
 
 export default class GenerateCommand implements ICommand {
     public flags: Flag[];
@@ -75,9 +76,21 @@ export default class GenerateCommand implements ICommand {
         return flag.value;
     }
 
+    private setParsedData(): void {
+        this.parsedData = {
+            withStyledComponents: !!this.answers.withStyledComponents,
+            withRedux: !!this.answers.withRedux,
+            withHooks: !!this.answers.withHooks,
+            withPropTypes: !!this.answers.withPropTypes,
+            withState: !!this.answers.withState,
+            component: this.answers.componentName,
+            Component: this.answers.componentName,
+        };
+    }
+
     private askQuestions(done: Function): void {
         if (this.isInteractiveModeDisabled()) {
-            return done(null, {
+            this.answers = {
                 targetPath: this.getFlagValue(COMMAND_FLAG.COMPONENT_TARGET_PATH),
                 componentName: this.getFlagValue(COMMAND_FLAG.COMPONENT_NAME),
                 languageType: !!this.getFlagValue(ALLOWED_LANGUAGE_TYPE_FLAGS[1]) ? LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS,
@@ -87,7 +100,8 @@ export default class GenerateCommand implements ICommand {
                 withState: !!this.getFlagValue(COMMAND_FLAG.WITH_STATE),
                 withRedux: !!this.getFlagValue(FLAGS_WITH_TEMPLATES.WITH_REDUX),
                 withHooks: !!this.getFlagValue(COMMAND_FLAG.WITH_HOOKS),
-            });
+            };
+            return done();
         }
 
         this.userInterface.prompt(GENERATE_COMMAND_QUESTIONS, (err: ErrorEvent, results: Answers) => {
@@ -95,7 +109,7 @@ export default class GenerateCommand implements ICommand {
                 return done(err);
             }
 
-            const answers: IGenerateAnswers = {
+            this.answers = {
                 targetPath: results[GENERATE_QUESTION_NAME.TARGET_PATH] !== './' ?
                     results[GENERATE_QUESTION_NAME.TARGET_PATH] : process.cwd(),
                 componentName: results[GENERATE_QUESTION_NAME.COMPONENT_NAME],
@@ -114,7 +128,6 @@ export default class GenerateCommand implements ICommand {
                 withHooks: results[GENERATE_QUESTION_NAME.OPTIONS]
                     .indexOf(GENERATE_COMMAND_QUESTION_MESSAGES.WITH_HOOKS) !== -1,
             };
-            this.answers = answers;
             done();
         });
     }
@@ -184,11 +197,11 @@ export default class GenerateCommand implements ICommand {
         let shouldInstallFiles = templateConfig.main;
         Object.keys(this.answers).forEach((answerKey: string) => {
             if (templateConfig.hasOwnProperty(answerKey) && this.parsedData[answerKey]) {
-                shouldInstallFiles = shouldInstallFiles.concat(templateConfig[answerKey]);
+                shouldInstallFiles = shouldInstallFiles.concat(templateConfig[answerKey].name);
             }
         });
 
-        return shouldInstallFiles;
+        return shouldInstallFiles.filter((f: any) => f);
     }
 
     execute(done: Function): void {
@@ -206,39 +219,33 @@ export default class GenerateCommand implements ICommand {
                 this.packageManager.installDependencies(dependencies, this.projectMainDir, next);
             },
             (next: Function) => {
-                this.parsedData = {
-                    withStyledComponents: !!this.answers.withStyledComponents,
-                    withRedux: !!this.answers.withRedux,
-                    withHooks: !!this.answers.withHooks,
-                    withPropTypes: !!this.answers.withPropTypes,
-                    withState: !!this.answers.withState,
-                    component: this.answers.componentName,
-                    Component: this.answers.componentName,
-                };
-                const renderedTemplates: string[] = [];
-                steed.mapSeries(this.templatePaths, (path: string, next: Function) => {
-                    this.storage.read(path, (err: ErrorEvent, file: Buffer) => {
+                this.setParsedData();
+                const renderedTemplates: IRenderedTemplate[] = [];
+                const files: any[] = this.getFilesForTemplate();
+                this.templatePaths = this.templatePaths.filter((p: string) => {
+                    const splitPath: string[] = p.split('/');
+                    const fileName: string = splitPath[splitPath.length - 1];
+                    return files.find(f => f.path === fileName);
+                });
+                steed.mapSeries(this.templatePaths, (templateFilePath: string, next: Function) => {
+                    this.storage.read(templateFilePath, (err: ErrorEvent, file: Buffer) => {
                         if (err) {
                             return next(err);
                         }
-
-                        renderedTemplates.push(this.templateService.render(file.toString(), this.parsedData));
+                        const splitFilePath: string[] = templateFilePath.split('/');
+                        const templatePath: any = files.find(f => f.path === splitFilePath[splitFilePath.length - 1]);
+                        const fileName = templatePath.path.split('.').slice(0, -1).join('.');
+                        renderedTemplates.push({
+                            path: path.join(this.answers.targetPath, `${fileName}.${templatePath.extension}`),
+                            content: this.templateService.render(file.toString(), this.parsedData)
+                        });
                         next();
                     });
-                }, (err: ErrorEvent) => next(err, renderedTemplates));
+                }, (err: ErrorEvent) => next(err, renderedTemplates, files));
             },
-            (renderedTemplates: string[], next: Function) => {
-                const files: string[] = this.getFilesForTemplate();
-                console.log({files});
-                steed.mapSeries(files, (currentPath: string, next: Function) => {
-                    let splitPath: string[] = currentPath.split(sep);
-                    const componentType = this.answers.isClassComponent ? 'container' : 'component';
-                    splitPath = splitPath.splice(splitPath.indexOf(componentType));
-                    const fileName = splitPath[splitPath.length - 1];
-                    this.storage.create(
-                        path.join(this.answers.targetPath, fileName),
-                        renderedTemplates[this.templatePaths.indexOf(currentPath)],
-                        next);
+            (renderedTemplates: IRenderedTemplate[], files: any[], next: Function) => {
+                steed.mapSeries(renderedTemplates, (template: IRenderedTemplate, next: Function) => {
+                    this.storage.create(template.path, template.content, next);
                 }, (err: ErrorEvent) => next(err));
             }
         ], (err: ErrorEvent) => {

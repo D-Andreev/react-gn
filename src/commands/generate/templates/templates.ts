@@ -1,3 +1,9 @@
+const main: any = [
+    {path: 'Counter.ejs', extension: 'jsx'},
+    {path: 'Counter.styles.ejs', extension: 'css'},
+    {path: 'Counter.test.ejs', extension: 'js'}
+];
+
 const Template: any = {
     dependencies: {
         js: {
@@ -21,24 +27,30 @@ const Template: any = {
     },
     js: {
         component: {
-            main: ['Counter.jsx', 'Counter.styles.css', 'Counter.test.js'],
-            withStyledComponents: ['./StyledButton.js']
+            main: main,
+            withStyledComponents: [{path: 'StyledButton', extension: 'js'}]
         },
         container: {
-            main: ['Counter.jsx', 'Counter.styles.css', 'Counter.test.js'],
-            withStyledComponents: ['./StyledCounter.js'],
-            withRedux: ['./actions/counterActions.js', './reducers/counterReducer.js'],
+            main: main,
+            withStyledComponents: [{path: 'StyledButton', extension: 'js'}],
+            withRedux: [
+                {path: './actions/counterActions', extension: 'js'},
+                {path: './reducers/counterReducer', extension: 'js'}
+            ],
         }
     },
     ts: {
         component: {
-            main: ['Counter.jsx', 'Counter.styles.css', 'Counter.test.js'],
-            withStyledComponents: ['./StyledButton.ts']
+            main: main,
+            withStyledComponents: [{path: 'StyledButton', extension: 'js'}]
         },
         container: {
-            main: ['Counter.jsx', 'Counter.styles.css', 'Counter.test.js'],
-            withStyledComponents: ['./StyledCounter.ts'],
-            withRedux: ['./actions/counterActions.ts', './actions/counterActions.ts/reducers/counterReducer.ts'],
+            main: main,
+            withStyledComponents: [{path: 'StyledButton', extension: 'js'}],
+            withRedux: [
+                {path: './actions/counterActions', extension: 'js'},
+                {path: './reducers/counterReducer', extension: 'js'}
+            ],
         }
     }
 };
