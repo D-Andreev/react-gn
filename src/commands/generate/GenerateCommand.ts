@@ -18,8 +18,7 @@ import {sep} from 'path';
 import {Answers} from 'inquirer';
 import IGenerateAnswers from '../interfaces/IGenerateAnswers';
 import ITemplateService from '../../services/interfaces/ITemplateService';
-import templates from './templates/templates';
-import {IDependency} from '../interfaces/ITemplate';
+import templateDefinition from './templates/templateDefinition';
 import IPackageManager from '../../services/interfaces/IPackageManager';
 import IRenderedTemplate from '../interfaces/IRenderedTemplate';
 import ITemplateFile from '../interfaces/ITemplateFile';
@@ -37,6 +36,8 @@ export default class GenerateCommand implements ICommand {
     private projectMainDir: string;
     private parsedData: any;
     private templatePaths: string[];
+    private templateFiles: ITemplateFile[];
+    private renderedTemplates: IRenderedTemplate[];
 
     constructor(
         storage: IStorage,
@@ -58,7 +59,7 @@ export default class GenerateCommand implements ICommand {
         this.path = path;
     }
 
-    private onError(err: Error | ErrorEvent, done: Function): void {
+    private onError(err: Error | Error, done: Function): void {
         const output: Output[] = [new Output(err.message, OUTPUT_TYPE.ERROR)];
         this.userInterface.showOutput(output, noop);
         return done(err);
@@ -77,7 +78,7 @@ export default class GenerateCommand implements ICommand {
         return flag.value;
     }
 
-    private setParsedData(): void {
+    private setTemplateData(): void {
         this.parsedData = {
             withStyledComponents: !!this.answers.withStyledComponents,
             withRedux: !!this.answers.withRedux,
@@ -105,7 +106,7 @@ export default class GenerateCommand implements ICommand {
             return done();
         }
 
-        this.userInterface.prompt(GENERATE_COMMAND_QUESTIONS, (err: ErrorEvent, results: Answers) => {
+        this.userInterface.prompt(GENERATE_COMMAND_QUESTIONS, (err: Error, results: Answers) => {
             if (err) {
                 return done(err);
             }
@@ -135,7 +136,7 @@ export default class GenerateCommand implements ICommand {
 
     private checkTargetDirValidity(done: Function): void {
         const targetPath = path.join(this.answers.targetPath, this.answers.componentName);
-        this.storage.directoryExists(targetPath, (err: ErrorEvent) => {
+        this.storage.directoryExists(targetPath, (err: Error) => {
             if (err) {
                 return done();
             }
@@ -161,7 +162,7 @@ export default class GenerateCommand implements ICommand {
 
     private getTemplateData(done: Function): void {
         const dataFilePath = path.join(...GenerateCommand.getTemplatesPath(), 'data.json');
-        this.storage.read(dataFilePath, (err: ErrorEvent, file: string) => {
+        this.storage.read(dataFilePath, (err: Error, file: string) => {
             if (err) {
                 return done(err);
             }
@@ -176,25 +177,26 @@ export default class GenerateCommand implements ICommand {
         });
     }
 
-    private getProjectMainDir(splitPath: string[], done: Function): void {
+    private getProjectMainDir(done: Function): void {
+        const splitPath: string[] = path.join(process.cwd(), this.answers.targetPath).split('/');
         if (!splitPath.length) {
             return done(new Error('Could not find project main directory'));
         }
 
         const currentPath: string = path.join(sep, ...splitPath, 'package.json');
-        this.storage.read(currentPath, (err: ErrorEvent) => {
+        this.storage.read(currentPath, (err: Error) => {
             if (err) {
                 splitPath.pop();
-                return this.getProjectMainDir(splitPath, done);
+                return this.getProjectMainDir(done);
             }
             this.projectMainDir = path.join(...splitPath);
             done();
         });
     }
 
-    private getFilesForTemplate(): ITemplateFile[] {
+    private setTemplateFiles(): void {
         const componentType = this.answers.isClassComponent ? 'container' : 'component';
-        const templateConfig = templates[this.answers.languageType][componentType];
+        const templateConfig = templateDefinition[this.answers.languageType][componentType];
         let shouldInstallFiles = templateConfig.main;
         Object.keys(this.answers).forEach((answerKey: string) => {
             if (templateConfig.hasOwnProperty(answerKey) && this.parsedData[answerKey]) {
@@ -203,27 +205,27 @@ export default class GenerateCommand implements ICommand {
             }
         });
 
-        return shouldInstallFiles;
+        this.templateFiles = shouldInstallFiles;
     }
 
-    private setTemplateFiles(files: ITemplateFile[]): void {
+    private setTemplatePaths(): void {
         this.templatePaths = this.templatePaths.filter((p: string) => {
             const splitPath: string[] = p.split('/');
             const fileName: string = splitPath[splitPath.length - 1];
-            return files.find(f => f.path === fileName);
+            return this.templateFiles.find(f => f.path === fileName);
         });
     }
 
-    private renderTemplates(files: ITemplateFile[], done: Function): void {
+    private renderTemplates(done: Function): void {
         const renderedTemplates: IRenderedTemplate[] = [];
         steed.mapSeries(this.templatePaths, (templateFilePath: string, next: Function) => {
-            this.storage.read(templateFilePath, (err: ErrorEvent, file: Buffer) => {
+            this.storage.read(templateFilePath, (err: Error, file: Buffer) => {
                 if (err) {
                     return next(err);
                 }
                 const splitFilePath: string[] = templateFilePath.split('/');
                 const templateFile: ITemplateFile =
-                    files.find(f => f.path === splitFilePath[splitFilePath.length - 1]);
+                    this.templateFiles.find(f => f.path === splitFilePath[splitFilePath.length - 1]);
                 const fileName = templateFile.path.split('.').slice(0, -1).join('.');
                 const filePath = path.join(
                     this.answers.targetPath, this.answers.componentName, `${fileName}.${templateFile.extension}`);
@@ -233,7 +235,13 @@ export default class GenerateCommand implements ICommand {
                 });
                 next();
             });
-        }, (err: ErrorEvent) => done(err, renderedTemplates, files));
+        }, (err: Error) => {
+            if (err) {
+                return done(err);
+            }
+            this.renderedTemplates = renderedTemplates;
+            done();
+        });
     }
 
     execute(done: Function): void {
@@ -242,36 +250,19 @@ export default class GenerateCommand implements ICommand {
             (next: Function) => this.checkTargetDirValidity(next),
             (next: Function) => this.getTemplateFiles(next),
             (next: Function) => this.getTemplateData(next),
+            (next: Function) => this.getProjectMainDir(next),
             (next: Function) => {
-                const splitPath: string[] = path.join(process.cwd(), this.answers.targetPath).split('/');
-                this.getProjectMainDir(splitPath, next);
+                this.setTemplateData();
+                this.setTemplatePaths();
+                this.renderTemplates(next);
             },
-            (next: Function) => {
-                const dependencies: IDependency[] = templates.dependencies[this.answers.languageType];
-                this.packageManager.installDependencies(dependencies, this.projectMainDir, next);
-            },
-            (next: Function) => {
-                this.setParsedData();
-                const files: ITemplateFile[] = this.getFilesForTemplate();
-                this.setTemplateFiles(files);
-                this.renderTemplates(files, next);
-            },
-            (renderedTemplates: IRenderedTemplate[], files: ITemplateFile[], next: Function) => {
-                const dirPath = path.join(this.answers.targetPath, this.answers.componentName);
-                this.storage.createDirectory(dirPath, (err: ErrorEvent) => {
-                    if (err) {
-                        return next(err);
-                    }
-
-                    next(null, renderedTemplates, files);
-                })
-            },
-            (renderedTemplates: IRenderedTemplate[], files: ITemplateFile[], next: Function) => {
-                steed.mapSeries(renderedTemplates, (template: IRenderedTemplate, next: Function) => {
+            (next: Function) =>
+                this.storage.createDirectory(path.join(this.answers.targetPath, this.answers.componentName), next),
+            (next: Function) =>
+                steed.mapSeries(this.renderedTemplates, (template: IRenderedTemplate, next: Function) => {
                     this.storage.create(template.path, template.content, next);
-                }, (err: ErrorEvent) => next(err));
-            }
-        ], (err: ErrorEvent) => {
+                }, (err: Error) => next(err))
+        ], (err: Error) => {
             if (err) {
                 return this.onError(err, done);
             }

@@ -243,3 +243,9 @@ export const CRA_EVENT = {
     EJECT_DATA: 'EJECT_DATA',
     EJECT_CLOSE: 'EJECT_CLOSE'
 };
+
+export const TEMPLATE_OPTIONS = {
+    WITH_STYLED_COMPONENTS: 'withStyledComponents',
+    WITH_PROP_TYPES: 'withPropTypes',
+    WITH_REDUX: 'withRedux',
+}
