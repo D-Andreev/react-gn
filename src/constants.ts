@@ -179,12 +179,6 @@ export const ALLOWED_FLAGS = ['--config', '--ejected', '--interactive']
     .concat(Object.values(FLAGS_WITH_TEMPLATES))
     .concat(ALLOWED_LANGUAGE_TYPE_FLAGS);
 
-export const NON_PLACEHOLDER_FLAGS = [
-    COMMAND_FLAG.COMPONENT_NAME,
-    COMMAND_FLAG.TEMPLATE,
-    COMMAND_FLAG.COMPONENT_TARGET_PATH,
-].concat(ALLOWED_LANGUAGE_TYPE_FLAGS);
-
 export const ALLOWED_FLAGS_DESCRIPTIONS: {[flag: string]: string} = {
     '--help (Alias: -h)': 'Shows the help.',
     '--version (Alias: -v)': 'Shows the current version.',

@@ -18,6 +18,8 @@ import Cli from '../../../src/user-interface/Cli';
 import * as inquirer from 'inquirer';
 import * as readline from 'readline';
 import PackageManager from '../../../src/services/PackageManager';
+import Prettier from '../../../src/services/Prettier';
+import prettier from 'prettier';
 
 function noop() {}
 jest.mock('child_process');
@@ -32,7 +34,9 @@ describe('CommandFactory', () => {
         const templateService = new Template(ejs);
         const userInterface = new Cli(process.stdout, readline, inquirer);
         const packageManager = new PackageManager(userInterface, childProcess);
-        commandFactory = new CommandFactory(storage, templateService, cra, childProcess, userInterface, packageManager);
+        const prettierService = new Prettier(prettier)
+        commandFactory = new CommandFactory(
+            storage, templateService, cra, childProcess, userInterface, packageManager, prettierService);
     });
 
     describe(`when ${PACKAGE_NAME} name is not provided`, () => {
