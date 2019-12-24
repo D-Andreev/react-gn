@@ -10,7 +10,7 @@ import {
     FLAGS_WITH_TEMPLATES, GENERATE_COMMAND_QUESTION_MESSAGES,
     GENERATE_COMMAND_QUESTIONS, GENERATE_QUESTION_NAME,
     LANGUAGE_TYPE,
-    OUTPUT_TYPE
+    OUTPUT_TYPE, PRETTIFIABLE_EXTENSIONS
 } from '../../constants';
 import Output from '../Output';
 import {noop} from '../../utils';
@@ -22,6 +22,7 @@ import templateDefinition from './templates/templateDefinition';
 import IPackageManager from '../../services/interfaces/IPackageManager';
 import IRenderedTemplate from '../interfaces/IRenderedTemplate';
 import ITemplateFile from '../interfaces/ITemplateFile';
+import IPrettier from '../../services/interfaces/IPrettier';
 
 export default class GenerateCommand implements ICommand {
     public flags: Flag[];
@@ -32,6 +33,7 @@ export default class GenerateCommand implements ICommand {
     public readonly childProcess: typeof import('child_process');
     private templateService: ITemplateService;
     private readonly packageManager: IPackageManager;
+    private readonly prettier: IPrettier;
     private answers: IGenerateAnswers;
     private projectMainDir: string;
     private parsedData: any;
@@ -45,6 +47,7 @@ export default class GenerateCommand implements ICommand {
         childProcess: typeof import('child_process'),
         templateService: ITemplateService,
         packageManager: IPackageManager,
+        prettier: IPrettier,
         componentName: string,
         flags: Flag[],
         path: string
@@ -54,6 +57,7 @@ export default class GenerateCommand implements ICommand {
         this.childProcess = childProcess;
         this.templateService = templateService;
         this.packageManager = packageManager;
+        this.prettier = prettier;
         this.componentName = componentName;
         this.flags = flags;
         this.path = path;
@@ -177,8 +181,7 @@ export default class GenerateCommand implements ICommand {
         });
     }
 
-    private getProjectMainDir(done: Function): void {
-        const splitPath: string[] = path.join(process.cwd(), this.answers.targetPath).split('/');
+    private getProjectMainDir(splitPath: string[], done: Function): void {
         if (!splitPath.length) {
             return done(new Error('Could not find project main directory'));
         }
@@ -187,7 +190,7 @@ export default class GenerateCommand implements ICommand {
         this.storage.read(currentPath, (err: Error) => {
             if (err) {
                 splitPath.pop();
-                return this.getProjectMainDir(done);
+                return this.getProjectMainDir(splitPath, done);
             }
             this.projectMainDir = path.join(...splitPath);
             done();
@@ -200,11 +203,10 @@ export default class GenerateCommand implements ICommand {
         let shouldInstallFiles = templateConfig.main;
         Object.keys(this.answers).forEach((answerKey: string) => {
             if (templateConfig.hasOwnProperty(answerKey) && this.parsedData[answerKey]) {
-                const options = templateConfig[answerKey].map((t: IRenderedTemplate) => t.path);
+                const options = templateConfig[answerKey];
                 shouldInstallFiles = shouldInstallFiles.concat(options);
             }
         });
-
         this.templateFiles = shouldInstallFiles;
     }
 
@@ -244,24 +246,64 @@ export default class GenerateCommand implements ICommand {
         });
     }
 
+    private prettifyFiles(done: Function): void {
+        const filesThatCanBePrettified: IRenderedTemplate[] = this.renderedTemplates
+            .filter((renderedTemplate: IRenderedTemplate) => {
+                let isPrettifiable = false;
+
+                for (let i = 0; i < PRETTIFIABLE_EXTENSIONS.length; i++) {
+                    const currentExtension = PRETTIFIABLE_EXTENSIONS[i];
+                    const lastChars: string = renderedTemplate
+                        .path
+                        .substr(renderedTemplate.path.length - currentExtension.length);
+                    if (lastChars === currentExtension) {
+                        isPrettifiable = true;
+                        break;
+                    }
+                }
+
+                return isPrettifiable;
+            });
+        steed.mapSeries(filesThatCanBePrettified, (template: IRenderedTemplate, next: Function) => {
+            this.prettier.prettify(template.content, (err: Error, formattedCode: string) => {
+                if (err) {
+                    return next(err);
+                }
+
+                const index: number = this.renderedTemplates.findIndex(f => f.path === template.path);
+                if (index === -1) {
+                    return next(`Could not format ${template.path}`);
+                }
+
+                this.renderedTemplates[index].content = formattedCode;
+                next();
+            });
+        }, (err: Error) => done(err));
+    }
+
     execute(done: Function): void {
         steed.waterfall([
             (next: Function) => this.askQuestions(next),
             (next: Function) => this.checkTargetDirValidity(next),
             (next: Function) => this.getTemplateFiles(next),
             (next: Function) => this.getTemplateData(next),
-            (next: Function) => this.getProjectMainDir(next),
+            (next: Function) => {
+                const splitPath: string[] = path.join(process.cwd(), this.answers.targetPath).split('/');
+                this.getProjectMainDir(splitPath, next);
+            },
             (next: Function) => {
                 this.setTemplateData();
+                this.setTemplateFiles();
                 this.setTemplatePaths();
                 this.renderTemplates(next);
             },
+            (next: Function) => this.prettifyFiles(next),
             (next: Function) =>
                 this.storage.createDirectory(path.join(this.answers.targetPath, this.answers.componentName), next),
             (next: Function) =>
                 steed.mapSeries(this.renderedTemplates, (template: IRenderedTemplate, next: Function) => {
                     this.storage.create(template.path, template.content, next);
-                }, (err: Error) => next(err))
+                }, (err: Error) => next(err)),
         ], (err: Error) => {
             if (err) {
                 return this.onError(err, done);

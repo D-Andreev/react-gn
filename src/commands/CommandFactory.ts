@@ -18,6 +18,7 @@ import NewCommand from './new/NewCommand';
 import ITemplateService from '../services/interfaces/ITemplateService';
 import IUserInterface from '../user-interface/interfaces/IUserInterface';
 import IPackageManager from '../services/interfaces/IPackageManager';
+import IPrettier from '../services/interfaces/IPrettier';
 
 export default class CommandFactory implements ICommandFactory{
     private readonly storage: IStorage;
@@ -26,6 +27,7 @@ export default class CommandFactory implements ICommandFactory{
     private readonly userInterface: IUserInterface;
     private readonly templateService: ITemplateService;
     private readonly packageManager: IPackageManager;
+    private readonly prettier: IPrettier;
 
     private static isFlagName(arg: string): boolean {
         return arg.indexOf(FLAG_INDICATOR) !== -1;
@@ -81,13 +83,15 @@ export default class CommandFactory implements ICommandFactory{
         cra: ICra,
         childProcess: typeof import('child_process'),
         userInterface: IUserInterface,
-        packageManager: IPackageManager) {
+        packageManager: IPackageManager,
+        prettier: IPrettier) {
         this.storage = storage;
         this.cra = cra;
         this.childProcess = childProcess;
         this.templateService = templateService;
         this.userInterface = userInterface;
         this.packageManager = packageManager;
+        this.prettier = prettier;
     }
 
     createCommand(commandArguments: string[], done: Function): ICommand {
@@ -136,6 +140,7 @@ export default class CommandFactory implements ICommandFactory{
                     this.childProcess,
                     this.templateService,
                     this.packageManager,
+                    this.prettier,
                     commandArguments[3],
                     flags,
                     process.cwd()

@@ -18,10 +18,22 @@ import IUserInterface from './user-interface/interfaces/IUserInterface';
 import Cli from './user-interface/Cli';
 import * as readline from 'readline';
 import inquirer from 'inquirer';
+import prettier from 'prettier';
+import Prettier from './services/Prettier';
+import IPrettier from './services/interfaces/IPrettier';
 
 const storage: IStorage = new StorageService(fs, path);
 const cra: ICra = new Cra(storage, childProcess);
 const templateService: ITemplateService = new TemplateService(ejs);
 const userInterface: IUserInterface = new Cli(process.stdout, readline, inquirer);
 const packageManager: IPackageManager = new PackageManager(userInterface, childProcess);
-new CommandFactory(storage, templateService, cra, childProcess, userInterface, packageManager).createCommand(process.argv, noop);
+const prettierService: IPrettier = new Prettier(prettier);
+new CommandFactory(
+    storage,
+    templateService,
+    cra,
+    childProcess,
+    userInterface,
+    packageManager,
+    prettierService
+).createCommand(process.argv, noop);

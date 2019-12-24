@@ -248,4 +248,6 @@ export const TEMPLATE_OPTIONS = {
     WITH_STYLED_COMPONENTS: 'withStyledComponents',
     WITH_PROP_TYPES: 'withPropTypes',
     WITH_REDUX: 'withRedux',
-}
+};
+
+export const PRETTIFIABLE_EXTENSIONS = ['js', 'jsx', 'ts', 'tsx'];
