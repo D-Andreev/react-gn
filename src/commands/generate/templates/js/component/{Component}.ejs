@@ -69,8 +69,8 @@ return (
 <% } %>
 );
 }
-<% if (withHooks) { %>
-    <% component %>.propTypes = {
+<% if (withPropTypes) { %>
+    <%= component %>.propTypes = {
     children: PropTypes.element
     };
 <% } %>
