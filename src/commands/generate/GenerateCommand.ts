@@ -148,13 +148,9 @@ export default class GenerateCommand implements ICommand {
         });
     }
 
-    private static getTemplatesPath(): string[] {
-        return [process.cwd(), 'src', 'commands', 'generate', 'templates'];
-    }
-
     private getTemplateFiles(done: Function): void {
         const componentType = this.answers.isClassComponent ? 'container' : 'component';
-        const templatePath = path.join(...GenerateCommand.getTemplatesPath(), this.answers.languageType, componentType);
+        const templatePath = path.join(__dirname, 'templates', this.answers.languageType, componentType);
         this.storage.scanDirectory(templatePath, (err: Error, paths: string[]) => {
             if (err) {
                 return done(err);
@@ -165,7 +161,7 @@ export default class GenerateCommand implements ICommand {
     }
 
     private getTemplateData(done: Function): void {
-        const dataFilePath = path.join(...GenerateCommand.getTemplatesPath(), 'data.json');
+        const dataFilePath = path.join(__dirname, 'templates', 'data', 'data.json');
         this.storage.read(dataFilePath, (err: Error, file: string) => {
             if (err) {
                 return done(err);
@@ -214,8 +210,13 @@ export default class GenerateCommand implements ICommand {
         this.templatePaths = this.templatePaths.filter((p: string) => {
             const splitPath: string[] = p.split('/');
             const fileName: string = splitPath[splitPath.length - 1];
-            return this.templateFiles.find(f => f.path === fileName);
+            return this.templateFiles.find(f => this.extractFileNameFromPath(f.path) === fileName);
         });
+    }
+
+    private extractFileNameFromPath(path: string): string {
+        const splitPath: string[] = path.split('/');
+        return splitPath[splitPath.length - 1];
     }
 
     private renderTemplates(done: Function): void {
@@ -225,14 +226,19 @@ export default class GenerateCommand implements ICommand {
                 if (err) {
                     return next(err);
                 }
-                const splitFilePath: string[] = templateFilePath.split('/');
+                const templateFileName: string = this.extractFileNameFromPath(templateFilePath);
                 const templateFile: ITemplateFile =
-                    this.templateFiles.find(f => f.path === splitFilePath[splitFilePath.length - 1]);
+                    this.templateFiles.find(f => {
+                        return this.extractFileNameFromPath(f.path) === templateFileName;
+                    });
+                if (!templateFile) {
+                    return next(new Error(`${templateFileName} was not found!`))
+                }
                 const fileName = templateFile.path.split('.').slice(0, -1).join('.');
                 const filePath = path.join(
                     this.answers.targetPath, this.answers.componentName, `${fileName}.${templateFile.extension}`);
                 renderedTemplates.push({
-                    path: filePath,
+                    path: filePath.replace(COMPONENT_NAME_PLACEHOLDER, this.answers.componentName),
                     content: this.templateService.render(file.toString(), this.parsedData)
                 });
                 next();
@@ -246,7 +252,7 @@ export default class GenerateCommand implements ICommand {
         });
     }
 
-    private prettifyFiles(done: Function): void {
+    private prettifyCode(done: Function): void {
         const filesThatCanBePrettified: IRenderedTemplate[] = this.renderedTemplates
             .filter((renderedTemplate: IRenderedTemplate) => {
                 let isPrettifiable = false;
@@ -297,13 +303,16 @@ export default class GenerateCommand implements ICommand {
                 this.setTemplatePaths();
                 this.renderTemplates(next);
             },
-            (next: Function) => this.prettifyFiles(next),
+            (next: Function) => this.prettifyCode(next),
             (next: Function) =>
                 this.storage.createDirectory(path.join(this.answers.targetPath, this.answers.componentName), next),
+            (next: Function) => {
+                const paths: string[] = this.renderedTemplates.map((template: IRenderedTemplate) => template.path);
+                this.storage.createPaths(process.cwd(), paths, next);
+            },
             (next: Function) =>
                 steed.mapSeries(this.renderedTemplates, (template: IRenderedTemplate, next: Function) => {
-                    const fileName = template.path.replace(COMPONENT_NAME_PLACEHOLDER, this.answers.componentName);
-                    this.storage.create(fileName, template.content, next);
+                    this.storage.create(template.path, template.content, next);
                 }, (err: Error) => next(err)),
         ], (err: Error) => {
             if (err) {

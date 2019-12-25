@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "build": "tsc",
-    "build-ts": "tsc",
+    "postbuild": "node ./scripts/postbuild.js",
     "watch-ts": "tsc -w",
     "lint": "tsc --noEmit && eslint \"src/**/*.ts\"",
     "test": "jest --forceExit --coverage",
@@ -40,6 +40,7 @@
   "dependencies": {
     "ejs": "^3.0.1",
     "inquirer": "^7.0.0",
+    "ncp": "^2.0.0",
     "prettier": "^1.19.1",
     "steed": "^1.1.3"
   }

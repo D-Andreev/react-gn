@@ -1,0 +1,52 @@
+import React, {Component} from 'react';
+import { connect } from 'react-redux';
+import { count } from './actions/actions';
+<% if (withStyledComponents) { %>
+    import Styled<%= component %> from './Styled<%= component %>';
+<% } %>
+import './<%= component %>.styles.css';
+interface <%= component %>Props {
+    currentCount: number;
+    count: Function;
+}
+interface <%= component %>State {
+
+}
+
+class <%= component %>Container extends Component<<%= component %>Props, <%= component %>State> {
+    onClick = () => {
+        this.props.count(this.props.currentCount);
+    };
+
+    render() {
+        const { currentCount } = this.props;
+        return (
+            <% if(withStyledComponents){ %>
+                <Styled<%= component %>>
+            <% } else{ %>
+                <div>
+            <% } %>
+                <div>
+                    <p>You clicked {currentCount} times</p>
+                    <button onClick={this.onClick}>
+                        Click me
+                    </button>
+                </div>
+            <% if(withStyledComponents){ %>
+                </Styled<%= component %>>
+            <% } else{ %>
+                </div>
+            <% } %>
+        );
+    }
+}
+
+const mapDispatchToProps = (dispatch: any) => ({
+    count: (currentCount: number) => dispatch(count(currentCount))
+});
+
+const mapStateToProps = (state: any) => ({
+    currentCount: state.count.currentCount,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(<%= component %>Container);

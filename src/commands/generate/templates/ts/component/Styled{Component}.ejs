@@ -1,0 +1,8 @@
+import styled, {css} from "styled-components";
+
+export default styled.a`
+  color: red;
+  ${props => props.purple && css`
+    color: purple;
+  `}
+`;

@@ -14,7 +14,7 @@
     import PropTypes from 'prop-types';
 <% } %>
 <% if (withStyledComponents) { %>
-    import StyledComponent from './StyledComponent.js';
+    import StyledComponent from './Styled<%= component %>.js';
 <% } %>
 
 function <%= component %>({children}) {
@@ -75,4 +75,4 @@ return (
     };
 <% } %>
 
-export default React.memo(Counter);
+export default React.memo(<%= component %>);
