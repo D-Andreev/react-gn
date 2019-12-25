@@ -16,6 +16,7 @@
 <% if (withStyledComponents) { %>
     import StyledComponent from './Styled<%= component %>.js';
 <% } %>
+import './<%= component %>.styles.css';
 
 function <%= component %>({children}) {
 <% if (withHooks) { %>

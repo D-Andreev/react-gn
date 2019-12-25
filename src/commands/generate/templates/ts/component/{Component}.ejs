@@ -13,6 +13,8 @@
 <% if (withStyledComponents) { %>
     import StyledComponent from './Styled<%= component %>.js';
 <% } %>
+import './<%= component %>.styles.css';
+
 interface <%= component %>Props {
     children: JSX.Element[] | JSX.Element
 }

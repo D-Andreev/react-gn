@@ -73,6 +73,10 @@ export default class GenerateCommand implements ICommand {
         return !!this.flags.find((f: Flag) => f.name === COMMAND_FLAG.INTERACTIVE && f.value === 'false');
     }
 
+    private isFlagPassed(flagName: string): boolean {
+        return !!this.flags.find((f: Flag) => f.name === flagName);
+    }
+
     private getFlagValue(flagName: string): string {
         const flag: Flag | undefined = this.flags.find((f: Flag) => f.name === flagName);
         if (!flag) {
@@ -100,12 +104,12 @@ export default class GenerateCommand implements ICommand {
                 targetPath: this.getFlagValue(COMMAND_FLAG.COMPONENT_TARGET_PATH),
                 componentName: this.getFlagValue(COMMAND_FLAG.COMPONENT_NAME),
                 languageType: !!this.getFlagValue(ALLOWED_LANGUAGE_TYPE_FLAGS[1]) ? LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS,
-                isClassComponent: !!this.getFlagValue(COMMAND_FLAG.IS_CLASS_COMPONENT),
-                withPropTypes: !!this.getFlagValue(COMMAND_FLAG.WITH_PROP_TYPES),
-                withStyledComponents: !!this.getFlagValue(COMMAND_FLAG.WITH_STYLED_COMPONENTS),
-                withState: !!this.getFlagValue(COMMAND_FLAG.WITH_STATE),
-                withRedux: !!this.getFlagValue(FLAGS_WITH_TEMPLATES.WITH_REDUX),
-                withHooks: !!this.getFlagValue(COMMAND_FLAG.WITH_HOOKS),
+                isClassComponent: this.isFlagPassed(COMMAND_FLAG.IS_CLASS_COMPONENT),
+                withPropTypes: this.isFlagPassed(COMMAND_FLAG.WITH_PROP_TYPES),
+                withStyledComponents: this.isFlagPassed(COMMAND_FLAG.WITH_STYLED_COMPONENTS),
+                withState: this.isFlagPassed(COMMAND_FLAG.WITH_STYLED_COMPONENTS),
+                withRedux: this.isFlagPassed(FLAGS_WITH_TEMPLATES.WITH_REDUX),
+                withHooks: this.isFlagPassed(COMMAND_FLAG.WITH_HOOKS),
             };
             return done();
         }
