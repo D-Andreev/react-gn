@@ -245,3 +245,8 @@ export const TEMPLATE_OPTIONS = {
 };
 
 export const PRETTIFIABLE_EXTENSIONS = ['js', 'jsx', 'ts', 'tsx'];
+
+export const COMPONENT_TYPE = {
+    CONTAINER: 'container',
+    COMPONENT: 'component'
+}

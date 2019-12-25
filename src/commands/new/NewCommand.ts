@@ -22,14 +22,14 @@ import {Answers} from 'inquirer';
 import IPackageManager from '../../services/interfaces/IPackageManager';
 
 export default class NewCommand implements ICommand {
-    public readonly storage: IStorage;
-    public readonly userInterface: IUserInterface;
-    public readonly cra: ICra;
-    public readonly packageManager: IPackageManager;
-    public readonly appName: string;
-    public readonly flags: Flag[];
-    public readonly path: string;
-    public readonly childProcess: typeof import('child_process');
+    private readonly storage: IStorage;
+    private readonly userInterface: IUserInterface;
+    private readonly cra: ICra;
+    private readonly packageManager: IPackageManager;
+    private readonly appName: string;
+    private readonly flags: Flag[];
+    private readonly path: string;
+    private readonly childProcess: typeof import('child_process');
 
     private getTemplateByFlag(flagWithTemplate: string): ITemplate {
         let template: ITemplate = null;

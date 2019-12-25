@@ -20,7 +20,6 @@ export default class PackageManager implements IPackageManager {
             const version = current.version ? `@${current.version}` : '';
             const devFlag = current.isDev ? '--save-dev' : '';
             try {
-                console.log('asd', current);
                 this.childProcess.execSync(
                     `npm install ${current.name}${version}${devFlag}`, {cwd: targetDir});
             } catch (e) {

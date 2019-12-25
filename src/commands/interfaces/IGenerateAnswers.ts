@@ -1,5 +1,4 @@
 export default interface IGenerateAnswers {
-    [key: string]: string | boolean;
     targetPath: string;
     componentName: string;
     languageType: string;

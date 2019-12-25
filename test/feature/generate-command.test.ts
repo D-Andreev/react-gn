@@ -11,7 +11,7 @@ function verifyComponentIsCreated(componentName: string, isJs = true) {
     expect(fs.existsSync(`./${componentName}/${componentName}.test.${isJs ? 'js' : 'ts'}`)).toBeTruthy();
 }
 
-describe('generate-command', () => {
+describe('generate command', () => {
     let componentName: string;
     beforeAll(() => {
         componentName = 'MyCounter';

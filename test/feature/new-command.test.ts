@@ -13,7 +13,7 @@ function verifyAppIsCreated(appName: string) {
     execSync('npm run build');
 }
 
-xdescribe('new command', () => {
+describe('new command', () => {
     let appName: string;
     let disableInteractive: string;
     beforeAll(() => {
