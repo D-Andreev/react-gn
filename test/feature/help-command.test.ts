@@ -9,7 +9,7 @@ describe('help command', () => {
         if (process.env.TEST_ENV === 'CI') {
             execSync('sudo npm install -g create-react-app');
         }
-        execSync('yarn build');
+        execSync('npm run build');
     });
 
     afterAll(() => {

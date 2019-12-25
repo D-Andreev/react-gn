@@ -3,7 +3,7 @@ import {PACKAGE_NAME} from '../../src/constants';
 
 describe('version command', () => {
     beforeAll(() => {
-        execSync('yarn build');
+        execSync('npm run build');
         if (process.env.TEST_ENV === 'CI') {
             execSync('sudo npm install -g create-react-app');
         }

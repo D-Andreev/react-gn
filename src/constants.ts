@@ -23,7 +23,6 @@ export const COMMAND_FLAG = {
     COMPONENT_TARGET_PATH: '--path',
     COMPONENT_NAME: '--name',
     INTERACTIVE: '--interactive',
-
     WITH_STATE: '--withState',
     WITH_PROP_TYPES: '--withPropTypes',
     WITH_STYLED_COMPONENTS: '--withStyledComponents',
