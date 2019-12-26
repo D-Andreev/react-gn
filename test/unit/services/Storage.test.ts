@@ -35,6 +35,10 @@ describe('Storage', () => {
         fs.existsSync = jest.fn((path: string, cb: any) => {
             cb(null);
         });
+        // @ts-ignore
+        fs.mkdir = jest.fn((path: string, cb: any) => {
+            cb(null);
+        });
     });
 
     describe('create', () => {
@@ -251,6 +255,16 @@ describe('Storage', () => {
                     storage.createPaths(mainPath, paths, cb);
                 });
             });
+        });
+    });
+
+    describe('createDirectory', () => {
+        it('calls fs function with args', (done) => {
+            const cb = () => {
+                expect(fs.mkdir).toHaveBeenCalledWith('./path/to/file', cb);
+                done();
+            };
+            storage.createDirectory('./path/to/file', cb);
         });
     });
 });
