@@ -35,10 +35,9 @@ describe('generate command', () => {
             it('creates all files for the component', () => {
                 const result =
                     execSync(`${PACKAGE_NAME} generate -i false --path ./ --name ${componentName}` +
-                    ' --withHooks --withPropTypes --withStyledComponents --withCss');
+                    ' --withHooks --withPropTypes --withCss');
                 expect(result.toString().indexOf(`${componentName} was created successfully!`));
                 verifyComponentIsCreated(componentName);
-                expect(fs.existsSync(`./${componentName}/Styled${componentName}.js`)).toBeTruthy();
                 expect(fs.existsSync(`./${componentName}/${componentName}.css`)).toBeTruthy();
             });
         });
@@ -56,10 +55,9 @@ describe('generate command', () => {
             it('creates a class component with all options', () => {
                 const result =
                     execSync(`${PACKAGE_NAME} generate -i false --path ./ --name ${componentName}` +
-                        ' --withHooks --withRedux --withPropTypes --withStyledComponents --isClass  --withCss');
+                        ' --withHooks --withRedux --withPropTypes --isClass  --withCss');
                 expect(result.toString().indexOf(`${componentName} was created successfully!`));
                 verifyComponentIsCreated(componentName);
-                expect(fs.existsSync(`./${componentName}/Styled${componentName}.js`)).toBeTruthy();
                 expect(fs.existsSync(`./${componentName}/${componentName}.css`)).toBeTruthy();
             });
         });
