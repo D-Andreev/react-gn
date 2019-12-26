@@ -19,6 +19,7 @@ import ITemplateService from '../services/interfaces/ITemplateService';
 import IUserInterface from '../services/interfaces/IUserInterface';
 import IPackageManager from '../services/interfaces/IPackageManager';
 import IPrettier from '../services/interfaces/IPrettier';
+import IWizard from '../services/interfaces/IWizard';
 
 export default class CommandFactory implements ICommandFactory{
     private readonly storage: IStorage;
@@ -28,6 +29,7 @@ export default class CommandFactory implements ICommandFactory{
     private readonly templateService: ITemplateService;
     private readonly packageManager: IPackageManager;
     private readonly prettier: IPrettier;
+    private readonly wizard: IWizard;
 
     private static isFlagName(arg: string): boolean {
         return arg.indexOf(FLAG_INDICATOR) !== -1;
@@ -84,7 +86,8 @@ export default class CommandFactory implements ICommandFactory{
         childProcess: typeof import('child_process'),
         userInterface: IUserInterface,
         packageManager: IPackageManager,
-        prettier: IPrettier) {
+        prettier: IPrettier,
+        wizard: IWizard) {
         this.storage = storage;
         this.cra = cra;
         this.childProcess = childProcess;
@@ -92,6 +95,7 @@ export default class CommandFactory implements ICommandFactory{
         this.userInterface = userInterface;
         this.packageManager = packageManager;
         this.prettier = prettier;
+        this.wizard = wizard;
     }
 
     createCommand(commandArguments: string[], done: Function): ICommand {
@@ -126,6 +130,7 @@ export default class CommandFactory implements ICommandFactory{
                         this.cra,
                         this.childProcess,
                         this.packageManager,
+                        this.wizard,
                         appName,
                         flags,
                         process.cwd()
@@ -141,6 +146,7 @@ export default class CommandFactory implements ICommandFactory{
                     this.templateService,
                     this.packageManager,
                     this.prettier,
+                    this.wizard,
                     commandArguments[3],
                     flags,
                     process.cwd()

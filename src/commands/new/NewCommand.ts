@@ -9,7 +9,7 @@ import {
     FLAGS_WITH_TEMPLATES_WITH_REDUX_NAME,
     LANGUAGE_TYPE,
     OUTPUT_TYPE,
-    NEW_COMMAND_QUESTIONS, NEW_COMMAND_QUESTION_MESSAGES, COMMAND_FLAG
+    COMMAND_FLAG
 } from '../../constants';
 import Output from '../Output';
 import {noop} from '../../utils';
@@ -18,8 +18,8 @@ import * as path from 'path';
 import ICommand from '../interfaces/ICommand';
 import steed from 'steed';
 import INewAnswers from '../interfaces/INewAnswers';
-import {Answers} from 'inquirer';
 import IPackageManager from '../../services/interfaces/IPackageManager';
+import IWizard from '../../services/interfaces/IWizard';
 
 export default class NewCommand implements ICommand {
     private readonly storage: IStorage;
@@ -30,6 +30,7 @@ export default class NewCommand implements ICommand {
     private readonly flags: Flag[];
     private readonly path: string;
     private readonly childProcess: typeof import('child_process');
+    private readonly wizard: IWizard;
 
     private getTemplateByFlag(flagWithTemplate: string): ITemplate {
         let template: ITemplate = null;
@@ -231,19 +232,7 @@ export default class NewCommand implements ICommand {
                 ejected: this.flags.find((f: Flag) => f.name === COMMAND_FLAG.EJECTED),
             });
         }
-
-        this.userInterface.prompt(NEW_COMMAND_QUESTIONS, (err: Error, results: Answers) => {
-            if (err) {
-                return done(err);
-            }
-            const answers: INewAnswers = {
-                languageType: results.options.indexOf(NEW_COMMAND_QUESTION_MESSAGES.USE_TS) !== -1 ?
-                    LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS,
-                withRedux: results.options.indexOf(NEW_COMMAND_QUESTION_MESSAGES.USE_REDUX) !== -1,
-                ejected: results.options.indexOf(NEW_COMMAND_QUESTION_MESSAGES.EJECT_APP) !== -1
-            };
-            done(null, answers);
-        });
+        this.wizard.askNewCommandQuestions(done);
     }
 
     constructor(
@@ -252,6 +241,7 @@ export default class NewCommand implements ICommand {
         cra: ICra,
         childProcess: typeof import('child_process'),
         packageManager: IPackageManager,
+        wizard: IWizard,
         appName: string,
         flags: Flag[],
         path: string
@@ -261,6 +251,7 @@ export default class NewCommand implements ICommand {
         this.cra = cra;
         this.childProcess = childProcess;
         this.packageManager = packageManager;
+        this.wizard = wizard;
         this.appName = appName;
         this.flags = flags;
         this.path = path;
