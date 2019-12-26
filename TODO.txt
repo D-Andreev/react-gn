@@ -1,1 +1,0 @@
-Make template files with names - Counter.jsx.ejs, Counter.test.js.ejs
