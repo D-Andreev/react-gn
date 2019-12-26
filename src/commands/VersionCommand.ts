@@ -1,6 +1,6 @@
 import ICommand from './interfaces/ICommand';
 import IStorage from '../services/interfaces/IStorage';
-import IUserInterface from '../user-interface/interfaces/IUserInterface';
+import IUserInterface from '../services/interfaces/IUserInterface';
 import {OUTPUT_TYPE, PACKAGE_VERSION} from '../constants';
 
 export default class VersionCommand implements ICommand {

@@ -4,6 +4,7 @@ import { simpleAction } from './actions/simpleAction';
 import logo from './logo.svg';
 import './App.css';
 import Counter from "./containers/counter/Counter";
+import MyCounter from './components/MyCounter/MyCounter.jsx';
 
 class App extends Component {
   simpleAction = (event) => {
@@ -25,6 +26,8 @@ class App extends Component {
              {JSON.stringify(this.props)}
           </pre>
             <Counter/>
+          <div>My CUSTOM COUNTER BEGINS HERE</div>
+          <MyCounter />
         </div>
     );
   }

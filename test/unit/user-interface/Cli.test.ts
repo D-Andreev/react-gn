@@ -1,8 +1,8 @@
 import readline from 'readline';
-import Cli from '../../../src/user-interface/Cli';
-import IUserInterface from '../../../src/user-interface/interfaces/IUserInterface';
+import Cli from '../../../src/services/user-interface/Cli';
+import IUserInterface from '../../../src/services/interfaces/IUserInterface';
 import {ERROR, OUTPUT_TYPE} from '../../../src/constants';
-import {FgWhite} from '../../../src/user-interface/colors';
+import {FgWhite} from '../../../src/services/user-interface/colors';
 import inquirer from 'inquirer';
 
 describe('Cli', () => {

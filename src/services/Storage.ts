@@ -126,4 +126,8 @@ export default class Storage implements IStorage {
     generateFilePath(parts: string[], done: Function): void {
         done(null, this.path.join(...parts));
     }
+
+    createDirectory(path: string, done: (err: ErrnoException | null) => {}): void {
+        this.fs.mkdir(path, done);
+    }
 }

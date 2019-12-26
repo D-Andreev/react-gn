@@ -1,11 +1,7 @@
-import { spawn, execSync } from 'child_process';
-import {EOL} from 'os';
-import fs from 'fs';
+import { execSync } from 'child_process';
+import * as fs from 'fs';
 import {
     ASCII_ART,
-    COMMAND_FLAG,
-    FLAGS_WITH_TEMPLATES,
-    NEW_COMMAND_QUESTION_MESSAGES,
     PACKAGE_NAME
 } from '../../src/constants';
 import {buildPackage} from './utils';

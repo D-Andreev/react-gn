@@ -12,5 +12,5 @@ export function buildPackage() {
         setupEnv();
         execSync('sudo npm install -g create-react-app');
     }
-    execSync('yarn build');
+    execSync('npm run build');
 }

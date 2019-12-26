@@ -1,0 +1,54 @@
+import React, {Component} from 'react';
+import { connect } from 'react-redux';
+import { count } from './actions/actions.js';
+<% if (withPropTypes) { %>
+    import PropTypes from 'prop-types';
+<% } %>
+<% if (withStyledComponents) { %>
+    import Styled<%= component %> from './Styled<%= component %>.js';
+<% } %>
+import './<%= component %>.styles.css';
+
+class <%= component %>Container extends Component {
+    onClick = () => {
+        this.props.count(this.props.currentCount);
+    };
+
+    render() {
+        const { currentCount } = this.props;
+        return (
+            <% if(withStyledComponents){ %>
+                <Styled<%= component %>>
+            <% } else{ %>
+                <div>
+            <% } %>
+                <div>
+                    <p>You clicked {currentCount} times</p>
+                    <button onClick={this.onClick}>
+                        Click me
+                    </button>
+                </div>
+            <% if(withStyledComponents){ %>
+                </Styled<%= component %>>
+            <% } else{ %>
+                </div>
+            <% } %>
+        );
+    }
+}
+
+const mapDispatchToProps = dispatch => ({
+    count: (currentCount) => dispatch(count(currentCount))
+});
+
+const mapStateToProps = state => ({
+    currentCount: state.count.currentCount,
+});
+
+<% if (withPropTypes) { %>
+    <%= component %>Container.propTypes = {
+    currentCount: PropTypes.number
+    };
+<% } %>
+
+export default connect(mapStateToProps, mapDispatchToProps)(<%= component %>Container);

@@ -1,5 +1,4 @@
 import childProcess from 'child_process';
-import path from 'path';
 import CommandFactory from '../../../src/commands/CommandFactory';
 import ICommand from '../../../src/commands/interfaces/ICommand';
 import {COMMAND, PACKAGE_NAME} from '../../../src/constants';
@@ -12,6 +11,14 @@ import IStorage from '../../../src/services/interfaces/IStorage';
 import Cra from '../../../src/services/Cra';
 import VersionCommand from '../../../src/commands/VersionCommand';
 import NewCommand from '../../../src/commands/new/NewCommand';
+import Template from '../../../src/services/Template';
+import ejs from 'ejs';
+import Cli from '../../../src/services/user-interface/Cli';
+import * as inquirer from 'inquirer';
+import * as readline from 'readline';
+import PackageManager from '../../../src/services/PackageManager';
+import Prettier from '../../../src/services/Prettier';
+import prettier from 'prettier';
 
 function noop() {}
 jest.mock('child_process');
@@ -23,7 +30,12 @@ describe('CommandFactory', () => {
     beforeEach(() => {
         const storage: IStorage = new MockStorage();
         cra = new Cra(storage, childProcess);
-        commandFactory = new CommandFactory(storage, cra, childProcess);
+        const templateService = new Template(ejs);
+        const userInterface = new Cli(process.stdout, readline, inquirer);
+        const packageManager = new PackageManager(userInterface, childProcess);
+        const prettierService = new Prettier(prettier)
+        commandFactory = new CommandFactory(
+            storage, templateService, cra, childProcess, userInterface, packageManager, prettierService);
     });
 
     describe(`when ${PACKAGE_NAME} name is not provided`, () => {

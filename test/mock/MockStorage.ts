@@ -25,4 +25,7 @@ export default class MockStorage implements IStorage {
 
     generateFilePath(): void {
     }
+
+    createDirectory(): void {
+    }
 }

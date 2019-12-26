@@ -13,7 +13,7 @@
   ],
   "scripts": {
     "build": "tsc",
-    "build-ts": "tsc",
+    "postbuild": "node ./scripts/postbuild.js",
     "watch-ts": "tsc -w",
     "lint": "tsc --noEmit && eslint \"src/**/*.ts\"",
     "test": "jest --forceExit --coverage",
@@ -28,6 +28,7 @@
     "@types/inquirer": "^6.5.0",
     "@types/jest": "^24.0.18",
     "@types/node": "^12.12.17",
+    "@types/prettier": "^1.19.0",
     "@types/steed": "^1.1.2",
     "@typescript-eslint/eslint-plugin": "^2.2.0",
     "@typescript-eslint/parser": "^2.2.0",
@@ -39,6 +40,8 @@
   "dependencies": {
     "ejs": "^3.0.1",
     "inquirer": "^7.0.0",
+    "ncp": "^2.0.0",
+    "prettier": "^1.19.1",
     "steed": "^1.1.3"
   }
 }

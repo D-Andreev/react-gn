@@ -4,6 +4,7 @@ import fs from 'fs';
 export const PACKAGE_NAME = 'react-gn';
 export const PACKAGE_VERSION = '1.0.21';
 export const DEFAULT_COMPONENT_NAME = 'MyComponent';
+export const COMPONENT_NAME_PLACEHOLDER = '{Component}';
 
 export const COMMAND = {
     NEW: 'new',
@@ -22,7 +23,6 @@ export const COMMAND_FLAG = {
     COMPONENT_TARGET_PATH: '--path',
     COMPONENT_NAME: '--name',
     INTERACTIVE: '--interactive',
-
     WITH_STATE: '--withState',
     WITH_PROP_TYPES: '--withPropTypes',
     WITH_STYLED_COMPONENTS: '--withStyledComponents',
@@ -57,14 +57,14 @@ export const NEW_COMMAND_QUESTIONS: CheckboxQuestion[] = [
 
 export const GENERATE_COMMAND_QUESTION_MESSAGES = {
     TARGET_DIR: 'Enter the target dir for the component.',
-    USE_TS: 'Do you want to use typescript?',
+    USE_TS: 'Use typescript?',
     COMPONENT_NAME: 'Enter component name.',
-    IS_CLASS_COMPONENT: 'Should it be a class component?',
-    WITH_HOOKS: 'Do you want to use hooks',
-    WITH_REDUX: 'Do you want the component to be connected to redux?',
-    WITH_STATE: 'Does your component have state?',
-    WITH_PROP_TYPES: 'Do you want to add propTypes?',
-    WITH_STYLED_COMPONENTS: 'Do you want to add styled components?',
+    IS_CLASS_COMPONENT: 'Is a class component?',
+    WITH_HOOKS: 'Use hooks',
+    WITH_REDUX: 'Use Redux?',
+    WITH_STATE: 'Use state?',
+    WITH_PROP_TYPES: 'Use propTypes?',
+    WITH_STYLED_COMPONENTS: 'Use styled components?',
 };
 
 export const GENERATE_COMMON_CHOICES = [
@@ -179,12 +179,6 @@ export const ALLOWED_FLAGS = ['--config', '--ejected', '--interactive']
     .concat(Object.values(FLAGS_WITH_TEMPLATES))
     .concat(ALLOWED_LANGUAGE_TYPE_FLAGS);
 
-export const NON_PLACEHOLDER_FLAGS = [
-    COMMAND_FLAG.COMPONENT_NAME,
-    COMMAND_FLAG.TEMPLATE,
-    COMMAND_FLAG.COMPONENT_TARGET_PATH,
-].concat(ALLOWED_LANGUAGE_TYPE_FLAGS);
-
 export const ALLOWED_FLAGS_DESCRIPTIONS: {[flag: string]: string} = {
     '--help (Alias: -h)': 'Shows the help.',
     '--version (Alias: -v)': 'Shows the current version.',
@@ -243,3 +237,16 @@ export const CRA_EVENT = {
     EJECT_DATA: 'EJECT_DATA',
     EJECT_CLOSE: 'EJECT_CLOSE'
 };
+
+export const TEMPLATE_OPTIONS = {
+    WITH_STYLED_COMPONENTS: 'withStyledComponents',
+    WITH_PROP_TYPES: 'withPropTypes',
+    WITH_REDUX: 'withRedux',
+};
+
+export const PRETTIFIABLE_EXTENSIONS = ['js', 'jsx', 'ts', 'tsx'];
+
+export const COMPONENT_TYPE = {
+    CONTAINER: 'container',
+    COMPONENT: 'component'
+}

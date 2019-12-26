@@ -1,0 +1,10 @@
+export default (state = {currentCount: 0}, action) => {
+    switch (action.type) {
+        case 'COUNT':
+            return {
+                currentCount: ++action.payload
+            }
+        default:
+            return state
+    }
+}

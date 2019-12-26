@@ -1,6 +1,6 @@
-import ITemplate from './interfaces/ITemplate';
+import ITemplateService from './interfaces/ITemplateService';
 
-export default class Template implements ITemplate {
+export default class Template implements ITemplateService {
     private readonly templateEngine: typeof import('ejs');
 
     constructor(templateEngine: typeof import('ejs')) {

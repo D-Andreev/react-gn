@@ -7,7 +7,6 @@ import Counter from '../../components/counter/Counter';
 
 class CounterContainer extends PureComponent {
     onClick = () => {
-        console.log(this.props)
         this.props.count(this.props.currentCount);
     };
 
