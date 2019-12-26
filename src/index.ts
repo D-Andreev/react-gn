@@ -21,13 +21,16 @@ import inquirer from 'inquirer';
 import prettier from 'prettier';
 import Prettier from './services/Prettier';
 import IPrettier from './services/interfaces/IPrettier';
+import IWizard from './services/interfaces/IWizard';
+import Wizard from './services/wizard/Wizard';
 
 const storage: IStorage = new StorageService(fs, path);
 const cra: ICra = new Cra(storage, childProcess);
 const templateService: ITemplateService = new TemplateService(ejs);
-const userInterface: IUserInterface = new Cli(process.stdout, readline, inquirer);
+const userInterface: IUserInterface = new Cli(process.stdout, readline);
 const packageManager: IPackageManager = new PackageManager(userInterface, childProcess);
 const prettierService: IPrettier = new Prettier(prettier);
+const wizard: IWizard = new Wizard(inquirer);
 new CommandFactory(
     storage,
     templateService,
@@ -35,5 +38,6 @@ new CommandFactory(
     childProcess,
     userInterface,
     packageManager,
-    prettierService
+    prettierService,
+    wizard
 ).createCommand(process.argv, noop);

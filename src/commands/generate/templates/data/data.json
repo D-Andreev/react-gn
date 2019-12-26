@@ -5,5 +5,8 @@
   "Component": "MyComponent",
   "withHooks": false,
   "withState": false,
-  "withPropTypes": false
+  "withPropTypes": false,
+  "withCss": false,
+  "withSass": false,
+  "withLess": false
 }

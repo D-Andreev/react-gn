@@ -7,15 +7,13 @@ import IUserInterface from '../../services/interfaces/IUserInterface';
 import {
     ALLOWED_LANGUAGE_TYPE_FLAGS,
     COMMAND_FLAG, COMPONENT_NAME_PLACEHOLDER, COMPONENT_TYPE,
-    FLAGS_WITH_TEMPLATES, GENERATE_COMMAND_QUESTION_MESSAGES,
-    GENERATE_COMMAND_QUESTIONS, GENERATE_QUESTION_NAME,
+    FLAGS_WITH_TEMPLATES,
     LANGUAGE_TYPE,
     OUTPUT_TYPE, PRETTIFIABLE_EXTENSIONS
 } from '../../constants';
 import Output from '../Output';
 import {noop} from '../../utils';
 import {sep} from 'path';
-import {Answers} from 'inquirer';
 import IGenerateAnswers from '../interfaces/IGenerateAnswers';
 import ITemplateService from '../../services/interfaces/ITemplateService';
 import templateDefinition from './templates/templateDefinition';
@@ -23,6 +21,7 @@ import IPackageManager from '../../services/interfaces/IPackageManager';
 import IRenderedTemplate from '../interfaces/IRenderedTemplate';
 import IPrettier from '../../services/interfaces/IPrettier';
 import ITemplateFile from '../interfaces/ITemplateFile';
+import IWizard from '../../services/interfaces/IWizard';
 
 export default class GenerateCommand implements ICommand {
     private readonly componentName: string;
@@ -33,6 +32,7 @@ export default class GenerateCommand implements ICommand {
     private readonly templateService: ITemplateService;
     private readonly packageManager: IPackageManager;
     private readonly prettier: IPrettier;
+    private readonly wizard: IWizard;
     public flags: Flag[];
     private answers: IGenerateAnswers;
     private projectMainDir: string;
@@ -48,6 +48,7 @@ export default class GenerateCommand implements ICommand {
         templateService: ITemplateService,
         packageManager: IPackageManager,
         prettier: IPrettier,
+        wizard: IWizard,
         componentName: string,
         flags: Flag[],
         path: string
@@ -58,6 +59,7 @@ export default class GenerateCommand implements ICommand {
         this.templateService = templateService;
         this.packageManager = packageManager;
         this.prettier = prettier;
+        this.wizard = wizard;
         this.componentName = componentName;
         this.flags = flags;
         this.path = path;
@@ -93,6 +95,9 @@ export default class GenerateCommand implements ICommand {
 
     private setTemplateData(): void {
         this.parsedData = {
+            withCss: !!this.answers.withCss,
+            withSass: !!this.answers.withSass,
+            withLess: !!this.answers.withLess,
             withStyledComponents: !!this.answers.withStyledComponents,
             withRedux: !!this.answers.withRedux,
             withHooks: !!this.answers.withHooks,
@@ -111,6 +116,9 @@ export default class GenerateCommand implements ICommand {
                 languageType: !!this.getFlagValue(ALLOWED_LANGUAGE_TYPE_FLAGS[1]) ? LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS,
                 isClassComponent: this.isFlagPassed(COMMAND_FLAG.IS_CLASS_COMPONENT),
                 withPropTypes: this.isFlagPassed(COMMAND_FLAG.WITH_PROP_TYPES),
+                withCss: this.isFlagPassed(COMMAND_FLAG.WITH_CSS),
+                withSass: this.isFlagPassed(COMMAND_FLAG.WITH_SASS),
+                withLess: this.isFlagPassed(COMMAND_FLAG.WITH_LESS),
                 withStyledComponents: this.isFlagPassed(COMMAND_FLAG.WITH_STYLED_COMPONENTS),
                 withState: this.isFlagPassed(COMMAND_FLAG.WITH_STYLED_COMPONENTS),
                 withRedux: this.isFlagPassed(FLAGS_WITH_TEMPLATES.WITH_REDUX),
@@ -118,31 +126,12 @@ export default class GenerateCommand implements ICommand {
             };
             return done();
         }
-
-        this.userInterface.prompt(GENERATE_COMMAND_QUESTIONS, (err: Error, results: Answers) => {
+        this.wizard.askGenerateCommandQuestions((err: Error, answers: IGenerateAnswers) => {
             if (err) {
                 return done(err);
             }
 
-            this.answers = {
-                targetPath: results[GENERATE_QUESTION_NAME.TARGET_PATH] !== './' ?
-                    results[GENERATE_QUESTION_NAME.TARGET_PATH] : process.cwd(),
-                componentName: results[GENERATE_QUESTION_NAME.COMPONENT_NAME],
-                languageType: results[GENERATE_QUESTION_NAME.USE_TS] ? LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS,
-                isClassComponent: results[GENERATE_QUESTION_NAME.IS_CLASS_COMPONENT],
-                withPropTypes:
-                    results[GENERATE_QUESTION_NAME.OPTIONS]
-                        .indexOf(GENERATE_COMMAND_QUESTION_MESSAGES.WITH_PROP_TYPES) !== -1,
-                withStyledComponents:
-                    results[GENERATE_QUESTION_NAME.OPTIONS]
-                        .indexOf(GENERATE_COMMAND_QUESTION_MESSAGES.WITH_STYLED_COMPONENTS) !== -1,
-                withState: results[GENERATE_QUESTION_NAME.OPTIONS]
-                    .indexOf(GENERATE_COMMAND_QUESTION_MESSAGES.WITH_STATE) !== -1,
-                withRedux: results[GENERATE_QUESTION_NAME.OPTIONS]
-                    .indexOf(GENERATE_COMMAND_QUESTION_MESSAGES.WITH_REDUX) !== -1,
-                withHooks: results[GENERATE_QUESTION_NAME.OPTIONS]
-                    .indexOf(GENERATE_COMMAND_QUESTION_MESSAGES.WITH_HOOKS) !== -1,
-            };
+            this.answers = answers;
             done();
         });
     }
@@ -210,6 +199,7 @@ export default class GenerateCommand implements ICommand {
         const componentType = this.getComponentType();
         const templateConfig = templateDefinition[this.answers.languageType][componentType];
         let templateFiles = templateConfig.main;
+        console.log('asd', this.answers, this.parsedData)
         Object.keys(this.answers).forEach((answerKey: string) => {
             if (templateConfig.hasOwnProperty(answerKey) && this.parsedData[answerKey]) {
                 const options = templateConfig[answerKey];
@@ -335,6 +325,11 @@ export default class GenerateCommand implements ICommand {
             const message = `${this.answers.componentName} was created successfully!`;
             const output: Output[] = [new Output(message, OUTPUT_TYPE.SUCCESS)];
             this.userInterface.showOutput(output, noop);
+            this.renderedTemplates.forEach((renderedTemplate: IRenderedTemplate) => {
+                const message = `  - ${renderedTemplate.path}`;
+                const output: Output[] = [new Output(message, OUTPUT_TYPE.SUCCESS)];
+                this.userInterface.showOutput(output, noop);
+            });
             done();
         });
     }

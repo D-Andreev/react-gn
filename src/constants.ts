@@ -1,6 +1,3 @@
-import {CheckboxQuestion, ConfirmQuestion, InputQuestion} from 'inquirer';
-import fs from 'fs';
-
 export const PACKAGE_NAME = 'react-gn';
 export const PACKAGE_VERSION = '1.0.21';
 export const DEFAULT_COMPONENT_NAME = 'MyComponent';
@@ -25,119 +22,13 @@ export const COMMAND_FLAG = {
     INTERACTIVE: '--interactive',
     WITH_STATE: '--withState',
     WITH_PROP_TYPES: '--withPropTypes',
-    WITH_STYLED_COMPONENTS: '--withStyledComponents',
     IS_CLASS_COMPONENT: '--isClass',
-    WITH_HOOKS: '--withHooks'
+    WITH_HOOKS: '--withHooks',
+    WITH_CSS: '--withCss',
+    WITH_SASS: '--withSass',
+    WITH_LESS: '--withLess',
+    WITH_STYLED_COMPONENTS: '--withStyledComponents',
 };
-
-export const NEW_COMMAND_QUESTION_MESSAGES = {
-    USE_TS: 'Use Typescript',
-    USE_REDUX: 'Use Redux',
-    EJECT_APP: 'Eject the app',
-};
-
-export const NEW_COMMAND_QUESTIONS: CheckboxQuestion[] = [
-    {
-        type: 'checkbox',
-        message: 'Select any of the following options',
-        name: 'options',
-        choices: [
-            {
-                name: NEW_COMMAND_QUESTION_MESSAGES.USE_TS
-            },
-            {
-                name: NEW_COMMAND_QUESTION_MESSAGES.USE_REDUX
-            },
-            {
-                name: NEW_COMMAND_QUESTION_MESSAGES.EJECT_APP
-            }
-        ]
-    }
-];
-
-export const GENERATE_COMMAND_QUESTION_MESSAGES = {
-    TARGET_DIR: 'Enter the target dir for the component.',
-    USE_TS: 'Use typescript?',
-    COMPONENT_NAME: 'Enter component name.',
-    IS_CLASS_COMPONENT: 'Is a class component?',
-    WITH_HOOKS: 'Use hooks',
-    WITH_REDUX: 'Use Redux?',
-    WITH_STATE: 'Use state?',
-    WITH_PROP_TYPES: 'Use propTypes?',
-    WITH_STYLED_COMPONENTS: 'Use styled components?',
-};
-
-export const GENERATE_COMMON_CHOICES = [
-    { name: GENERATE_COMMAND_QUESTION_MESSAGES.WITH_REDUX },
-    { name: GENERATE_COMMAND_QUESTION_MESSAGES.WITH_PROP_TYPES },
-    { name: GENERATE_COMMAND_QUESTION_MESSAGES.WITH_STYLED_COMPONENTS },
-];
-
-export const GENERATE_QUESTION_NAME = {
-    TARGET_PATH: 'targetPath',
-    COMPONENT_NAME: 'componentName',
-    USE_TS: 'useTs',
-    IS_CLASS_COMPONENT: 'isClassComponent',
-    OPTIONS: 'options',
-};
-
-export const GENERATE_COMMAND_QUESTIONS: (CheckboxQuestion | InputQuestion | ConfirmQuestion)[] = [
-    {
-        type: 'input',
-        name: GENERATE_QUESTION_NAME.TARGET_PATH,
-        message: GENERATE_COMMAND_QUESTION_MESSAGES.TARGET_DIR,
-        default: './',
-        validate: (input: any): boolean | string | Promise<boolean | string> => {
-            if (!fs.existsSync(input)) {
-                return 'Please enter an existing directory.'
-            }
-
-            return true;
-        }
-    },
-    {
-        type: 'input',
-        name: GENERATE_QUESTION_NAME.COMPONENT_NAME,
-        message: GENERATE_COMMAND_QUESTION_MESSAGES.COMPONENT_NAME,
-        default: DEFAULT_COMPONENT_NAME
-    },
-    {
-        type: 'confirm',
-        name: GENERATE_QUESTION_NAME.USE_TS,
-        message: GENERATE_COMMAND_QUESTION_MESSAGES.USE_TS,
-        default: false
-    },
-    {
-        type: 'confirm',
-        name: GENERATE_QUESTION_NAME.IS_CLASS_COMPONENT,
-        message: GENERATE_COMMAND_QUESTION_MESSAGES.IS_CLASS_COMPONENT,
-        default: false,
-    },
-    {
-        type: 'checkbox',
-        message: 'Select any of the following options.',
-        name: GENERATE_QUESTION_NAME.OPTIONS,
-        choices: [
-            { name: GENERATE_COMMAND_QUESTION_MESSAGES.WITH_HOOKS },
-            ...GENERATE_COMMON_CHOICES,
-        ],
-        when: function(answers) {
-            return !answers[GENERATE_QUESTION_NAME.IS_CLASS_COMPONENT];
-        }
-    },
-    {
-        type: 'checkbox',
-        message: 'Select any of the following options.',
-        name: GENERATE_QUESTION_NAME.OPTIONS,
-        choices: [
-            { name: GENERATE_COMMAND_QUESTION_MESSAGES.WITH_STATE },
-            ...GENERATE_COMMON_CHOICES
-        ],
-        when: function(answers) {
-            return answers[GENERATE_QUESTION_NAME.IS_CLASS_COMPONENT];
-        }
-    }
-];
 
 export const ENUMERABLE_FLAG_ID = '[]';
 export const ENUMERABLE_FLAGS = [
@@ -171,6 +62,9 @@ export const COMMAND_ALIAS: {[alias: string]: string} = {
     '-wr': FLAGS_WITH_TEMPLATES.WITH_REDUX,
     '-ws': COMMAND_FLAG.WITH_STATE,
     '-wpt': COMMAND_FLAG.WITH_PROP_TYPES,
+    '-wcss': COMMAND_FLAG.WITH_CSS,
+    '-wsass': COMMAND_FLAG.WITH_SASS,
+    '-wless': COMMAND_FLAG.WITH_LESS,
     '-wsc': COMMAND_FLAG.WITH_STYLED_COMPONENTS,
     '-wh': COMMAND_FLAG.WITH_HOOKS,
     '-class': COMMAND_FLAG.IS_CLASS_COMPONENT,
@@ -200,13 +94,6 @@ export const ASCII_ART = {
         '|_|  |_|\\___|_| .__/ \n' +
         '              | |    \n' +
         '              |_|    '
-};
-
-export const NEW_COMPONENT_MESSAGE = {
-    INVALID_NAME: 'Please provide a name for the new component.',
-    CREATE_SUCCESS: 'Component was created successfully!',
-    INVALID_PATH: 'Target path is invalid.',
-    INVALID_TEMPLATE_PATH: 'Invalid template path.',
 };
 
 export const FLAGS_MIN_INDEX = 3;
@@ -239,6 +126,9 @@ export const CRA_EVENT = {
 };
 
 export const TEMPLATE_OPTIONS = {
+    WITH_CSS: 'withCss',
+    WITH_SASS: 'withSass',
+    WITH_LESS: 'withLess',
     WITH_STYLED_COMPONENTS: 'withStyledComponents',
     WITH_PROP_TYPES: 'withPropTypes',
     WITH_REDUX: 'withRedux',
