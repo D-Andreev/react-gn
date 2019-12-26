@@ -24,9 +24,9 @@ export const COMMAND_FLAG = {
     WITH_PROP_TYPES: '--withPropTypes',
     IS_CLASS_COMPONENT: '--isClass',
     WITH_HOOKS: '--withHooks',
-    WITH_CSS: '--withCSS',
-    WITH_SASS: '--withSASS',
-    WITH_LESS: '--withLESS',
+    WITH_CSS: '--withCss',
+    WITH_SASS: '--withSass',
+    WITH_LESS: '--withLess',
     WITH_STYLED_COMPONENTS: '--withStyledComponents',
 };
 
