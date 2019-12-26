@@ -1,4 +1,4 @@
-import IUserInterface from '../user-interface/interfaces/IUserInterface';
+import IUserInterface from './interfaces/IUserInterface';
 import {IDependency} from '../commands/interfaces/ITemplate';
 import steed from 'steed';
 import Output from '../commands/Output';

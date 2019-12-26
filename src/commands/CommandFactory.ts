@@ -16,7 +16,7 @@ import ICra from '../services/interfaces/ICra';
 import GenerateCommand from './generate/GenerateCommand';
 import NewCommand from './new/NewCommand';
 import ITemplateService from '../services/interfaces/ITemplateService';
-import IUserInterface from '../user-interface/interfaces/IUserInterface';
+import IUserInterface from '../services/interfaces/IUserInterface';
 import IPackageManager from '../services/interfaces/IPackageManager';
 import IPrettier from '../services/interfaces/IPrettier';
 

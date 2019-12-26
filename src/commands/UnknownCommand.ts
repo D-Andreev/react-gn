@@ -1,5 +1,5 @@
 import ICommand from './interfaces/ICommand';
-import IUserInterface from '../user-interface/interfaces/IUserInterface';
+import IUserInterface from '../services/interfaces/IUserInterface';
 import {
     ALLOWED_FLAGS,
     ALLOWED_FLAGS_DESCRIPTIONS,

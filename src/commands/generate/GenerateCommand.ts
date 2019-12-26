@@ -3,7 +3,7 @@ import steed from 'steed';
 import ICommand from '../interfaces/ICommand';
 import Flag from '../Flag';
 import IStorage from '../../services/interfaces/IStorage';
-import IUserInterface from '../../user-interface/interfaces/IUserInterface';
+import IUserInterface from '../../services/interfaces/IUserInterface';
 import {
     ALLOWED_LANGUAGE_TYPE_FLAGS,
     COMMAND_FLAG, COMPONENT_NAME_PLACEHOLDER, COMPONENT_TYPE,

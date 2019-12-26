@@ -1,5 +1,5 @@
 import { execSync } from 'child_process';
-import fs from 'fs';
+import * as fs from 'fs';
 import {
     ASCII_ART,
     PACKAGE_NAME

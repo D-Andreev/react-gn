@@ -1,6 +1,6 @@
 import {sep} from 'path';
 import IStorage from '../../services/interfaces/IStorage';
-import IUserInterface from '../../user-interface/interfaces/IUserInterface';
+import IUserInterface from '../../services/interfaces/IUserInterface';
 import ICra from '../../services/interfaces/ICra';
 import Flag from '../Flag';
 import {

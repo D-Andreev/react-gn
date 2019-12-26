@@ -1,11 +1,11 @@
 import PackageManager from '../../../src/services/PackageManager';
 import IPackageManager from '../../../src/services/interfaces/IPackageManager';
 import * as childProcess from 'child_process';
-import Cli from '../../../src/user-interface/Cli';
+import Cli from '../../../src/services/user-interface/Cli';
 import * as readline from 'readline';
 import * as inquirer from 'inquirer';
 import {IDependency} from '../../../src/commands/interfaces/ITemplate';
-import IUserInterface from '../../../src/user-interface/interfaces/IUserInterface';
+import IUserInterface from '../../../src/services/interfaces/IUserInterface';
 
 describe('PackageManager', () => {
     let packageManager: IPackageManager;

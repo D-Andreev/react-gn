@@ -13,7 +13,7 @@ import VersionCommand from '../../../src/commands/VersionCommand';
 import NewCommand from '../../../src/commands/new/NewCommand';
 import Template from '../../../src/services/Template';
 import ejs from 'ejs';
-import Cli from '../../../src/user-interface/Cli';
+import Cli from '../../../src/services/user-interface/Cli';
 import * as inquirer from 'inquirer';
 import * as readline from 'readline';
 import PackageManager from '../../../src/services/PackageManager';

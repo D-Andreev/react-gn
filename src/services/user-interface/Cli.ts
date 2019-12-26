@@ -1,8 +1,8 @@
 import {EOL} from 'os';
 import {Interface} from 'readline';
-import IUserInterface from './interfaces/IUserInterface';
-import {ERROR, OUTPUT_TYPE} from '../constants';
-import Output from '../commands/Output';
+import IUserInterface from '../interfaces/IUserInterface';
+import {ERROR, OUTPUT_TYPE} from '../../constants';
+import Output from '../../commands/Output';
 import {FgBlue, FgGreen, FgRed, FgWhite} from './colors';
 import WriteStream = NodeJS.WriteStream;
 import {Question} from 'inquirer';
