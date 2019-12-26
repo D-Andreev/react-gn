@@ -38,7 +38,7 @@ describe('generate command', () => {
                     ' --withHooks --withPropTypes --withCss');
                 expect(result.toString().indexOf(`${componentName} was created successfully!`));
                 verifyComponentIsCreated(componentName);
-                expect(fs.existsSync(`./${componentName}/${componentName}.css`)).toBeTruthy();
+                expect(fs.existsSync(`./${componentName}/${componentName}.styles.css`)).toBeTruthy();
             });
         });
 
@@ -58,7 +58,7 @@ describe('generate command', () => {
                         ' --withHooks --withRedux --withPropTypes --isClass  --withCss');
                 expect(result.toString().indexOf(`${componentName} was created successfully!`));
                 verifyComponentIsCreated(componentName);
-                expect(fs.existsSync(`./${componentName}/${componentName}.css`)).toBeTruthy();
+                expect(fs.existsSync(`./${componentName}/${componentName}.styles.css`)).toBeTruthy();
             });
         });
 
