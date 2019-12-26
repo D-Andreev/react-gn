@@ -202,13 +202,6 @@ export const ASCII_ART = {
         '              |_|    '
 };
 
-export const NEW_COMPONENT_MESSAGE = {
-    INVALID_NAME: 'Please provide a name for the new component.',
-    CREATE_SUCCESS: 'Component was created successfully!',
-    INVALID_PATH: 'Target path is invalid.',
-    INVALID_TEMPLATE_PATH: 'Invalid template path.',
-};
-
 export const FLAGS_MIN_INDEX = 3;
 
 export const FLAG_INDICATOR = '--';
