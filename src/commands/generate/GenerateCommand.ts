@@ -231,8 +231,8 @@ export default class GenerateCommand implements ICommand {
 
     private generateFilePath(templateFile: ITemplateFile): string {
         const fileName = templateFile.path.split('.').slice(0, -1).join('.');
-        return path.join(
-            this.answers.targetPath, this.answers.componentName, `${fileName}`)
+        return path
+            .join(this.answers.targetPath, this.answers.componentName, `${fileName}`)
             .replace(COMPONENT_NAME_PLACEHOLDER, this.answers.componentName);
     }
 
