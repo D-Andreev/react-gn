@@ -21,8 +21,8 @@ import ITemplateService from '../../services/interfaces/ITemplateService';
 import templateDefinition from './templates/templateDefinition';
 import IPackageManager from '../../services/interfaces/IPackageManager';
 import IRenderedTemplate from '../interfaces/IRenderedTemplate';
-import ITemplateFile from '../interfaces/ITemplateFile';
 import IPrettier from '../../services/interfaces/IPrettier';
+import ITemplateFile from '../interfaces/ITemplateFile';
 
 export default class GenerateCommand implements ICommand {
     private readonly componentName: string;
@@ -216,6 +216,7 @@ export default class GenerateCommand implements ICommand {
                 templateFiles = templateFiles.concat(options);
             }
         });
+
         this.templateFiles = templateFiles;
     }
 
@@ -223,12 +224,24 @@ export default class GenerateCommand implements ICommand {
         this.templatePaths = this.templatePaths.filter((templatePath: string) => {
             const splitPath: string[] = templatePath.split('/');
             const fileName: string = splitPath[splitPath.length - 1];
-            return this.templateFiles.find(f => GenerateCommand.extractFileNameFromPath(f.path) === fileName);
+            return this.templateFiles.find(f =>
+                GenerateCommand.extractFileNameFromPath(f.path) === fileName);
         });
     }
 
+    private generateFilePath(templateFile: ITemplateFile): string {
+        const fileName = templateFile.path.split('.').slice(0, -1).join('.');
+        return path
+            .join(this.answers.targetPath, this.answers.componentName, `${fileName}`)
+            .replace(COMPONENT_NAME_PLACEHOLDER, this.answers.componentName);
+    }
+
     private renderTemplates(done: Function): void {
+        this.setTemplateData();
+        this.setTemplateFiles();
+        this.setTemplatePaths();
         const renderedTemplates: IRenderedTemplate[] = [];
+
         steed.mapSeries(this.templatePaths, (templateFilePath: string, next: Function) => {
             this.storage.read(templateFilePath, (err: Error, file: Buffer) => {
                 if (err) {
@@ -242,11 +255,9 @@ export default class GenerateCommand implements ICommand {
                 if (!templateFile) {
                     return next(new Error(`${templateFileName} was not found!`))
                 }
-                const fileName = templateFile.path.split('.').slice(0, -1).join('.');
-                const filePath = path.join(
-                    this.answers.targetPath, this.answers.componentName, `${fileName}.${templateFile.extension}`);
+
                 renderedTemplates.push({
-                    path: filePath.replace(COMPONENT_NAME_PLACEHOLDER, this.answers.componentName),
+                    path: this.generateFilePath(templateFile),
                     content: this.templateService.render(file.toString(), this.parsedData)
                 });
                 next();
@@ -305,12 +316,7 @@ export default class GenerateCommand implements ICommand {
                 const splitPath: string[] = path.join(process.cwd(), this.answers.targetPath).split('/');
                 this.getProjectMainDir(splitPath, next);
             },
-            (next: Function) => {
-                this.setTemplateData();
-                this.setTemplateFiles();
-                this.setTemplatePaths();
-                this.renderTemplates(next);
-            },
+            (next: Function) => this.renderTemplates(next),
             (next: Function) => this.prettifyCode(next),
             (next: Function) =>
                 this.storage.createDirectory(path.join(this.answers.targetPath, this.answers.componentName), next),
