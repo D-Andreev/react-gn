@@ -4,6 +4,9 @@ export default interface IGenerateAnswers {
     languageType: string;
     isClassComponent: boolean;
     withPropTypes: boolean;
+    withCss: boolean;
+    withSass: boolean;
+    withLess: boolean;
     withStyledComponents: boolean;
     withState: boolean;
     withRedux: boolean;

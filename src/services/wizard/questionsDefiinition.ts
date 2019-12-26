@@ -1,6 +1,7 @@
 import {CheckboxQuestion, ConfirmQuestion, InputQuestion} from 'inquirer';
 import * as fs from 'fs';
 import {DEFAULT_COMPONENT_NAME} from '../../constants';
+import {ListQuestion} from 'inquirer';
 
 export const NEW_COMMAND_QUESTION_MESSAGES = {
     USE_TS: 'Use Typescript',
@@ -36,13 +37,18 @@ export const GENERATE_COMMAND_QUESTION_MESSAGES = {
     WITH_REDUX: 'Use Redux?',
     WITH_STATE: 'Use state?',
     WITH_PROP_TYPES: 'Use propTypes?',
-    WITH_STYLED_COMPONENTS: 'Use styled components?',
+};
+
+export const STYLING_OPTIONS = {
+    WITH_CSS: 'With CSS',
+    WITH_SASS: 'With SASS',
+    WITH_LESS: 'With LESS',
+    WITH_STYLED_COMPONENTS: 'With Styled Components',
 };
 
 export const GENERATE_COMMON_CHOICES = [
     { name: GENERATE_COMMAND_QUESTION_MESSAGES.WITH_REDUX },
     { name: GENERATE_COMMAND_QUESTION_MESSAGES.WITH_PROP_TYPES },
-    { name: GENERATE_COMMAND_QUESTION_MESSAGES.WITH_STYLED_COMPONENTS },
 ];
 
 export const GENERATE_QUESTION_NAME = {
@@ -51,9 +57,10 @@ export const GENERATE_QUESTION_NAME = {
     USE_TS: 'useTs',
     IS_CLASS_COMPONENT: 'isClassComponent',
     OPTIONS: 'options',
+    STYLING: 'styling',
 };
 
-export const GENERATE_COMMAND_QUESTIONS: (CheckboxQuestion | InputQuestion | ConfirmQuestion)[] = [
+export const GENERATE_COMMAND_QUESTIONS: (CheckboxQuestion | InputQuestion | ConfirmQuestion | ListQuestion)[] = [
     {
         type: 'input',
         name: GENERATE_QUESTION_NAME.TARGET_PATH,
@@ -72,6 +79,17 @@ export const GENERATE_COMMAND_QUESTIONS: (CheckboxQuestion | InputQuestion | Con
         name: GENERATE_QUESTION_NAME.COMPONENT_NAME,
         message: GENERATE_COMMAND_QUESTION_MESSAGES.COMPONENT_NAME,
         default: DEFAULT_COMPONENT_NAME
+    },
+    {
+        type: 'list',
+        message: 'How will you style your component?',
+        name: GENERATE_QUESTION_NAME.STYLING,
+        choices: [
+            STYLING_OPTIONS.WITH_CSS,
+            STYLING_OPTIONS.WITH_SASS,
+            STYLING_OPTIONS.WITH_LESS,
+            STYLING_OPTIONS.WITH_STYLED_COMPONENTS,
+        ]
     },
     {
         type: 'confirm',

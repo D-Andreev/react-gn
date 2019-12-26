@@ -4,10 +4,9 @@ import {
     NEW_COMMAND_QUESTION_MESSAGES,
     GENERATE_COMMAND_QUESTION_MESSAGES,
     GENERATE_COMMAND_QUESTIONS,
-    GENERATE_QUESTION_NAME
+    GENERATE_QUESTION_NAME, STYLING_OPTIONS
 } from './questionsDefiinition';
 import {Answers, Question} from 'inquirer';
-import INewAnswers from '../../commands/interfaces/INewAnswers';
 import {LANGUAGE_TYPE} from '../../constants';
 
 class Wizard implements IWizard {
@@ -28,13 +27,12 @@ class Wizard implements IWizard {
             if (err) {
                 return done(err);
             }
-            const answers: INewAnswers = {
+            done(null, {
                 languageType: results.options.indexOf(NEW_COMMAND_QUESTION_MESSAGES.USE_TS) !== -1 ?
                     LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS,
                 withRedux: results.options.indexOf(NEW_COMMAND_QUESTION_MESSAGES.USE_REDUX) !== -1,
                 ejected: results.options.indexOf(NEW_COMMAND_QUESTION_MESSAGES.EJECT_APP) !== -1
-            };
-            done(null, answers);
+            });
         });
     }
 
@@ -53,9 +51,11 @@ class Wizard implements IWizard {
                 withPropTypes:
                     results[GENERATE_QUESTION_NAME.OPTIONS]
                         .indexOf(GENERATE_COMMAND_QUESTION_MESSAGES.WITH_PROP_TYPES) !== -1,
+                withCss: results[GENERATE_QUESTION_NAME.STYLING] === STYLING_OPTIONS.WITH_CSS,
+                withSass: results[GENERATE_QUESTION_NAME.STYLING] === STYLING_OPTIONS.WITH_SASS,
+                withLess: results[GENERATE_QUESTION_NAME.STYLING] === STYLING_OPTIONS.WITH_LESS,
                 withStyledComponents:
-                    results[GENERATE_QUESTION_NAME.OPTIONS]
-                        .indexOf(GENERATE_COMMAND_QUESTION_MESSAGES.WITH_STYLED_COMPONENTS) !== -1,
+                    results[GENERATE_QUESTION_NAME.STYLING] === STYLING_OPTIONS.WITH_STYLED_COMPONENTS,
                 withState: results[GENERATE_QUESTION_NAME.OPTIONS]
                     .indexOf(GENERATE_COMMAND_QUESTION_MESSAGES.WITH_STATE) !== -1,
                 withRedux: results[GENERATE_QUESTION_NAME.OPTIONS]

@@ -22,9 +22,12 @@ export const COMMAND_FLAG = {
     INTERACTIVE: '--interactive',
     WITH_STATE: '--withState',
     WITH_PROP_TYPES: '--withPropTypes',
-    WITH_STYLED_COMPONENTS: '--withStyledComponents',
     IS_CLASS_COMPONENT: '--isClass',
-    WITH_HOOKS: '--withHooks'
+    WITH_HOOKS: '--withHooks',
+    WITH_CSS: '--withCSS',
+    WITH_SASS: '--withSASS',
+    WITH_LESS: '--withLESS',
+    WITH_STYLED_COMPONENTS: '--withStyledComponents',
 };
 
 export const ENUMERABLE_FLAG_ID = '[]';
@@ -59,6 +62,9 @@ export const COMMAND_ALIAS: {[alias: string]: string} = {
     '-wr': FLAGS_WITH_TEMPLATES.WITH_REDUX,
     '-ws': COMMAND_FLAG.WITH_STATE,
     '-wpt': COMMAND_FLAG.WITH_PROP_TYPES,
+    '-wcss': COMMAND_FLAG.WITH_CSS,
+    '-wsass': COMMAND_FLAG.WITH_SASS,
+    '-wless': COMMAND_FLAG.WITH_LESS,
     '-wsc': COMMAND_FLAG.WITH_STYLED_COMPONENTS,
     '-wh': COMMAND_FLAG.WITH_HOOKS,
     '-class': COMMAND_FLAG.IS_CLASS_COMPONENT,
@@ -120,6 +126,9 @@ export const CRA_EVENT = {
 };
 
 export const TEMPLATE_OPTIONS = {
+    WITH_CSS: 'withCss',
+    WITH_SASS: 'withSass',
+    WITH_LESS: 'withLess',
     WITH_STYLED_COMPONENTS: 'withStyledComponents',
     WITH_PROP_TYPES: 'withPropTypes',
     WITH_REDUX: 'withRedux',

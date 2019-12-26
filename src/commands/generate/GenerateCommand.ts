@@ -95,6 +95,9 @@ export default class GenerateCommand implements ICommand {
 
     private setTemplateData(): void {
         this.parsedData = {
+            withCss: !!this.answers.withCss,
+            withSass: !!this.answers.withSass,
+            withLess: !!this.answers.withLess,
             withStyledComponents: !!this.answers.withStyledComponents,
             withRedux: !!this.answers.withRedux,
             withHooks: !!this.answers.withHooks,
@@ -113,6 +116,9 @@ export default class GenerateCommand implements ICommand {
                 languageType: !!this.getFlagValue(ALLOWED_LANGUAGE_TYPE_FLAGS[1]) ? LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS,
                 isClassComponent: this.isFlagPassed(COMMAND_FLAG.IS_CLASS_COMPONENT),
                 withPropTypes: this.isFlagPassed(COMMAND_FLAG.WITH_PROP_TYPES),
+                withCss: this.isFlagPassed(COMMAND_FLAG.WITH_CSS),
+                withSass: this.isFlagPassed(COMMAND_FLAG.WITH_SASS),
+                withLess: this.isFlagPassed(COMMAND_FLAG.WITH_LESS),
                 withStyledComponents: this.isFlagPassed(COMMAND_FLAG.WITH_STYLED_COMPONENTS),
                 withState: this.isFlagPassed(COMMAND_FLAG.WITH_STYLED_COMPONENTS),
                 withRedux: this.isFlagPassed(FLAGS_WITH_TEMPLATES.WITH_REDUX),
@@ -193,6 +199,7 @@ export default class GenerateCommand implements ICommand {
         const componentType = this.getComponentType();
         const templateConfig = templateDefinition[this.answers.languageType][componentType];
         let templateFiles = templateConfig.main;
+        console.log('asd', this.answers, this.parsedData)
         Object.keys(this.answers).forEach((answerKey: string) => {
             if (templateConfig.hasOwnProperty(answerKey) && this.parsedData[answerKey]) {
                 const options = templateConfig[answerKey];
@@ -318,6 +325,11 @@ export default class GenerateCommand implements ICommand {
             const message = `${this.answers.componentName} was created successfully!`;
             const output: Output[] = [new Output(message, OUTPUT_TYPE.SUCCESS)];
             this.userInterface.showOutput(output, noop);
+            this.renderedTemplates.forEach((renderedTemplate: IRenderedTemplate) => {
+                const message = `  - ${renderedTemplate.path}`;
+                const output: Output[] = [new Output(message, OUTPUT_TYPE.SUCCESS)];
+                this.userInterface.showOutput(output, noop);
+            });
             done();
         });
     }
