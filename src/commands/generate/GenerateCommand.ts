@@ -216,7 +216,7 @@ export default class GenerateCommand implements ICommand {
                 templateFiles = templateFiles.concat(options);
             }
         });
-        console.log('template files', templateFiles);
+
         this.templateFiles = templateFiles;
     }
 
@@ -224,8 +224,8 @@ export default class GenerateCommand implements ICommand {
         this.templatePaths = this.templatePaths.filter((templatePath: string) => {
             const splitPath: string[] = templatePath.split('/');
             const fileName: string = splitPath[splitPath.length - 1];
-            console.log('setTemplateFiles', fileName, f.path);
-            return this.templateFiles.find(f => GenerateCommand.extractFileNameFromPath(f.path) === fileName);
+            return this.templateFiles.find(f =>
+                GenerateCommand.extractFileNameFromPath(f.path) === fileName);
         });
     }
 
