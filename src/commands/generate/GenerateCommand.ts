@@ -1,7 +1,7 @@
 import path from 'path';
 import steed from 'steed';
 import ICommand from '../interfaces/ICommand';
-import Flag from '../Flag';
+import Flag from '../../lib/Flag';
 import IStorage from '../../services/interfaces/IStorage';
 import IUserInterface from '../../services/interfaces/IUserInterface';
 import {
@@ -11,7 +11,7 @@ import {
     LANGUAGE_TYPE,
     OUTPUT_TYPE, PRETTIFIABLE_EXTENSIONS
 } from '../../constants';
-import Output from '../Output';
+import Output from '../../lib/Output';
 import {noop} from '../../utils';
 import {sep} from 'path';
 import IGenerateAnswers from '../interfaces/IGenerateAnswers';

@@ -1,4 +1,4 @@
-import Output from '../../commands/Output';
+import Output from '../../lib/Output';
 
 export default interface IUserInterface {
     showOutput(output: Output[], done: Function): void;

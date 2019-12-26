@@ -7,11 +7,11 @@ import {
     FLAG_INDICATOR,
     FLAGS_MIN_INDEX
 } from '../constants';
-import UnknownCommand from './UnknownCommand';
+import UnknownCommand from './unknown/UnknownCommand';
 import IStorage from '../services/interfaces/IStorage';
 import {ICommandFactory} from './interfaces/ICommandFactory';
-import Flag from './Flag';
-import VersionCommand from './VersionCommand';
+import Flag from '../lib/Flag';
+import VersionCommand from './version/VersionCommand';
 import ICra from '../services/interfaces/ICra';
 import GenerateCommand from './generate/GenerateCommand';
 import NewCommand from './new/NewCommand';
