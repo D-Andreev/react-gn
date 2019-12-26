@@ -20,7 +20,7 @@ describe('PackageManager', () => {
             {name: 'dep3', isDev: false}
         ];
         targetDir = './path/to/dir';
-        userInterface = new Cli(process.stdout, readline, inquirer);
+        userInterface = new Cli(process.stdout, readline);
         // @ts-ignore
         childProcess.execSync = jest.fn();
         userInterface.showOutput = jest.fn((output: any, done: Function) => {
