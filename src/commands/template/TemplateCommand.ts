@@ -102,21 +102,29 @@ export default class TemplateCommand implements ICommand {
         });
     }
 
+    private setParsedData(data = {}): void {
+        this.parsedData = data;
+        this.parsedData.component = this.answers.componentName;
+    }
+
     private getTemplateData(done: Function): void {
         const dataFilePath = path.join(this.answers.templatePath, 'data.json');
         this.storage.read(dataFilePath, (err: Error, file: string) => {
             if (err) {
-                return done(err);
+                const message = `${dataFilePath} was not found. No data will be passed to templates.`;
+                const output: Output[] = [new Output(message, OUTPUT_TYPE.WARN)];
+                this.userInterface.showOutput(output, noop);
+                this.setParsedData();
+                return done();
             }
-            let parsedData;
             try {
-                parsedData = JSON.parse(file.toString());
+                const parsedData = JSON.parse(file.toString());
+                this.setParsedData(parsedData);
+                done();
             } catch (e) {
+                this.setParsedData();
                 return done(e);
             }
-            this.parsedData = parsedData;
-            this.parsedData.component = this.answers.componentName;
-            done();
         });
     }
 

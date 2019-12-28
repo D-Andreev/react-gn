@@ -111,7 +111,8 @@ export const OUTPUT_TYPE = {
     NORMAL: 'normal',
     INFO: 'info',
     SUCCESS: 'success',
-    ERROR: 'error'
+    ERROR: 'error',
+    WARN: 'warning'
 };
 
 export const LANGUAGE_TYPE = {
