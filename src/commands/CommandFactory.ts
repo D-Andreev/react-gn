@@ -7,7 +7,7 @@ import {
     FLAG_INDICATOR,
     FLAGS_MIN_INDEX
 } from '../constants';
-import UnknownCommand from './unknown/UnknownCommand';
+import HelpCommand from './help/HelpCommand';
 import IStorage from '../services/interfaces/IStorage';
 import {ICommandFactory} from './interfaces/ICommandFactory';
 import Flag from '../lib/Flag';
@@ -21,6 +21,7 @@ import IPackageManager from '../services/interfaces/IPackageManager';
 import IPrettier from '../services/interfaces/IPrettier';
 import IWizard from '../services/interfaces/IWizard';
 import TemplateCommand from './template/TemplateCommand';
+import UnknownCommand from './unknown/Unknown';
 
 export default class CommandFactory implements ICommandFactory{
     private readonly storage: IStorage;
@@ -100,11 +101,12 @@ export default class CommandFactory implements ICommandFactory{
     }
 
     createCommand(commandArguments: string[], done: Function): ICommand {
-        const unknownCommand: ICommand = new UnknownCommand(this.userInterface);
-        let command = unknownCommand;
+        const helpCommand: ICommand = new HelpCommand(this.userInterface);
+        let command = helpCommand;
         commandArguments = CommandFactory.convertAliasesToFullCommand(commandArguments);
-        if (!commandArguments.length) {
-            return unknownCommand;
+        if (!commandArguments.length || commandArguments.length < 3) {
+            helpCommand.execute(done);
+            return command;
         }
         if (CommandFactory.containsHelpArg(commandArguments)) {
             command.execute(done);
@@ -119,9 +121,8 @@ export default class CommandFactory implements ICommandFactory{
         switch (commandArguments[2]) {
             case COMMAND.NEW:
                 if (!commandArguments[3]) {
-                    command = unknownCommand;
+                    command = helpCommand;
                 } else {
-
                     const appName: string = commandArguments[3];
                     const flags: Flag[] = CommandFactory.parseFlags(commandArguments);
 
@@ -161,7 +162,7 @@ export default class CommandFactory implements ICommandFactory{
                 );
                 break;
             default:
-                command = unknownCommand;
+                command = new UnknownCommand(this.userInterface, commandArguments[2]);
         }
 
         command.execute(done);

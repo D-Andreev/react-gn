@@ -2,7 +2,7 @@ import childProcess from 'child_process';
 import CommandFactory from '../../../src/commands/CommandFactory';
 import ICommand from '../../../src/commands/interfaces/ICommand';
 import {COMMAND, PACKAGE_NAME} from '../../../src/constants';
-import UnknownCommand from '../../../src/commands/unknown/UnknownCommand';
+import HelpCommand from '../../../src/commands/help/HelpCommand';
 import MockStorage from '../../mock/MockStorage';
 import {ICommandFactory} from '../../../src/commands/interfaces/ICommandFactory';
 import {COMMAND_FILE_PATH, COMMAND_NODE_PATH} from '../../constants';
@@ -20,6 +20,7 @@ import PackageManager from '../../../src/services/PackageManager';
 import Prettier from '../../../src/services/Prettier';
 import prettier from 'prettier';
 import Wizard from '../../../src/services/wizard/Wizard';
+import UnknownCommand from '../../../src/commands/unknown/Unknown';
 
 function noop() {}
 jest.mock('child_process');
@@ -43,15 +44,15 @@ describe('CommandFactory', () => {
     describe(`when ${PACKAGE_NAME} name is not provided`, () => {
         it('returns unknown command', () => {
             const command: ICommand = commandFactory.createCommand([], noop);
-            expect(command instanceof UnknownCommand).toBeTruthy();
+            expect(command instanceof HelpCommand).toBeTruthy();
         });
     });
 
     describe('when command is not provided', () => {
-        it('returns unknown command', () => {
+        it('returns help command', () => {
             const command: ICommand = commandFactory
                 .createCommand([COMMAND_NODE_PATH, COMMAND_FILE_PATH], noop);
-            expect(command instanceof UnknownCommand).toBeTruthy();
+            expect(command instanceof HelpCommand).toBeTruthy();
         });
     });
 
@@ -72,7 +73,7 @@ describe('CommandFactory', () => {
                     COMMAND_FILE_PATH,
                     COMMAND.NEW
                 ], noop);
-                expect(command instanceof UnknownCommand).toBeTruthy();
+                expect(command instanceof HelpCommand).toBeTruthy();
             });
         });
 
@@ -96,7 +97,7 @@ describe('CommandFactory', () => {
                         COMMAND_FILE_PATH,
                         '--help'
                     ], noop);
-                expect(command instanceof UnknownCommand).toBeTruthy();
+                expect(command instanceof HelpCommand).toBeTruthy();
             });
         });
 
@@ -108,7 +109,7 @@ describe('CommandFactory', () => {
                         COMMAND_FILE_PATH,
                         '--help'
                     ], noop);
-                expect(command instanceof UnknownCommand).toBeTruthy();
+                expect(command instanceof HelpCommand).toBeTruthy();
             });
         });
 
@@ -121,7 +122,7 @@ describe('CommandFactory', () => {
                             COMMAND_FILE_PATH,
                             '-h'
                         ], noop);
-                    expect(command instanceof UnknownCommand).toBeTruthy();
+                    expect(command instanceof HelpCommand).toBeTruthy();
                 });
             });
 
