@@ -218,7 +218,7 @@ export default class TemplateCommand implements ICommand {
             if (err) {
                 return this.onError(err, done);
             }
-            const message = 'Template was rendered successfully!';
+            const message = `${this.answers.componentName} was created successfully!`;
             const output: Output[] = [new Output(message, OUTPUT_TYPE.SUCCESS)];
             this.userInterface.showOutput(output, noop);
             this.renderedTemplates.forEach((renderedTemplate: IRenderedTemplate) => {

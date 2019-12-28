@@ -25,7 +25,7 @@ describe('template command', () => {
         const result =
             execSync(`${PACKAGE_NAME} template -i false --path ./ --name ${componentName}` +
                 ' --template ./test/feature/templates/component');
-        expect(result.toString().indexOf(`${componentName} was created successfully!`));
+        expect(result.toString()).toContain(`${componentName} was created successfully!`);
         verifyComponentIsCreated(componentName);
     });
 });
