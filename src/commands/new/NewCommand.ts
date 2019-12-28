@@ -2,7 +2,7 @@ import {sep} from 'path';
 import IStorage from '../../services/interfaces/IStorage';
 import IUserInterface from '../../services/interfaces/IUserInterface';
 import ICra from '../../services/interfaces/ICra';
-import Flag from '../Flag';
+import Flag from '../../lib/Flag';
 import {
     CRA_EVENT,
     FLAGS_WITH_TEMPLATES,
@@ -11,7 +11,7 @@ import {
     OUTPUT_TYPE,
     COMMAND_FLAG
 } from '../../constants';
-import Output from '../Output';
+import Output from '../../lib/Output';
 import {noop} from '../../utils';
 import ITemplate from '../interfaces/ITemplate';
 import * as path from 'path';

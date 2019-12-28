@@ -1,5 +1,5 @@
-import ICommand from './interfaces/ICommand';
-import IUserInterface from '../services/interfaces/IUserInterface';
+import ICommand from '../interfaces/ICommand';
+import IUserInterface from '../../services/interfaces/IUserInterface';
 import {
     ALLOWED_FLAGS,
     ALLOWED_FLAGS_DESCRIPTIONS,
@@ -7,8 +7,8 @@ import {
     MAIN_COMMANDS,
     MAIN_COMMANDS_DESCRIPTIONS,
     OUTPUT_TYPE
-} from '../constants';
-import Output from './Output';
+} from '../../constants';
+import Output from '../../lib/Output';
 
 export default class UnknownCommand implements ICommand {
     private readonly userInterface: IUserInterface;

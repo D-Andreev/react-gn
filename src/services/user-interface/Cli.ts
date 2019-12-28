@@ -2,8 +2,8 @@ import {EOL} from 'os';
 import {Interface} from 'readline';
 import IUserInterface from '../interfaces/IUserInterface';
 import {ERROR, OUTPUT_TYPE} from '../../constants';
-import Output from '../../commands/Output';
-import {FgBlue, FgGreen, FgRed, FgWhite} from './colors';
+import Output from '../../lib/Output';
+import {FgBlue, FgGreen, FgRed, FgWhite, FgYellow} from './colors';
 import WriteStream = NodeJS.WriteStream;
 
 export default class Cli implements IUserInterface {
@@ -19,6 +19,7 @@ export default class Cli implements IUserInterface {
             [OUTPUT_TYPE.INFO]: FgBlue,
             [OUTPUT_TYPE.SUCCESS]: FgGreen,
             [OUTPUT_TYPE.ERROR]: FgRed,
+            [OUTPUT_TYPE.WARN]: FgYellow
         };
     }
 

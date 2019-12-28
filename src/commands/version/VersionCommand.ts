@@ -1,7 +1,7 @@
-import ICommand from './interfaces/ICommand';
-import IStorage from '../services/interfaces/IStorage';
-import IUserInterface from '../services/interfaces/IUserInterface';
-import {OUTPUT_TYPE, PACKAGE_VERSION} from '../constants';
+import ICommand from '../interfaces/ICommand';
+import IStorage from '../../services/interfaces/IStorage';
+import IUserInterface from '../../services/interfaces/IUserInterface';
+import {OUTPUT_TYPE, PACKAGE_VERSION} from '../../constants';
 
 export default class VersionCommand implements ICommand {
     private readonly storage: IStorage;

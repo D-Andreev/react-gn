@@ -4,10 +4,12 @@ import {
     NEW_COMMAND_QUESTION_MESSAGES,
     GENERATE_COMMAND_QUESTION_MESSAGES,
     GENERATE_COMMAND_QUESTIONS,
-    GENERATE_QUESTION_NAME, STYLING_OPTIONS
+    GENERATE_QUESTION_NAME, STYLING_OPTIONS, TEMPLATE_COMMAND_QUESTIONS, TEMPLATE_QUESTION_NAME
 } from './questionsDefiinition';
 import {Answers, Question} from 'inquirer';
 import {LANGUAGE_TYPE} from '../../constants';
+import ITemplateAnswers from '../../commands/interfaces/ITemplateAnswers';
+import IGenerateAnswers from '../../commands/interfaces/IGenerateAnswers';
 
 class Wizard implements IWizard {
     private readonly inquirer: typeof import('inquirer');
@@ -41,8 +43,7 @@ class Wizard implements IWizard {
             if (err) {
                 return done(err);
             }
-
-            done(null, {
+            const answers: IGenerateAnswers = {
                 targetPath: results[GENERATE_QUESTION_NAME.TARGET_PATH] !== './' ?
                     results[GENERATE_QUESTION_NAME.TARGET_PATH] : process.cwd(),
                 componentName: results[GENERATE_QUESTION_NAME.COMPONENT_NAME],
@@ -62,7 +63,23 @@ class Wizard implements IWizard {
                     .indexOf(GENERATE_COMMAND_QUESTION_MESSAGES.WITH_REDUX) !== -1,
                 withHooks: results[GENERATE_QUESTION_NAME.OPTIONS]
                     .indexOf(GENERATE_COMMAND_QUESTION_MESSAGES.WITH_HOOKS) !== -1,
-            });
+            };
+            done(null, answers);
+        });
+    }
+
+    askTemplateCommandQuestions(done: Function): void {
+        this.prompt(TEMPLATE_COMMAND_QUESTIONS, (err: Error, results: Answers) => {
+            if (err) {
+                return done(err);
+            }
+            const answers: ITemplateAnswers = {
+                templatePath: results[TEMPLATE_QUESTION_NAME.TEMPLATE_PATH],
+                targetPath: results[TEMPLATE_QUESTION_NAME.TARGET_DIR] !== './' ?
+                    results[TEMPLATE_QUESTION_NAME.TARGET_DIR] : process.cwd(),
+                componentName: results[TEMPLATE_QUESTION_NAME.COMPONENT_NAME]
+            };
+            done(null, answers);
         });
     }
 }

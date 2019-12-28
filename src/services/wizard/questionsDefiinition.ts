@@ -128,3 +128,49 @@ export const GENERATE_COMMAND_QUESTIONS: (CheckboxQuestion | InputQuestion | Con
         }
     }
 ];
+
+export const TEMPLATE_QUESTION_NAME = {
+    TEMPLATE_PATH: 'templatePath',
+    TARGET_DIR: 'targetPath',
+    COMPONENT_NAME: 'componentName'
+};
+
+export const TEMPLATE_COMMAND_QUESTION_MESSAGES = {
+    TEMPLATE_PATH: 'Enter path to your template.',
+    TARGET_DIR: 'Enter the target dir for the component.',
+    COMPONENT_NAME: 'Enter component name.',
+};
+
+export const TEMPLATE_COMMAND_QUESTIONS: InputQuestion[] = [
+    {
+        type: 'input',
+        name: TEMPLATE_QUESTION_NAME.TEMPLATE_PATH,
+        message: TEMPLATE_COMMAND_QUESTION_MESSAGES.TEMPLATE_PATH,
+        validate: (input: any): boolean | string | Promise<boolean | string> => {
+            if (!fs.existsSync(input)) {
+                return 'Please enter an existing directory.'
+            }
+
+            return true;
+        }
+    },
+    {
+        type: 'input',
+        name: TEMPLATE_QUESTION_NAME.TARGET_DIR,
+        message: TEMPLATE_COMMAND_QUESTION_MESSAGES.TARGET_DIR,
+        default: './',
+        validate: (input: any): boolean | string | Promise<boolean | string> => {
+            if (!fs.existsSync(input)) {
+                return 'Please enter an existing directory.'
+            }
+
+            return true;
+        }
+    },
+    {
+        type: 'input',
+        name: TEMPLATE_QUESTION_NAME.COMPONENT_NAME,
+        message: TEMPLATE_COMMAND_QUESTION_MESSAGES.COMPONENT_NAME,
+        default: DEFAULT_COMPONENT_NAME
+    },
+];

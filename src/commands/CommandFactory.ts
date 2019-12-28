@@ -7,11 +7,11 @@ import {
     FLAG_INDICATOR,
     FLAGS_MIN_INDEX
 } from '../constants';
-import UnknownCommand from './UnknownCommand';
+import UnknownCommand from './unknown/UnknownCommand';
 import IStorage from '../services/interfaces/IStorage';
 import {ICommandFactory} from './interfaces/ICommandFactory';
-import Flag from './Flag';
-import VersionCommand from './VersionCommand';
+import Flag from '../lib/Flag';
+import VersionCommand from './version/VersionCommand';
 import ICra from '../services/interfaces/ICra';
 import GenerateCommand from './generate/GenerateCommand';
 import NewCommand from './new/NewCommand';
@@ -20,6 +20,7 @@ import IUserInterface from '../services/interfaces/IUserInterface';
 import IPackageManager from '../services/interfaces/IPackageManager';
 import IPrettier from '../services/interfaces/IPrettier';
 import IWizard from '../services/interfaces/IWizard';
+import TemplateCommand from './template/TemplateCommand';
 
 export default class CommandFactory implements ICommandFactory{
     private readonly storage: IStorage;
@@ -138,18 +139,25 @@ export default class CommandFactory implements ICommandFactory{
                 }
                 break;
             case COMMAND.GENERATE:
-                const flags: Flag[] = CommandFactory.parseFlags(commandArguments, false);
                 command = new GenerateCommand(
                     this.storage,
                     this.userInterface,
                     this.childProcess,
                     this.templateService,
-                    this.packageManager,
                     this.prettier,
                     this.wizard,
-                    commandArguments[3],
-                    flags,
-                    process.cwd()
+                    CommandFactory.parseFlags(commandArguments, false),
+                );
+                break;
+            case COMMAND.TEMPLATE:
+                command = new TemplateCommand(
+                    this.storage,
+                    this.userInterface,
+                    this.childProcess,
+                    this.templateService,
+                    this.prettier,
+                    this.wizard,
+                    CommandFactory.parseFlags(commandArguments, false),
                 );
                 break;
             default:

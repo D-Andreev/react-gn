@@ -1,0 +1,10 @@
+import React from 'react';
+import './<%= component %>.styles.css';
+
+function <%= component %>({children}) {
+    return (
+        <div className="<%= component %>">{<%= component %>}</div>
+    );
+}
+
+export default React.memo(<%= component %>);
