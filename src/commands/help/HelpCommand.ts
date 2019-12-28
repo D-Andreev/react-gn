@@ -10,7 +10,7 @@ import {
 } from '../../constants';
 import Output from '../../lib/Output';
 
-export default class UnknownCommand implements ICommand {
+export default class HelpCommand implements ICommand {
     private readonly userInterface: IUserInterface;
 
     constructor(userInterface: IUserInterface) {
