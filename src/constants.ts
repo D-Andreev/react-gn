@@ -7,6 +7,7 @@ export const COMMAND = {
     NEW: 'new',
     UNKNOWN: 'unknown',
     GENERATE: 'generate',
+    TEMPLATE: 'template'
 };
 
 export const COMMAND_FLAG = {
@@ -16,8 +17,8 @@ export const COMMAND_FLAG = {
     VERSION: '--version',
     CONFIG: '--config',
     EJECTED: '--ejected',
-    TEMPLATE: '--template',
     COMPONENT_TARGET_PATH: '--path',
+    TEMPLATE_PATH: '--template',
     COMPONENT_NAME: '--name',
     INTERACTIVE: '--interactive',
     WITH_STATE: '--withState',
@@ -28,6 +29,7 @@ export const COMMAND_FLAG = {
     WITH_SASS: '--withSass',
     WITH_LESS: '--withLess',
     WITH_STYLED_COMPONENTS: '--withStyledComponents',
+    DATA_PATH: '--data',
 };
 
 export const ENUMERABLE_FLAG_ID = '[]';
@@ -52,8 +54,8 @@ export const COMMAND_ALIAS: {[alias: string]: string} = {
     '-v': COMMAND_FLAG.VERSION,
     '-c': COMMAND_FLAG.CONFIG,
     '-e': COMMAND_FLAG.EJECTED,
-    '-t': COMMAND_FLAG.TEMPLATE,
     '-p': COMMAND_FLAG.COMPONENT_TARGET_PATH,
+    '-t': COMMAND_FLAG.TEMPLATE_PATH,
     '-n': COMMAND_FLAG.COMPONENT_NAME,
     '-i': COMMAND_FLAG.INTERACTIVE,
     '-s': ENUMERABLE_FLAGS[0],
@@ -68,6 +70,7 @@ export const COMMAND_ALIAS: {[alias: string]: string} = {
     '-wsc': COMMAND_FLAG.WITH_STYLED_COMPONENTS,
     '-wh': COMMAND_FLAG.WITH_HOOKS,
     '-class': COMMAND_FLAG.IS_CLASS_COMPONENT,
+    '-d': COMMAND_FLAG.DATA_PATH
 };
 export const ALLOWED_FLAGS = ['--config', '--ejected', '--interactive']
     .concat(Object.values(FLAGS_WITH_TEMPLATES))

@@ -20,6 +20,7 @@ import IUserInterface from '../services/interfaces/IUserInterface';
 import IPackageManager from '../services/interfaces/IPackageManager';
 import IPrettier from '../services/interfaces/IPrettier';
 import IWizard from '../services/interfaces/IWizard';
+import TemplateCommand from './template/TemplateCommand';
 
 export default class CommandFactory implements ICommandFactory{
     private readonly storage: IStorage;
@@ -138,18 +139,25 @@ export default class CommandFactory implements ICommandFactory{
                 }
                 break;
             case COMMAND.GENERATE:
-                const flags: Flag[] = CommandFactory.parseFlags(commandArguments, false);
                 command = new GenerateCommand(
                     this.storage,
                     this.userInterface,
                     this.childProcess,
                     this.templateService,
-                    this.packageManager,
                     this.prettier,
                     this.wizard,
-                    commandArguments[3],
-                    flags,
-                    process.cwd()
+                    CommandFactory.parseFlags(commandArguments, false),
+                );
+                break;
+            case COMMAND.TEMPLATE:
+                command = new TemplateCommand(
+                    this.storage,
+                    this.userInterface,
+                    this.childProcess,
+                    this.templateService,
+                    this.prettier,
+                    this.wizard,
+                    CommandFactory.parseFlags(commandArguments, false),
                 );
                 break;
             default:
