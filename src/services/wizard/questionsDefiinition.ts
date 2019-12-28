@@ -131,7 +131,7 @@ export const GENERATE_COMMAND_QUESTIONS: (CheckboxQuestion | InputQuestion | Con
 
 export const TEMPLATE_QUESTION_NAME = {
     TEMPLATE_PATH: 'templatePath',
-    TARGET_DIR: 'targetDir',
+    TARGET_DIR: 'targetPath',
     COMPONENT_NAME: 'componentName'
 };
 

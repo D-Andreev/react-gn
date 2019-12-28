@@ -10,26 +10,22 @@ import ITemplateAnswers from '../interfaces/ITemplateAnswers';
 import IWizard from '../../services/interfaces/IWizard';
 import IRenderedTemplate from '../interfaces/IRenderedTemplate';
 import Output from '../../lib/Output';
-import {COMMAND_FLAG, COMPONENT_NAME_PLACEHOLDER, OUTPUT_TYPE, PRETTIFIABLE_EXTENSIONS} from '../../constants';
+import {COMMAND_FLAG, COMPONENT_NAME_PLACEHOLDER, OUTPUT_TYPE} from '../../constants';
 import {noop} from '../../utils';
+import BaseGenerateCommand from '../BaseGenerateCommand';
 
-export default class TemplateCommand implements ICommand {
-    private readonly storage: IStorage;
-    private readonly userInterface: IUserInterface;
+export default class TemplateCommand extends BaseGenerateCommand implements ICommand {
+    public storage: IStorage;
+    public userInterface: IUserInterface;
     private readonly childProcess: typeof import('child_process');
     private readonly templateService: ITemplateService;
-    private readonly prettier: IPrettier;
+    public prettier: IPrettier;
     private readonly wizard: IWizard;
     public flags: Flag[];
     private answers: ITemplateAnswers;
     private parsedData: any;
     private templatePaths: string[];
-    private renderedTemplates: IRenderedTemplate[];
-
-    private static extractFileNameFromPath(path: string): string {
-        const splitPath: string[] = path.split('/');
-        return splitPath[splitPath.length - 1];
-    }
+    public renderedTemplates: IRenderedTemplate[];
 
     constructor(
         storage: IStorage,
@@ -40,6 +36,7 @@ export default class TemplateCommand implements ICommand {
         wizard: IWizard,
         flags: Flag[]
     ) {
+        super(userInterface, prettier, storage, flags);
         this.storage = storage;
         this.userInterface = userInterface;
         this.childProcess = childProcess;
@@ -49,30 +46,27 @@ export default class TemplateCommand implements ICommand {
         this.flags = flags;
     }
 
-    private onError(err: Error | Error, done: Function): void {
-        const output: Output[] = [new Output(err.message, OUTPUT_TYPE.ERROR)];
-        this.userInterface.showOutput(output, noop);
-        return done(err);
+    protected extractFileNameFromPath(path: string): string {
+        return super.extractFileNameFromPath(path);
     }
 
-    private isInteractiveModeDisabled(): boolean {
-        return !!this.flags.find((f: Flag) => f.name === COMMAND_FLAG.INTERACTIVE && f.value === 'false');
+    protected onError(err: Error | Error, done: Function): void {
+        return super.onError(err, done);
     }
 
-    private getFlagValue(flagName: string): string {
-        const flag: Flag | undefined = this.flags.find((f: Flag) => f.name === flagName);
-        if (!flag) {
-            return '';
-        }
+    protected isInteractiveModeDisabled(): boolean {
+        return super.isInteractiveModeDisabled();
+    }
 
-        return flag.value;
+    public getFlagValue(flagName: string): string {
+        return super.getFlagValue(flagName);
     }
 
     private askQuestions(done: Function): void {
         if (this.isInteractiveModeDisabled()) {
             this.answers = {
                 templatePath: this.getFlagValue(COMMAND_FLAG.TEMPLATE_PATH),
-                targetDir: this.getFlagValue(COMMAND_FLAG.COMPONENT_TARGET_PATH),
+                targetPath: this.getFlagValue(COMMAND_FLAG.COMPONENT_TARGET_PATH),
                 componentName: this.getFlagValue(COMMAND_FLAG.COMPONENT_NAME)
             };
             return done();
@@ -130,7 +124,7 @@ export default class TemplateCommand implements ICommand {
 
     private generateFilePath(templateFile: string): string {
         const fileName = templateFile.split('.').slice(0, -1).join('.');
-        return path.join(this.answers.targetDir, this.answers.componentName, `${fileName}`)
+        return path.join(this.answers.targetPath, this.answers.componentName, `${fileName}`)
             .replace(COMPONENT_NAME_PLACEHOLDER, this.answers.componentName);
     }
 
@@ -141,7 +135,7 @@ export default class TemplateCommand implements ICommand {
                 if (err) {
                     return next(err);
                 }
-                const templateFileName: string = TemplateCommand.extractFileNameFromPath(templateFilePath);
+                const templateFileName: string = this.extractFileNameFromPath(templateFilePath);
                 renderedTemplates.push({
                     path: this.generateFilePath(templateFileName),
                     content: this.templateService.render(file.toString(), this.parsedData)
@@ -157,50 +151,22 @@ export default class TemplateCommand implements ICommand {
         });
     }
 
-    private prettifyCode(done: Function): void {
-        const filesThatCanBePrettified: IRenderedTemplate[] = this.renderedTemplates
-            .filter((renderedTemplate: IRenderedTemplate) => {
-                let isPrettifiable = false;
-
-                for (let i = 0; i < PRETTIFIABLE_EXTENSIONS.length; i++) {
-                    const currentExtension = PRETTIFIABLE_EXTENSIONS[i];
-                    const lastChars: string = renderedTemplate
-                        .path
-                        .substr(renderedTemplate.path.length - currentExtension.length);
-                    if (lastChars === currentExtension) {
-                        isPrettifiable = true;
-                        break;
-                    }
-                }
-
-                return isPrettifiable;
-            });
-
-        steed.mapSeries(filesThatCanBePrettified, (template: IRenderedTemplate, next: Function) => {
-            this.prettier.prettify(template.content, (err: Error, formattedCode: string) => {
-                if (err) {
-                    return next(err);
-                }
-
-                const index: number = this.renderedTemplates.findIndex(f => f.path === template.path);
-                if (index === -1) {
-                    return next(`Could not format ${template.path}`);
-                }
-
-                this.renderedTemplates[index].content = formattedCode;
-                next();
-            });
-        }, (err: Error) => done(err));
+    protected prettifyCode(done: Function): void {
+        super.prettifyCode(done);
     }
 
     private checkIfDirectoryAlreadyExists(done: Function): void {
-        const targetPath = path.join(this.answers.targetDir, this.answers.componentName);
+        const targetPath = path.join(this.answers.targetPath, this.answers.componentName);
         this.storage.directoryExists(targetPath, (err: Error) => {
             if (err) {
                 return done();
             }
             done(new Error(`${this.answers.componentName} directory already exists`));
         });
+    }
+
+    public showResults(): void {
+        super.showResults(this.answers.componentName);
     }
 
     execute(done: Function): void {
@@ -212,7 +178,7 @@ export default class TemplateCommand implements ICommand {
             (next: Function) => this.renderTemplates(next),
             (next: Function) => this.prettifyCode(next),
             (next: Function) =>
-                this.storage.createDirectory(path.join(this.answers.targetDir, this.answers.componentName), next),
+                this.storage.createDirectory(path.join(this.answers.targetPath, this.answers.componentName), next),
             (next: Function) => {
                 const paths: string[] = this.renderedTemplates.map((template: IRenderedTemplate) => template.path);
                 this.storage.createPaths(process.cwd(), paths, next);
@@ -226,14 +192,7 @@ export default class TemplateCommand implements ICommand {
             if (err) {
                 return this.onError(err, done);
             }
-            const message = `${this.answers.componentName} was created successfully!`;
-            const output: Output[] = [new Output(message, OUTPUT_TYPE.SUCCESS)];
-            this.userInterface.showOutput(output, noop);
-            this.renderedTemplates.forEach((renderedTemplate: IRenderedTemplate) => {
-                const message = `  - ${renderedTemplate.path}`;
-                const output: Output[] = [new Output(message, OUTPUT_TYPE.SUCCESS)];
-                this.userInterface.showOutput(output, noop);
-            });
+            this.showResults();
             done();
         });
     }

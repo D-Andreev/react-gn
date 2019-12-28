@@ -9,10 +9,7 @@ import {
     COMMAND_FLAG, COMPONENT_NAME_PLACEHOLDER, COMPONENT_TYPE,
     FLAGS_WITH_TEMPLATES,
     LANGUAGE_TYPE,
-    OUTPUT_TYPE, PRETTIFIABLE_EXTENSIONS
 } from '../../constants';
-import Output from '../../lib/Output';
-import {noop} from '../../utils';
 import IGenerateAnswers from '../interfaces/IGenerateAnswers';
 import ITemplateService from '../../services/interfaces/ITemplateService';
 import templateDefinition from './templates/templateDefinition';
@@ -20,20 +17,21 @@ import IRenderedTemplate from '../interfaces/IRenderedTemplate';
 import IPrettier from '../../services/interfaces/IPrettier';
 import ITemplateFile from '../interfaces/ITemplateFile';
 import IWizard from '../../services/interfaces/IWizard';
+import BaseGenerateCommand from '../BaseGenerateCommand';
 
-export default class GenerateCommand implements ICommand {
-    private readonly storage: IStorage;
-    private readonly userInterface: IUserInterface;
+export default class GenerateCommand extends BaseGenerateCommand implements ICommand {
+    public readonly storage: IStorage;
+    public readonly userInterface: IUserInterface;
     private readonly childProcess: typeof import('child_process');
     private readonly templateService: ITemplateService;
-    private readonly prettier: IPrettier;
+    public readonly prettier: IPrettier;
     private readonly wizard: IWizard;
     public flags: Flag[];
     private answers: IGenerateAnswers;
     private parsedData: any;
     private templatePaths: string[];
     private templateFiles: ITemplateFile[];
-    private renderedTemplates: IRenderedTemplate[];
+    public renderedTemplates: IRenderedTemplate[];
 
     constructor(
         storage: IStorage,
@@ -44,6 +42,7 @@ export default class GenerateCommand implements ICommand {
         wizard: IWizard,
         flags: Flag[]
     ) {
+        super(userInterface, prettier, storage, flags);
         this.storage = storage;
         this.userInterface = userInterface;
         this.childProcess = childProcess;
@@ -53,32 +52,24 @@ export default class GenerateCommand implements ICommand {
         this.flags = flags;
     }
 
-    private static extractFileNameFromPath(path: string): string {
-        const splitPath: string[] = path.split('/');
-        return splitPath[splitPath.length - 1];
+    protected extractFileNameFromPath(path: string): string {
+        return super.extractFileNameFromPath(path);
     }
 
-    private onError(err: Error | Error, done: Function): void {
-        const output: Output[] = [new Output(err.message, OUTPUT_TYPE.ERROR)];
-        this.userInterface.showOutput(output, noop);
-        return done(err);
+    protected onError(err: Error | Error, done: Function): void {
+        return super.onError(err, done);
     }
 
-    private isInteractiveModeDisabled(): boolean {
-        return !!this.flags.find((f: Flag) => f.name === COMMAND_FLAG.INTERACTIVE && f.value === 'false');
+    protected isInteractiveModeDisabled(): boolean {
+        return super.isInteractiveModeDisabled();
     }
 
     private isFlagPassed(flagName: string): boolean {
         return !!this.flags.find((f: Flag) => f.name === flagName);
     }
 
-    private getFlagValue(flagName: string): string {
-        const flag: Flag | undefined = this.flags.find((f: Flag) => f.name === flagName);
-        if (!flag) {
-            return '';
-        }
-
-        return flag.value;
+    public getFlagValue(flagName: string): string {
+        return super.getFlagValue(flagName);
     }
 
     private setTemplateData(): void {
@@ -186,7 +177,7 @@ export default class GenerateCommand implements ICommand {
             const splitPath: string[] = templatePath.split('/');
             const fileName: string = splitPath[splitPath.length - 1];
             return this.templateFiles.find(f =>
-                GenerateCommand.extractFileNameFromPath(f.path) === fileName);
+                this.extractFileNameFromPath(f.path) === fileName);
         });
     }
 
@@ -208,10 +199,10 @@ export default class GenerateCommand implements ICommand {
                 if (err) {
                     return next(err);
                 }
-                const templateFileName: string = GenerateCommand.extractFileNameFromPath(templateFilePath);
+                const templateFileName: string = this.extractFileNameFromPath(templateFilePath);
                 const templateFile: ITemplateFile =
                     this.templateFiles.find(f => {
-                        return GenerateCommand.extractFileNameFromPath(f.path) === templateFileName;
+                        return this.extractFileNameFromPath(f.path) === templateFileName;
                     });
                 if (!templateFile) {
                     return next(new Error(`${templateFileName} was not found!`))
@@ -232,39 +223,12 @@ export default class GenerateCommand implements ICommand {
         });
     }
 
-    private prettifyCode(done: Function): void {
-        const filesThatCanBePrettified: IRenderedTemplate[] = this.renderedTemplates
-            .filter((renderedTemplate: IRenderedTemplate) => {
-                let isPrettifiable = false;
+    protected prettifyCode(done: Function): void {
+        super.prettifyCode(done);
+    }
 
-                for (let i = 0; i < PRETTIFIABLE_EXTENSIONS.length; i++) {
-                    const currentExtension = PRETTIFIABLE_EXTENSIONS[i];
-                    const lastChars: string = renderedTemplate
-                        .path
-                        .substr(renderedTemplate.path.length - currentExtension.length);
-                    if (lastChars === currentExtension) {
-                        isPrettifiable = true;
-                        break;
-                    }
-                }
-
-                return isPrettifiable;
-            });
-        steed.mapSeries(filesThatCanBePrettified, (template: IRenderedTemplate, next: Function) => {
-            this.prettier.prettify(template.content, (err: Error, formattedCode: string) => {
-                if (err) {
-                    return next(err);
-                }
-
-                const index: number = this.renderedTemplates.findIndex(f => f.path === template.path);
-                if (index === -1) {
-                    return next(`Could not format ${template.path}`);
-                }
-
-                this.renderedTemplates[index].content = formattedCode;
-                next();
-            });
-        }, (err: Error) => done(err));
+    public showResults(): void {
+        super.showResults(this.answers.componentName);
     }
 
     execute(done: Function): void {
@@ -289,14 +253,7 @@ export default class GenerateCommand implements ICommand {
             if (err) {
                 return this.onError(err, done);
             }
-            const message = `${this.answers.componentName} was created successfully!`;
-            const output: Output[] = [new Output(message, OUTPUT_TYPE.SUCCESS)];
-            this.userInterface.showOutput(output, noop);
-            this.renderedTemplates.forEach((renderedTemplate: IRenderedTemplate) => {
-                const message = `  - ${renderedTemplate.path}`;
-                const output: Output[] = [new Output(message, OUTPUT_TYPE.SUCCESS)];
-                this.userInterface.showOutput(output, noop);
-            });
+            this.showResults();
             done();
         });
     }

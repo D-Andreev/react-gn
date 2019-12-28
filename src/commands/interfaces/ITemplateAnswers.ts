@@ -1,5 +1,5 @@
 export default interface ITemplateAnswers {
     templatePath: string;
-    targetDir: string;
+    targetPath: string;
     componentName: string;
 }

@@ -75,7 +75,7 @@ class Wizard implements IWizard {
             }
             const answers: ITemplateAnswers = {
                 templatePath: results[TEMPLATE_QUESTION_NAME.TEMPLATE_PATH],
-                targetDir: results[TEMPLATE_QUESTION_NAME.TARGET_DIR] !== './' ?
+                targetPath: results[TEMPLATE_QUESTION_NAME.TARGET_DIR] !== './' ?
                     results[TEMPLATE_QUESTION_NAME.TARGET_DIR] : process.cwd(),
                 componentName: results[TEMPLATE_QUESTION_NAME.COMPONENT_NAME]
             };
