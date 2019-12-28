@@ -60,9 +60,9 @@ export const GENERATE_QUESTION_NAME = {
     STYLING: 'styling',
 };
 
-export const GENERATE_COMMAND_QUESTIONS: (CheckboxQuestion | InputQuestion | ConfirmQuestion | ListQuestion)[] = [
+export const GENERATE_COMMAND_QUESTIONS: any[] = [
     {
-        type: 'input',
+        type: 'path',
         name: GENERATE_QUESTION_NAME.TARGET_PATH,
         message: GENERATE_COMMAND_QUESTION_MESSAGES.TARGET_DIR,
         default: './',

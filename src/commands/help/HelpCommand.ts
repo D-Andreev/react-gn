@@ -19,7 +19,7 @@ export default class HelpCommand implements ICommand {
 
     execute(done: Function): void {
         const output: Output[] = [
-            { type: OUTPUT_TYPE.INFO, contents: ASCII_ART.HELP },
+            { type: OUTPUT_TYPE.NORMAL, contents: ASCII_ART.HELP }
         ];
 
         output.push({type: OUTPUT_TYPE.NORMAL, contents: 'Main commands: '});

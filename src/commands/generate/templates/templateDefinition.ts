@@ -6,7 +6,7 @@ const main: any = [
     {path: `${COMPONENT_NAME_PLACEHOLDER}.test.js.ejs`}
 ];
 const mainTs: any = [
-    {path: `${COMPONENT_NAME_PLACEHOLDER}.ts.ejs`},
+    {path: `${COMPONENT_NAME_PLACEHOLDER}.tsx.ejs`},
     {path: `${COMPONENT_NAME_PLACEHOLDER}.test.ts.ejs`}
 ];
 const styledComponents: any = [
