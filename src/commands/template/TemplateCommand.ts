@@ -77,6 +77,8 @@ export default class TemplateCommand extends BaseGenerateCommand implements ICom
             }
 
             this.answers = answers;
+            this.answers.targetPath = path.relative(process.cwd(), answers.targetPath);
+            this.answers.templatePath = path.relative(process.cwd(), answers.templatePath);
             done();
         });
     }

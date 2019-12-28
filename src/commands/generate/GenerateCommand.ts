@@ -111,6 +111,7 @@ export default class GenerateCommand extends BaseGenerateCommand implements ICom
             }
 
             this.answers = answers;
+            this.answers.targetPath = path.relative(process.cwd(), answers.targetPath);
             done();
         });
     }
