@@ -1,7 +1,6 @@
-import {CheckboxQuestion, ConfirmQuestion, InputQuestion} from 'inquirer';
+import {CheckboxQuestion, InputQuestion} from 'inquirer';
 import * as fs from 'fs';
 import {DEFAULT_COMPONENT_NAME} from '../../constants';
-import {ListQuestion} from 'inquirer';
 
 export const NEW_COMMAND_QUESTION_MESSAGES = {
     USE_TS: 'Use Typescript',
@@ -111,7 +110,7 @@ export const GENERATE_COMMAND_QUESTIONS: any[] = [
             { name: GENERATE_COMMAND_QUESTION_MESSAGES.WITH_HOOKS },
             ...GENERATE_COMMON_CHOICES,
         ],
-        when: function(answers) {
+        when: function(answers: any) {
             return !answers[GENERATE_QUESTION_NAME.IS_CLASS_COMPONENT];
         }
     },
@@ -123,7 +122,7 @@ export const GENERATE_COMMAND_QUESTIONS: any[] = [
             { name: GENERATE_COMMAND_QUESTION_MESSAGES.WITH_STATE },
             ...GENERATE_COMMON_CHOICES
         ],
-        when: function(answers) {
+        when: function(answers: any) {
             return answers[GENERATE_QUESTION_NAME.IS_CLASS_COMPONENT];
         }
     }
