@@ -1,5 +1,5 @@
 import Output from '../lib/Output';
-import {COMMAND_FLAG, OUTPUT_TYPE, PRETTIFIABLE_EXTENSIONS} from '../constants';
+import {ASCII_ART, COMMAND_FLAG, OUTPUT_TYPE, PRETTIFIABLE_EXTENSIONS} from '../constants';
 import {noop} from '../utils';
 import IUserInterface from '../services/interfaces/IUserInterface';
 import Flag from '../lib/Flag';
@@ -75,6 +75,11 @@ export default class BaseGenerateCommand {
                 next();
             });
         }, (err: Error) => done(err));
+    }
+
+    protected showLogo() {
+        const output: Output[] = [new Output(ASCII_ART.LOGO, OUTPUT_TYPE.SUCCESS)];
+        this.userInterface.showOutput(output, noop);
     }
 
     protected showResults(componentName: string): void {

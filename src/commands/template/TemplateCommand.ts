@@ -171,7 +171,12 @@ export default class TemplateCommand extends BaseGenerateCommand implements ICom
         super.showResults(this.answers.componentName);
     }
 
+    public showLogo() {
+        super.showLogo();
+    }
+
     execute(done: Function): void {
+        this.showLogo();
         steed.waterfall([
             (next: Function) => this.askQuestions(next),
             (next: Function) => this.checkIfDirectoryAlreadyExists(next),

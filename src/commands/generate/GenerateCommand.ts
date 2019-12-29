@@ -5,10 +5,10 @@ import Flag from '../../lib/Flag';
 import IStorage from '../../services/interfaces/IStorage';
 import IUserInterface from '../../services/interfaces/IUserInterface';
 import {
-    ALLOWED_LANGUAGE_TYPE_FLAGS,
+    ALLOWED_LANGUAGE_TYPE_FLAGS, ASCII_ART,
     COMMAND_FLAG, COMPONENT_NAME_PLACEHOLDER, COMPONENT_TYPE,
     FLAGS_WITH_TEMPLATES,
-    LANGUAGE_TYPE,
+    LANGUAGE_TYPE, OUTPUT_TYPE,
 } from '../../constants';
 import IGenerateAnswers from '../interfaces/IGenerateAnswers';
 import ITemplateService from '../../services/interfaces/ITemplateService';
@@ -18,6 +18,7 @@ import IPrettier from '../../services/interfaces/IPrettier';
 import ITemplateFile from '../interfaces/ITemplateFile';
 import IWizard from '../../services/interfaces/IWizard';
 import BaseGenerateCommand from '../BaseGenerateCommand';
+import Output from '../../lib/Output';
 
 export default class GenerateCommand extends BaseGenerateCommand implements ICommand {
     public readonly storage: IStorage;
@@ -232,7 +233,12 @@ export default class GenerateCommand extends BaseGenerateCommand implements ICom
         super.showResults(this.answers.componentName);
     }
 
+    public showLogo() {
+        super.showLogo();
+    }
+
     execute(done: Function): void {
+        this.showLogo();
         steed.waterfall([
             (next: Function) => this.askQuestions(next),
             (next: Function) => this.checkIfDirectoryAlreadyExists(next),

@@ -9,7 +9,7 @@ import {
     FLAGS_WITH_TEMPLATES_WITH_REDUX_NAME,
     LANGUAGE_TYPE,
     OUTPUT_TYPE,
-    COMMAND_FLAG
+    COMMAND_FLAG, ASCII_ART
 } from '../../constants';
 import Output from '../../lib/Output';
 import {noop} from '../../utils';
@@ -258,6 +258,9 @@ export default class NewCommand implements ICommand {
     }
 
     execute(done: Function): void {
+        const output: Output[] = [new Output(ASCII_ART.LOGO, OUTPUT_TYPE.NORMAL)];
+        this.userInterface.showOutput(output, noop);
+
         steed.waterfall([
             (next: Function) => this.askQuestions(next),
             (answers: INewAnswers, next: Function) => {

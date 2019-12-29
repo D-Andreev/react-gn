@@ -2,10 +2,11 @@ import ICommand from './interfaces/ICommand';
 import {
     ALIAS,
     ALLOWED_FLAGS,
-    COMMAND, COMMAND_ALIAS,
+    COMMAND,
+    COMMAND_ALIAS,
     COMMAND_FLAG,
     FLAG_INDICATOR,
-    FLAGS_MIN_INDEX
+    FLAGS_MIN_INDEX, MAIN_COMMAND_ALIAS
 } from '../constants';
 import HelpCommand from './help/HelpCommand';
 import IStorage from '../services/interfaces/IStorage';
@@ -76,11 +77,6 @@ export default class CommandFactory implements ICommandFactory{
         return flags;
     }
 
-    private static containsHelpArg(commandArguments: string[]): boolean {
-        return commandArguments.includes(COMMAND_FLAG.HELP) ||
-            commandArguments.includes(Object.keys(COMMAND_ALIAS).find((alias: string) => alias === ALIAS.HELP));
-    }
-
     constructor(
         storage: IStorage,
         templateService: ITemplateService,
@@ -100,6 +96,15 @@ export default class CommandFactory implements ICommandFactory{
         this.wizard = wizard;
     }
 
+    private getCommandAlias(command: string): string {
+        return Object.keys(COMMAND_ALIAS).find((alias: string) => alias === command);
+    }
+
+    private containsHelpArg(commandArguments: string[]): boolean {
+        return commandArguments.includes(COMMAND_FLAG.HELP) ||
+            commandArguments.includes(this.getCommandAlias(COMMAND_FLAG.HELP));
+    }
+
     createCommand(commandArguments: string[], done: Function): ICommand {
         const helpCommand: ICommand = new HelpCommand(this.userInterface);
         let command = helpCommand;
@@ -108,7 +113,7 @@ export default class CommandFactory implements ICommandFactory{
             helpCommand.execute(done);
             return command;
         }
-        if (CommandFactory.containsHelpArg(commandArguments)) {
+        if (this.containsHelpArg(commandArguments)) {
             command.execute(done);
             return command;
         }
@@ -120,6 +125,7 @@ export default class CommandFactory implements ICommandFactory{
 
         switch (commandArguments[2]) {
             case COMMAND.NEW:
+            case MAIN_COMMAND_ALIAS[COMMAND.NEW]:
                 if (!commandArguments[3]) {
                     command = helpCommand;
                 } else {
@@ -140,6 +146,7 @@ export default class CommandFactory implements ICommandFactory{
                 }
                 break;
             case COMMAND.GENERATE:
+            case MAIN_COMMAND_ALIAS[COMMAND.GENERATE]:
                 command = new GenerateCommand(
                     this.storage,
                     this.userInterface,
@@ -151,6 +158,7 @@ export default class CommandFactory implements ICommandFactory{
                 );
                 break;
             case COMMAND.TEMPLATE:
+            case MAIN_COMMAND_ALIAS[COMMAND.TEMPLATE]:
                 command = new TemplateCommand(
                     this.storage,
                     this.userInterface,
