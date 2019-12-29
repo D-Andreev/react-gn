@@ -120,8 +120,7 @@ export const OUTPUT_TYPE = {
     INFO: 'info',
     SUCCESS: 'success',
     ERROR: 'error',
-    WARN: 'warning',
-    FANCY: 'fancy'
+    WARN: 'warning'
 };
 
 export const LANGUAGE_TYPE = {

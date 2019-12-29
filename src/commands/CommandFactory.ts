@@ -1,6 +1,5 @@
 import ICommand from './interfaces/ICommand';
 import {
-    ALIAS,
     ALLOWED_FLAGS,
     COMMAND,
     COMMAND_ALIAS,

@@ -5,10 +5,12 @@ import Flag from '../../lib/Flag';
 import IStorage from '../../services/interfaces/IStorage';
 import IUserInterface from '../../services/interfaces/IUserInterface';
 import {
-    ALLOWED_LANGUAGE_TYPE_FLAGS, ASCII_ART,
-    COMMAND_FLAG, COMPONENT_NAME_PLACEHOLDER, COMPONENT_TYPE,
+    ALLOWED_LANGUAGE_TYPE_FLAGS,
+    COMMAND_FLAG,
+    COMPONENT_NAME_PLACEHOLDER,
+    COMPONENT_TYPE,
     FLAGS_WITH_TEMPLATES,
-    LANGUAGE_TYPE, OUTPUT_TYPE,
+    LANGUAGE_TYPE
 } from '../../constants';
 import IGenerateAnswers from '../interfaces/IGenerateAnswers';
 import ITemplateService from '../../services/interfaces/ITemplateService';
@@ -18,7 +20,6 @@ import IPrettier from '../../services/interfaces/IPrettier';
 import ITemplateFile from '../interfaces/ITemplateFile';
 import IWizard from '../../services/interfaces/IWizard';
 import BaseGenerateCommand from '../BaseGenerateCommand';
-import Output from '../../lib/Output';
 
 export default class GenerateCommand extends BaseGenerateCommand implements ICommand {
     public readonly storage: IStorage;
