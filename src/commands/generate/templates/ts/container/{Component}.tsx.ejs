@@ -5,6 +5,7 @@ import { count } from './actions/actions';
     import Styled<%= component %> from './Styled<%= component %>';
 <% } %>
 import './<%= component %>.styles.css';
+
 interface <%= component %>Props {
     currentCount: number;
     count: Function;
@@ -41,11 +42,11 @@ class <%= component %>Container extends Component<<%= component %>Props, <%= com
     }
 }
 
-const mapDispatchToProps = (dispatch: any) => ({
+const mapDispatchToProps = (dispatch: Dispatch<Types.RootAction>) => ({
     count: (currentCount: number) => dispatch(count(currentCount))
 });
 
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state: MyTypes.RootState) => ({
     currentCount: state.count.currentCount,
 });
 
