@@ -49,6 +49,11 @@ export const FLAGS_WITH_TEMPLATES_WITH_REDUX_NAME = {
 export const ALIAS: {[key: string]: string} = {
     HELP: '-h',
 };
+export const MAIN_COMMAND_ALIAS = {
+    [COMMAND.NEW]: 'n',
+    [COMMAND.TEMPLATE]: 't',
+    [COMMAND.GENERATE]: 'g',
+}
 export const COMMAND_ALIAS: {[alias: string]: string} = {
     '-h': COMMAND_FLAG.HELP,
     '-v': COMMAND_FLAG.VERSION,
@@ -89,14 +94,17 @@ export const MAIN_COMMANDS_DESCRIPTIONS: {[flag: string]: string} = {
 };
 
 export const ASCII_ART = {
-    HELP: ' _    _      _       \n' +
-        '| |  | |    | |      \n' +
-        '| |__| | ___| |_ __  \n' +
-        '|  __  |/ _ \\ | \'_ \\ \n' +
-        '| |  | |  __/ | |_) |\n' +
-        '|_|  |_|\\___|_| .__/ \n' +
-        '              | |    \n' +
-        '              |_|    '
+    HELP: '    __  __________    ____ \n' +
+        '   / / / / ____/ /   / __ \\\n' +
+        '  / /_/ / __/ / /   / /_/ /\n' +
+        ' / __  / /___/ /___/ ____/ \n' +
+        '/_/ /_/_____/_____/_/      \n' +
+        '                           ',
+    LOGO: ' _ __ ___  __ _  ___| |_       __ _ _ __  \n' +
+        '| \'__/ _ \\/ _` |/ __| __|____ / _` | \'_ \\ \n' +
+        '| | |  __/ (_| | (__| ||_____| (_| | | | |\n' +
+        '|_|  \\___|\\__,_|\\___|\\__|     \\__, |_| |_|\n' +
+        '                              |___/       '
 };
 
 export const FLAGS_MIN_INDEX = 3;

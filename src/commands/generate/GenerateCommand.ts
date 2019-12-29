@@ -6,9 +6,11 @@ import IStorage from '../../services/interfaces/IStorage';
 import IUserInterface from '../../services/interfaces/IUserInterface';
 import {
     ALLOWED_LANGUAGE_TYPE_FLAGS,
-    COMMAND_FLAG, COMPONENT_NAME_PLACEHOLDER, COMPONENT_TYPE,
+    COMMAND_FLAG,
+    COMPONENT_NAME_PLACEHOLDER,
+    COMPONENT_TYPE,
     FLAGS_WITH_TEMPLATES,
-    LANGUAGE_TYPE,
+    LANGUAGE_TYPE
 } from '../../constants';
 import IGenerateAnswers from '../interfaces/IGenerateAnswers';
 import ITemplateService from '../../services/interfaces/ITemplateService';
@@ -111,6 +113,7 @@ export default class GenerateCommand extends BaseGenerateCommand implements ICom
             }
 
             this.answers = answers;
+            this.answers.targetPath = path.relative(process.cwd(), answers.targetPath);
             done();
         });
     }
@@ -231,7 +234,12 @@ export default class GenerateCommand extends BaseGenerateCommand implements ICom
         super.showResults(this.answers.componentName);
     }
 
+    public showLogo() {
+        super.showLogo();
+    }
+
     execute(done: Function): void {
+        this.showLogo();
         steed.waterfall([
             (next: Function) => this.askQuestions(next),
             (next: Function) => this.checkIfDirectoryAlreadyExists(next),

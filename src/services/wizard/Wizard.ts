@@ -4,18 +4,23 @@ import {
     NEW_COMMAND_QUESTION_MESSAGES,
     GENERATE_COMMAND_QUESTION_MESSAGES,
     GENERATE_COMMAND_QUESTIONS,
-    GENERATE_QUESTION_NAME, STYLING_OPTIONS, TEMPLATE_COMMAND_QUESTIONS, TEMPLATE_QUESTION_NAME
+    GENERATE_QUESTION_NAME,
+    STYLING_OPTIONS,
+    TEMPLATE_COMMAND_QUESTIONS,
+    TEMPLATE_QUESTION_NAME
 } from './questionsDefiinition';
 import {Answers, Question} from 'inquirer';
 import {LANGUAGE_TYPE} from '../../constants';
 import ITemplateAnswers from '../../commands/interfaces/ITemplateAnswers';
 import IGenerateAnswers from '../../commands/interfaces/IGenerateAnswers';
+import { PathPrompt } from 'inquirer-path';
 
 class Wizard implements IWizard {
     private readonly inquirer: typeof import('inquirer');
 
     constructor(inquirer: typeof import('inquirer')) {
         this.inquirer = inquirer;
+        this.inquirer.registerPrompt('path', PathPrompt);
     }
 
     private prompt(questions: Question[], done: Function): void {
