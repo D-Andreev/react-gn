@@ -18,7 +18,7 @@ import './<%= component %>.styles.css';
 interface <%= component %>Props {
     children: JSX.Element[] | JSX.Element
 }
-const <%= component %>: React.SFC<<%= component %>Props> = ({children}) => {
+const <%= component %>: React.FC<<%= component %>Props> = ({children}) => {
 <% if (withHooks) { %>
     const [count, setCount] = useState(0);
 <% } %>
