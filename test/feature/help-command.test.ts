@@ -37,4 +37,13 @@ describe('help command', () => {
             expect(result.toString()).toContain(ASCII_ART.HELP);
         });
     });
+
+    describe('when I use help', () => {
+        it('shows the help', () => {
+            const command = PACKAGE_NAME +
+                ' help';
+            const result = execSync(command);
+            expect(result.toString()).toContain(ASCII_ART.HELP);
+        });
+    });
 });
