@@ -5,7 +5,10 @@ import {
     COMMAND_ALIAS,
     COMMAND_FLAG,
     FLAG_INDICATOR,
-    FLAGS_MIN_INDEX, MAIN_COMMAND_ALIAS, OUTPUT_TYPE, PACKAGE_NAME
+    FLAGS_MIN_INDEX,
+    MAIN_COMMAND_ALIAS,
+    OUTPUT_TYPE,
+    PACKAGE_NAME
 } from '../constants';
 import HelpCommand from './help/HelpCommand';
 import IStorage from '../services/interfaces/IStorage';
