@@ -7,7 +7,8 @@ export const COMMAND = {
     NEW: 'new',
     UNKNOWN: 'unknown',
     GENERATE: 'generate',
-    TEMPLATE: 'template'
+    TEMPLATE: 'template',
+    HELP: 'help'
 };
 
 export const COMMAND_FLAG = {

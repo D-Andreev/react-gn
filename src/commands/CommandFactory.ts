@@ -105,7 +105,7 @@ export default class CommandFactory implements ICommandFactory{
     private containsHelpArg(commandArguments: string[]): boolean {
         return commandArguments.includes(COMMAND_FLAG.HELP) ||
             commandArguments.includes(this.getCommandAlias(COMMAND_FLAG.HELP)) ||
-            commandArguments[2] === 'help';
+            commandArguments[2] === COMMAND.HELP;
     }
 
     createCommand(commandArguments: string[], done: Function): ICommand {
