@@ -5,7 +5,10 @@ import {
     COMMAND_ALIAS,
     COMMAND_FLAG,
     FLAG_INDICATOR,
-    FLAGS_MIN_INDEX, MAIN_COMMAND_ALIAS
+    FLAGS_MIN_INDEX,
+    MAIN_COMMAND_ALIAS,
+    OUTPUT_TYPE,
+    PACKAGE_NAME
 } from '../constants';
 import HelpCommand from './help/HelpCommand';
 import IStorage from '../services/interfaces/IStorage';
@@ -101,7 +104,8 @@ export default class CommandFactory implements ICommandFactory{
 
     private containsHelpArg(commandArguments: string[]): boolean {
         return commandArguments.includes(COMMAND_FLAG.HELP) ||
-            commandArguments.includes(this.getCommandAlias(COMMAND_FLAG.HELP));
+            commandArguments.includes(this.getCommandAlias(COMMAND_FLAG.HELP)) ||
+            commandArguments[2] === COMMAND.HELP;
     }
 
     createCommand(commandArguments: string[], done: Function): ICommand {
@@ -109,7 +113,11 @@ export default class CommandFactory implements ICommandFactory{
         let command = helpCommand;
         commandArguments = CommandFactory.convertAliasesToFullCommand(commandArguments);
         if (!commandArguments.length || commandArguments.length < 3) {
-            helpCommand.execute(done);
+            const output = [{
+                type: OUTPUT_TYPE.ERROR,
+                contents: `Please enter a valid command. Run ${PACKAGE_NAME} --help to view all possible commands.`}
+            ];
+            this.userInterface.showOutput(output, done);
             return command;
         }
         if (this.containsHelpArg(commandArguments)) {
@@ -126,6 +134,8 @@ export default class CommandFactory implements ICommandFactory{
             case COMMAND.NEW:
             case MAIN_COMMAND_ALIAS[COMMAND.NEW]:
                 if (!commandArguments[3]) {
+                    const output = [{type: OUTPUT_TYPE.ERROR, contents: 'Please provide a name for the new project!'}];
+                    this.userInterface.showOutput(output, done);
                     command = helpCommand;
                 } else {
                     const appName: string = commandArguments[3];

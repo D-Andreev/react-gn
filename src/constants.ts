@@ -7,7 +7,8 @@ export const COMMAND = {
     NEW: 'new',
     UNKNOWN: 'unknown',
     GENERATE: 'generate',
-    TEMPLATE: 'template'
+    TEMPLATE: 'template',
+    HELP: 'help'
 };
 
 export const COMMAND_FLAG = {
@@ -29,7 +30,6 @@ export const COMMAND_FLAG = {
     WITH_SASS: '--withSass',
     WITH_LESS: '--withLess',
     WITH_STYLED_COMPONENTS: '--withStyledComponents',
-    DATA_PATH: '--data',
 };
 
 export const ENUMERABLE_FLAG_ID = '[]';
@@ -38,7 +38,11 @@ export const ENUMERABLE_FLAGS = [
     `--action${ENUMERABLE_FLAG_ID}`,
     `--reducer${ENUMERABLE_FLAG_ID}`
 ];
-export const MAIN_COMMANDS = ['new', 'generate'];
+export const MAIN_COMMANDS = [
+    `${COMMAND.NEW}`,
+    `${COMMAND.GENERATE}`,
+    `${COMMAND.TEMPLATE}`,
+];
 export const ALLOWED_LANGUAGE_TYPE_FLAGS = ['--js', '--ts'];
 export const FLAGS_WITH_TEMPLATES = {
     WITH_REDUX: '--withRedux',
@@ -46,14 +50,41 @@ export const FLAGS_WITH_TEMPLATES = {
 export const FLAGS_WITH_TEMPLATES_WITH_REDUX_NAME = {
     [FLAGS_WITH_TEMPLATES.WITH_REDUX]: 'Redux',
 };
-export const ALIAS: {[key: string]: string} = {
-    HELP: '-h',
+export const ALIAS: any = {
+    [COMMAND.NEW]: {
+        INTERACTIVE: '--interactive (Alias: -i) When true, disables interactive input prompts.',
+        WITH_TS: '--ts When passed, creates the new app using typescript.',
+        WITH_REDUX: '--withRedux (Alias: -wr) When passed, adds setup for redux.',
+        EJECTED: '--ejected (Alias: -e) When passed, ejects the create-react-app.'
+    },
+    [COMMAND.GENERATE]: {
+        INTERACTIVE: '--interactive (Alias: -i) When true, disables interactive input prompts.',
+        TARGET_PATH: '--path (Alias: -p) A target path for the new component.',
+        COMPONENT_NAME: '--name (Alias: -n) A name for the new component.',
+        WITH_TS: '--ts When passed, creates the new app using typescript.',
+        IS_CLASS_COMPONENT: '--isClass (Alias: -class) Specify component type (Class or functional).',
+        WITH_REDUX: '--withRedux (Alias: -wr) When passed, adds setup for redux.',
+        WITH_HOOKS: '--withHooks (Alias: -wh) Specify whether to use hooks or not.',
+        WITH_STATE: '--withState (Alias: -ws) Specify whether to use state or not.',
+        WITH_PROP_TYPES: '--withPropTypes (Alias: -wpt) Specify whether to use prop types or not.',
+        WITH_CSS: '--withCss (Alias: -wcss) Specify whether to use css for styling or not.',
+        WITH_LESS: '--withCss (Alias: -wless) Specify whether to use LESS for styling or not.',
+        WITH_SASS: '--withCss (Alias: -wsass) Specify whether to use SASS for styling or not.',
+        WITH_STYLED_COMPONENTS: '--withCss (Alias: -wsc) Specify whether to use styled components for styling or not.',
+    },
+    [COMMAND.TEMPLATE]: {
+        INTERACTIVE: '--interactive (Alias: -i) When true, disables interactive input prompts.',
+        TEMPLATE_PATH: '--template (Alias: -t) Path for the template.',
+        TARGET_PATH: '--path (Alias: -p) A target path for the new component.',
+        COMPONENT_NAME: '--name (Alias: -n) A name for the new component.',
+
+    }
 };
 export const MAIN_COMMAND_ALIAS = {
     [COMMAND.NEW]: 'n',
     [COMMAND.TEMPLATE]: 't',
     [COMMAND.GENERATE]: 'g',
-}
+};
 export const COMMAND_ALIAS: {[alias: string]: string} = {
     '-h': COMMAND_FLAG.HELP,
     '-v': COMMAND_FLAG.VERSION,
@@ -74,23 +105,16 @@ export const COMMAND_ALIAS: {[alias: string]: string} = {
     '-wless': COMMAND_FLAG.WITH_LESS,
     '-wsc': COMMAND_FLAG.WITH_STYLED_COMPONENTS,
     '-wh': COMMAND_FLAG.WITH_HOOKS,
-    '-class': COMMAND_FLAG.IS_CLASS_COMPONENT,
-    '-d': COMMAND_FLAG.DATA_PATH
+    '-class': COMMAND_FLAG.IS_CLASS_COMPONENT
 };
 export const ALLOWED_FLAGS = ['--config', '--ejected', '--interactive']
     .concat(Object.values(FLAGS_WITH_TEMPLATES))
     .concat(ALLOWED_LANGUAGE_TYPE_FLAGS);
 
-export const ALLOWED_FLAGS_DESCRIPTIONS: {[flag: string]: string} = {
-    '--help (Alias: -h)': 'Shows the help.',
-    '--version (Alias: -v)': 'Shows the current version.',
-    '--interactive (Alias: -i)': 'When false, disables interactive input prompts.',
-    '--withState (Alias: -ws)': 'When true, adds state to the component.',
-    '--withHooks (Alias: -wh)': 'When true, adds state to the component.',
-};
 export const MAIN_COMMANDS_DESCRIPTIONS: {[flag: string]: string} = {
-    'new': 'Create a new react application.',
-    'generate': 'Generate a new component.',
+    [MAIN_COMMANDS[0]]: 'Create a new react application.',
+    [MAIN_COMMANDS[1]]: 'Generate a new component.',
+    [MAIN_COMMANDS[2]]: 'Generate a new component from a template.',
 };
 
 export const ASCII_ART = {
@@ -151,4 +175,4 @@ export const PRETTIFIABLE_EXTENSIONS = ['js', 'jsx', 'ts', 'tsx'];
 export const COMPONENT_TYPE = {
     CONTAINER: 'container',
     COMPONENT: 'component'
-}
+};
