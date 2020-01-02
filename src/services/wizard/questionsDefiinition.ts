@@ -1,4 +1,4 @@
-import {CheckboxQuestion, InputQuestion} from 'inquirer';
+import {CheckboxQuestion} from 'inquirer';
 import * as fs from 'fs';
 import {DEFAULT_COMPONENT_NAME} from '../../constants';
 
