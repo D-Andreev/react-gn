@@ -32,7 +32,7 @@ react-gn n my-app
 ```
 `react-gn` uses `create-react-app` under the hood to bootstrap the application. For further details please read the full [documentation](https://github.com/D-Andreev/react-gn).
 
-<a name="creating-component"></a>
+<a name="creating-components"></a>
 ## Creating new components
 
 ```shell script
