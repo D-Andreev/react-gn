@@ -10,6 +10,7 @@ Create and develop react apps and components using a convenient CLI.
 `react-gn` works on macOS, Windows, and Linux.<br>
 If something doesn’t work, please [file an issue](https://github.com/D-Andreev/react-gn/issues/new).<br>
 
+<a name="install"></a>
 ## Installation
 ```shell script
 npm install @react-gn/react-gn
@@ -18,7 +19,8 @@ or
 ```shell script
 yarn add @react-gn/react-gn
 ```
- 
+
+<a name="creating-an-app"></a>
 ## Creating an app
 To create an app run the `new` command and specify the name of your new project. Then several prompts will appear asking you for the different options you want to use i.e Will you be using `typescript`, `redux` etc...
 ```shell script
@@ -28,8 +30,9 @@ Or using the alias:
 ```shell script
 react-gn n my-app
 ```
-`react-gn` uses `create-react-app` under the hood to bootstrap the application. For further details please read the full [doocumentation](https://github.com/D-Andreev/react-gn).
+`react-gn` uses `create-react-app` under the hood to bootstrap the application. For further details please read the full [documentation](https://github.com/D-Andreev/react-gn).
 
+<a name="creating-component"></a>
 ## Creating new components
 
 ```shell script
@@ -48,6 +51,7 @@ Then several prompts will appear asking you for the different options you may wa
  
  For further details please read the full [documentation](https://github.com/D-Andreev/react-gn).
  
+ <a name="creating-components-templates"></a>
  ## Creating new components with templates
  Because every react application is different, `react-gn` exposes a command for creating new components by custom templates.
 You can create template files using `ejs` and use them to generate new components.
@@ -68,5 +72,4 @@ For further details on how to create templates and use them please read the full
 * [ejs](https://github.com/mde/ejs)
 
 ## License
-
 `react-gn` is open source software [licensed as MIT](https://github.com/D-Andreev/react-gn/blob/master/LICENSE).
