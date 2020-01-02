@@ -54,7 +54,7 @@ Then several prompts will appear asking you for the different options you may wa
  
  <a name="creating-components-templates"></a>
  ## Creating new components with templates
-![react-gn-template](https://i.imgur.com/OsAL90q.gifv)<br>
+![react-gn-template](https://i.imgur.com/bDBNYa5.gif)<br>
 Because every react application is different, `react-gn` exposes a command for creating new components with custom templates.
 You can create template files using `ejs` and use them to generate new components.
  ```shell script
