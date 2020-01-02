@@ -35,7 +35,7 @@ react-gn n my-app
 
 <a name="creating-components"></a>
 ## Creating new components
-![Farmers Market Finder Demo](https://i.imgur.com/IUN1a81.gif)<br>
+![react-gn-generate](https://i.imgur.com/IUN1a81.gif)<br>
 ```shell script
 react-gn generate
 ```
@@ -54,7 +54,7 @@ Then several prompts will appear asking you for the different options you may wa
  
  <a name="creating-components-templates"></a>
  ## Creating new components with templates
-![Farmers Market Finder Demo](https://i.imgur.com/hzzNWXO.gifv)<br>
+![react-gn-template](https://i.imgur.com/OsAL90q.gifv)<br>
 Because every react application is different, `react-gn` exposes a command for creating new components with custom templates.
 You can create template files using `ejs` and use them to generate new components.
  ```shell script
