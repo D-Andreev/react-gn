@@ -22,7 +22,7 @@ yarn add @react-gn/react-gn
 
 <a name="creating-an-app"></a>
 ## Creating an app
-![Farmers Market Finder Demo](https://i.imgur.com/bRZKC1v.gif)
+![Farmers Market Finder Demo](https://i.imgur.com/bRZKC1v.gif)<br>
 To create an app run the `new` command and specify the name of your new project. Then several prompts will appear asking you for the different options you want to use i.e Will you be using `typescript`, `redux` etc...
 ```shell script
 react-gn new my-app
@@ -35,7 +35,7 @@ react-gn n my-app
 
 <a name="creating-components"></a>
 ## Creating new components
-
+![Farmers Market Finder Demo](https://imgur.com/IUN1a81)<br>
 ```shell script
 react-gn generate
 ```
@@ -54,7 +54,8 @@ Then several prompts will appear asking you for the different options you may wa
  
  <a name="creating-components-templates"></a>
  ## Creating new components with templates
- Because every react application is different, `react-gn` exposes a command for creating new components with custom templates.
+![Farmers Market Finder Demo](https://imgur.com/hzzNWXO)<br>
+Because every react application is different, `react-gn` exposes a command for creating new components with custom templates.
 You can create template files using `ejs` and use them to generate new components.
  ```shell script
 react-gn template

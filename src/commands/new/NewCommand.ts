@@ -258,7 +258,7 @@ export default class NewCommand implements ICommand {
     }
 
     execute(done: Function): void {
-        const output: Output[] = [new Output(ASCII_ART.LOGO, OUTPUT_TYPE.NORMAL)];
+        const output: Output[] = [new Output(ASCII_ART.LOGO, OUTPUT_TYPE.SUCCESS)];
         this.userInterface.showOutput(output, noop);
 
         steed.waterfall([

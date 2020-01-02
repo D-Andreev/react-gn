@@ -140,9 +140,9 @@ export const TEMPLATE_COMMAND_QUESTION_MESSAGES = {
     COMPONENT_NAME: 'Enter component name.',
 };
 
-export const TEMPLATE_COMMAND_QUESTIONS: InputQuestion[] = [
+export const TEMPLATE_COMMAND_QUESTIONS: any[] = [
     {
-        type: 'input',
+        type: 'path',
         name: TEMPLATE_QUESTION_NAME.TEMPLATE_PATH,
         message: TEMPLATE_COMMAND_QUESTION_MESSAGES.TEMPLATE_PATH,
         validate: (input: any): boolean | string | Promise<boolean | string> => {
@@ -154,7 +154,7 @@ export const TEMPLATE_COMMAND_QUESTIONS: InputQuestion[] = [
         }
     },
     {
-        type: 'input',
+        type: 'path',
         name: TEMPLATE_QUESTION_NAME.TARGET_DIR,
         message: TEMPLATE_COMMAND_QUESTION_MESSAGES.TARGET_DIR,
         default: './',
