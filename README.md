@@ -22,11 +22,12 @@ yarn add @react-gn/react-gn
 
 <a name="creating-an-app"></a>
 ## Creating an app
+![react-gn-new](https://imgur.com/bRZKC1v)
 To create an app run the `new` command and specify the name of your new project. Then several prompts will appear asking you for the different options you want to use i.e Will you be using `typescript`, `redux` etc...
 ```shell script
 react-gn new my-app
 ```
-Or using the alias:
+or with alias
 ```shell script
 react-gn n my-app
 ```
@@ -53,7 +54,7 @@ Then several prompts will appear asking you for the different options you may wa
  
  <a name="creating-components-templates"></a>
  ## Creating new components with templates
- Because every react application is different, `react-gn` exposes a command for creating new components by custom templates.
+ Because every react application is different, `react-gn` exposes a command for creating new components with custom templates.
 You can create template files using `ejs` and use them to generate new components.
  ```shell script
 react-gn template
