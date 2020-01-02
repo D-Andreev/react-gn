@@ -22,7 +22,7 @@ yarn add @react-gn/react-gn
 
 <a name="creating-an-app"></a>
 ## Creating an app
-![react-gn-new](https://imgur.com/bRZKC1v)
+[Imgur](https://i.imgur.com/bRZKC1v.gifv)
 To create an app run the `new` command and specify the name of your new project. Then several prompts will appear asking you for the different options you want to use i.e Will you be using `typescript`, `redux` etc...
 ```shell script
 react-gn new my-app
