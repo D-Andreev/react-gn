@@ -5,7 +5,8 @@ import {
 } from '../../src/constants';
 import {buildPackage} from './utils';
 
-function verifyComponentIsCreated(componentName: string, isJs = true) {
+function verifyComponentIsCreated(output: Buffer, componentDirName: string, componentName: string, isJs = true) {
+    expect(output.toString()).toContain(`${componentDirName} was created successfully!`);
     expect(fs.existsSync(`./${componentName}/${componentName}.${isJs ? 'jsx' : 'tsx'}`)).toBeTruthy();
     expect(fs.existsSync(`./${componentName}/${componentName}.test.${isJs ? 'js' : 'ts'}`)).toBeTruthy();
 }
@@ -27,8 +28,7 @@ describe('generate command', () => {
         it('creates a javascript functional component in the same directory', () => {
             const result =
                 execSync(`${PACKAGE_NAME} generate -i false --path ./ --dirName ${componentDirName}`);
-            expect(result.toString()).toContain(`${componentDirName} was created successfully!`);
-            verifyComponentIsCreated(componentDirName);
+            verifyComponentIsCreated(result, componentDirName, componentName);
         });
     });
 
@@ -37,8 +37,8 @@ describe('generate command', () => {
             const result =
                 execSync(`${PACKAGE_NAME} generate -i false --path ./ --dirName ${componentDirName}` +
                     ' --withHooks --withPropTypes --withCss');
-            expect(result.toString()).toContain(`${componentDirName} was created successfully!`);
-            verifyComponentIsCreated(componentDirName);
+
+            verifyComponentIsCreated(result, componentDirName, componentName);
             expect(fs.existsSync(`./${componentDirName}/${componentDirName}.styles.css`)).toBeTruthy();
         });
     });
@@ -47,8 +47,7 @@ describe('generate command', () => {
         it('creates a bare class component', () => {
             const result =
                 execSync(`${PACKAGE_NAME} generate -i false --path ./ --dirName ${componentDirName} --isClass`);
-            expect(result.toString()).toContain(`${componentDirName} was created successfully!`);
-            verifyComponentIsCreated(componentDirName);
+            verifyComponentIsCreated(result, componentDirName, componentName);
         });
     });
 
@@ -57,8 +56,7 @@ describe('generate command', () => {
             const result =
                 execSync(`${PACKAGE_NAME} generate -i false --path ./ --dirName ${componentDirName}` +
                     ' --withHooks --withRedux --withPropTypes --isClass  --withCss');
-            expect(result.toString()).toContain(`${componentDirName} was created successfully!`);
-            verifyComponentIsCreated(componentDirName);
+            verifyComponentIsCreated(result, componentDirName, componentName);
             expect(fs.existsSync(`./${componentDirName}/${componentDirName}.styles.css`)).toBeTruthy();
         });
     });
@@ -67,8 +65,7 @@ describe('generate command', () => {
         it('creates a bare class component with typescript', () => {
             const result =
                 execSync(`${PACKAGE_NAME} generate -i false --path ./ --dirName ${componentDirName} --isClass --ts`);
-            expect(result.toString()).toContain(`${componentDirName} was created successfully!`);
-            verifyComponentIsCreated(componentDirName);
+            verifyComponentIsCreated(result, componentDirName, componentName);
         });
     });
 
@@ -77,8 +74,7 @@ describe('generate command', () => {
             const result =
                 execSync(`${PACKAGE_NAME} generate -i false --path ./ --dirName ${componentDirName}` +
                     ' --withState --withRedux --withStyledComponents --isClass --ts');
-            expect(result.toString()).toContain(`${componentDirName} was created successfully!`);
-            verifyComponentIsCreated(componentDirName);
+            verifyComponentIsCreated(result, componentDirName, componentName);
             expect(fs.existsSync(`./${componentDirName}/Styled${componentDirName}.js`)).toBeTruthy();
         });
     });
