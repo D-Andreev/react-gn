@@ -20,6 +20,7 @@ import IPrettier from '../../services/interfaces/IPrettier';
 import ITemplateFile from '../interfaces/ITemplateFile';
 import IWizard from '../../services/interfaces/IWizard';
 import BaseGenerateCommand from '../BaseGenerateCommand';
+import {toPascalCase} from '../../utils';
 
 export default class GenerateCommand extends BaseGenerateCommand implements ICommand {
     public readonly storage: IStorage;
@@ -93,7 +94,7 @@ export default class GenerateCommand extends BaseGenerateCommand implements ICom
         if (this.isInteractiveModeDisabled()) {
             this.answers = {
                 targetPath: this.getFlagValue(COMMAND_FLAG.COMPONENT_TARGET_PATH),
-                componentName: this.getFlagValue(COMMAND_FLAG.COMPONENT_NAME),
+                componentName: toPascalCase(this.getFlagValue(COMMAND_FLAG.COMPONENT_DIR_NAME)),
                 componentDirName: this.getFlagValue(COMMAND_FLAG.COMPONENT_DIR_NAME),
                 languageType: !!this.getFlagValue(ALLOWED_LANGUAGE_TYPE_FLAGS[1]) ? LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS,
                 isClassComponent: this.isFlagPassed(COMMAND_FLAG.IS_CLASS_COMPONENT),
