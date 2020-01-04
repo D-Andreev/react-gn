@@ -1,6 +1,7 @@
 export default interface IGenerateAnswers {
     targetPath: string;
     componentName: string;
+    componentDirName: string;
     languageType: string;
     isClassComponent: boolean;
     withPropTypes: boolean;

@@ -1,6 +1,6 @@
 import {CheckboxQuestion} from 'inquirer';
 import * as fs from 'fs';
-import {DEFAULT_COMPONENT_NAME} from '../../constants';
+import {DEFAULT_COMPONENT_DIR_NAME, DEFAULT_COMPONENT_NAME} from '../../constants';
 
 export const NEW_COMMAND_QUESTION_MESSAGES = {
     USE_TS: 'Use Typescript',
@@ -30,7 +30,7 @@ export const NEW_COMMAND_QUESTIONS: CheckboxQuestion[] = [
 export const GENERATE_COMMAND_QUESTION_MESSAGES = {
     TARGET_DIR: 'Enter the target dir for the component.',
     USE_TS: 'Use typescript?',
-    COMPONENT_NAME: 'Enter component name.',
+    COMPONENT_DIR_NAME: 'Enter component directory name.',
     IS_CLASS_COMPONENT: 'Is a class component?',
     WITH_HOOKS: 'Use hooks',
     WITH_REDUX: 'Use Redux?',
@@ -52,7 +52,7 @@ export const GENERATE_COMMON_CHOICES = [
 
 export const GENERATE_QUESTION_NAME = {
     TARGET_PATH: 'targetPath',
-    COMPONENT_NAME: 'componentName',
+    COMPONENT_DIR_NAME: 'componentDirName',
     USE_TS: 'useTs',
     IS_CLASS_COMPONENT: 'isClassComponent',
     OPTIONS: 'options',
@@ -75,9 +75,9 @@ export const GENERATE_COMMAND_QUESTIONS: any[] = [
     },
     {
         type: 'input',
-        name: GENERATE_QUESTION_NAME.COMPONENT_NAME,
-        message: GENERATE_COMMAND_QUESTION_MESSAGES.COMPONENT_NAME,
-        default: DEFAULT_COMPONENT_NAME
+        name: GENERATE_QUESTION_NAME.COMPONENT_DIR_NAME,
+        message: GENERATE_COMMAND_QUESTION_MESSAGES.COMPONENT_DIR_NAME,
+        default: DEFAULT_COMPONENT_DIR_NAME
     },
     {
         type: 'list',

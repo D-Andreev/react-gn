@@ -14,6 +14,7 @@ import {LANGUAGE_TYPE} from '../../constants';
 import ITemplateAnswers from '../../commands/interfaces/ITemplateAnswers';
 import IGenerateAnswers from '../../commands/interfaces/IGenerateAnswers';
 import { PathPrompt } from 'inquirer-path';
+import {toPascalCase} from '../../utils';
 
 class Wizard implements IWizard {
     private readonly inquirer: typeof import('inquirer');
@@ -51,7 +52,8 @@ class Wizard implements IWizard {
             const answers: IGenerateAnswers = {
                 targetPath: results[GENERATE_QUESTION_NAME.TARGET_PATH] !== './' ?
                     results[GENERATE_QUESTION_NAME.TARGET_PATH] : process.cwd(),
-                componentName: results[GENERATE_QUESTION_NAME.COMPONENT_NAME],
+                componentDirName: results[GENERATE_QUESTION_NAME.COMPONENT_DIR_NAME],
+                componentName: toPascalCase(results[GENERATE_QUESTION_NAME.COMPONENT_DIR_NAME]),
                 languageType: results[GENERATE_QUESTION_NAME.USE_TS] ? LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS,
                 isClassComponent: results[GENERATE_QUESTION_NAME.IS_CLASS_COMPONENT],
                 withPropTypes:

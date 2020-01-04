@@ -1,4 +1,4 @@
-import path from 'path';
+import path, {sep} from 'path';
 import steed from 'steed';
 import ICommand from '../interfaces/ICommand';
 import Flag from '../../lib/Flag';
@@ -94,6 +94,7 @@ export default class GenerateCommand extends BaseGenerateCommand implements ICom
             this.answers = {
                 targetPath: this.getFlagValue(COMMAND_FLAG.COMPONENT_TARGET_PATH),
                 componentName: this.getFlagValue(COMMAND_FLAG.COMPONENT_NAME),
+                componentDirName: this.getFlagValue(COMMAND_FLAG.COMPONENT_DIR_NAME),
                 languageType: !!this.getFlagValue(ALLOWED_LANGUAGE_TYPE_FLAGS[1]) ? LANGUAGE_TYPE.TS : LANGUAGE_TYPE.JS,
                 isClassComponent: this.isFlagPassed(COMMAND_FLAG.IS_CLASS_COMPONENT),
                 withPropTypes: this.isFlagPassed(COMMAND_FLAG.WITH_PROP_TYPES),
@@ -107,6 +108,7 @@ export default class GenerateCommand extends BaseGenerateCommand implements ICom
             };
             return done();
         }
+
         this.wizard.askGenerateCommandQuestions((err: Error, answers: IGenerateAnswers) => {
             if (err) {
                 return done(err);
@@ -119,12 +121,12 @@ export default class GenerateCommand extends BaseGenerateCommand implements ICom
     }
 
     private checkIfDirectoryAlreadyExists(done: Function): void {
-        const targetPath = path.join(this.answers.targetPath, this.answers.componentName);
+        const targetPath = path.join(this.answers.targetPath, this.answers.componentDirName);
         this.storage.directoryExists(targetPath, (err: Error) => {
             if (err) {
                 return done();
             }
-            done(new Error(`${this.answers.componentName} directory already exists`));
+            done(new Error(`${this.answers.componentDirName} directory already exists`));
         });
     }
 
@@ -171,13 +173,12 @@ export default class GenerateCommand extends BaseGenerateCommand implements ICom
                 templateFiles = templateFiles.concat(options);
             }
         });
-
         this.templateFiles = templateFiles;
     }
 
     private setTemplatePaths(): void {
         this.templatePaths = this.templatePaths.filter((templatePath: string) => {
-            const splitPath: string[] = templatePath.split('/');
+            const splitPath: string[] = path.resolve(templatePath).split(sep);
             const fileName: string = splitPath[splitPath.length - 1];
             return this.templateFiles.find(f =>
                 this.extractFileNameFromPath(f.path) === fileName);
@@ -187,8 +188,8 @@ export default class GenerateCommand extends BaseGenerateCommand implements ICom
     private generateFilePath(templateFile: ITemplateFile): string {
         const fileName = templateFile.path.split('.').slice(0, -1).join('.');
         return path
-            .join(this.answers.targetPath, this.answers.componentName, `${fileName}`)
-            .replace(COMPONENT_NAME_PLACEHOLDER, this.answers.componentName);
+            .join(this.answers.targetPath, this.answers.componentDirName, `${fileName}`)
+            .replace(COMPONENT_NAME_PLACEHOLDER, this.answers.componentDirName);
     }
 
     private renderTemplates(done: Function): void {
@@ -196,7 +197,6 @@ export default class GenerateCommand extends BaseGenerateCommand implements ICom
         this.setTemplateFiles();
         this.setTemplatePaths();
         const renderedTemplates: IRenderedTemplate[] = [];
-
         steed.mapSeries(this.templatePaths, (templateFilePath: string, next: Function) => {
             this.storage.read(templateFilePath, (err: Error, file: Buffer) => {
                 if (err) {
@@ -248,7 +248,7 @@ export default class GenerateCommand extends BaseGenerateCommand implements ICom
             (next: Function) => this.renderTemplates(next),
             (next: Function) => this.prettifyCode(next),
             (next: Function) =>
-                this.storage.createDirectory(path.join(this.answers.targetPath, this.answers.componentName), next),
+                this.storage.createDirectory(path.join(this.answers.targetPath, this.answers.componentDirName), next),
             (next: Function) => {
                 const paths: string[] = this.renderedTemplates.map((template: IRenderedTemplate) => template.path);
                 this.storage.createPaths(process.cwd(), paths, next);

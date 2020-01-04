@@ -7,6 +7,8 @@ import IRenderedTemplate from './interfaces/IRenderedTemplate';
 import steed from 'steed';
 import IPrettier from '../services/interfaces/IPrettier';
 import IStorage from '../services/interfaces/IStorage';
+import {sep} from 'path';
+import * as path from 'path';
 
 export default class BaseGenerateCommand {
     public renderedTemplates: IRenderedTemplate[];
@@ -17,8 +19,8 @@ export default class BaseGenerateCommand {
                 public flags: Flag[]) {
     }
 
-    protected extractFileNameFromPath(path: string): string {
-        const splitPath: string[] = path.split('/');
+    protected extractFileNameFromPath(filePath: string): string {
+        const splitPath: string[] = path.resolve(filePath).split(sep);
         return splitPath[splitPath.length - 1];
     }
 

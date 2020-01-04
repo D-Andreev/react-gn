@@ -20,3 +20,9 @@ export function getEditDistance(
         getEditDistance(command,  correctCommand, commandLength-1, correctCommandLength-1)
     );
 }
+
+export function toPascalCase(input: string): string {
+    return input.match(/[a-z]+/gi)
+        .map(word => word.charAt(0).toUpperCase() + word.substr(1).toLowerCase())
+        .join('')
+}

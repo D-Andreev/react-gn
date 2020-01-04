@@ -1,4 +1,4 @@
-import {getEditDistance, minOfThreeNumbers} from '../../src/utils';
+import {getEditDistance, minOfThreeNumbers, toPascalCase} from '../../src/utils';
 
 describe('utils', () => {
     describe('minOfThreeNumbers', () => {
@@ -26,6 +26,14 @@ describe('utils', () => {
                 const str2 = 'saturday';
                 expect(getEditDistance(str1, str2, str1.length, str2.length)).toEqual(3);
             });
+        });
+    });
+
+    describe('toPascalCase', () => {
+        it('transforms the input to PascalCase', () => {
+            expect(toPascalCase('my-component')).toEqual('MyComponent');
+            expect(toPascalCase('my_component')).toEqual('MyComponent');
+            expect(toPascalCase('myComponent')).toEqual('Mycomponent');
         });
     });
 });
