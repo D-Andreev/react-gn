@@ -5,79 +5,77 @@ import {
 } from '../../src/constants';
 import {buildPackage} from './utils';
 
-function verifyComponentIsCreated(componentName: string, isJs = true) {
-    expect(fs.existsSync(`./${componentName}/${componentName}.${isJs ? 'jsx' : 'tsx'}`)).toBeTruthy();
-    expect(fs.existsSync(`./${componentName}/${componentName}.test.${isJs ? 'js' : 'ts'}`)).toBeTruthy();
+function verifyComponentIsCreated(output: Buffer, componentDirName: string, componentName: string, isJs = true) {
+    expect(output.toString()).toContain(`${componentName} was created successfully!`);
+    expect(fs.existsSync(`./${componentDirName}/${componentDirName}.${isJs ? 'jsx' : 'tsx'}`)).toBeTruthy();
+    expect(fs.existsSync(`./${componentDirName}/${componentDirName}.test.${isJs ? 'js' : 'ts'}`)).toBeTruthy();
 }
 
 describe('generate command', () => {
+    let componentDirName: string;
     let componentName: string;
     beforeAll(() => {
         componentName = 'MyCounter';
+        componentDirName = 'my-counter';
         buildPackage();
     });
 
     afterEach(() => {
-        execSync(`rm -rf ./${componentName}`);
+        execSync(`rm -rf ./${componentDirName}`);
     });
 
     describe('when I use all the default options', () => {
         it('creates a javascript functional component in the same directory', () => {
             const result =
-                execSync(`${PACKAGE_NAME} generate -i false --path ./ --name ${componentName}`);
-            expect(result.toString()).toContain(`${componentName} was created successfully!`);
-            verifyComponentIsCreated(componentName);
+                execSync(`${PACKAGE_NAME} generate -i false --path ./ --dirName ${componentDirName}`);
+            verifyComponentIsCreated(result, componentDirName, componentName);
         });
     });
 
     describe('when I choose to create a functional component with all options', () => {
         it('creates all files for the component', () => {
             const result =
-                execSync(`${PACKAGE_NAME} generate -i false --path ./ --name ${componentName}` +
+                execSync(`${PACKAGE_NAME} generate -i false --path ./ --dirName ${componentDirName}` +
                     ' --withHooks --withPropTypes --withCss');
-            expect(result.toString()).toContain(`${componentName} was created successfully!`);
-            verifyComponentIsCreated(componentName);
-            expect(fs.existsSync(`./${componentName}/${componentName}.styles.css`)).toBeTruthy();
+
+            verifyComponentIsCreated(result, componentDirName, componentName);
+            expect(fs.existsSync(`./${componentDirName}/${componentDirName}.styles.css`)).toBeTruthy();
         });
     });
 
     describe('when I create a class component with no additional options', () => {
         it('creates a bare class component', () => {
             const result =
-                execSync(`${PACKAGE_NAME} generate -i false --path ./ --name ${componentName} --isClass`);
-            expect(result.toString()).toContain(`${componentName} was created successfully!`);
-            verifyComponentIsCreated(componentName);
+                execSync(`${PACKAGE_NAME} generate -i false --path ./ --dirName ${componentDirName} --isClass`);
+            verifyComponentIsCreated(result, componentDirName, componentName);
         });
     });
 
     describe('when I create a class component with all options', () => {
         it('creates a class component with all options', () => {
             const result =
-                execSync(`${PACKAGE_NAME} generate -i false --path ./ --name ${componentName}` +
+                execSync(`${PACKAGE_NAME} generate -i false --path ./ --dirName ${componentDirName}` +
                     ' --withHooks --withRedux --withPropTypes --isClass  --withCss');
-            expect(result.toString()).toContain(`${componentName} was created successfully!`);
-            verifyComponentIsCreated(componentName);
-            expect(fs.existsSync(`./${componentName}/${componentName}.styles.css`)).toBeTruthy();
+            verifyComponentIsCreated(result, componentDirName, componentName);
+            expect(fs.existsSync(`./${componentDirName}/${componentDirName}.styles.css`)).toBeTruthy();
         });
     });
 
     describe('when I create a class component with typescript and no additional options', () => {
         it('creates a bare class component with typescript', () => {
             const result =
-                execSync(`${PACKAGE_NAME} generate -i false --path ./ --name ${componentName} --isClass --ts`);
-            expect(result.toString()).toContain(`${componentName} was created successfully!`);
-            verifyComponentIsCreated(componentName);
+                execSync(`${PACKAGE_NAME} generate -i false --path ./ --dirName ${componentDirName} --isClass --ts`);
+            verifyComponentIsCreated(result, componentDirName, componentName);
         });
     });
 
     describe('when I create a class component with all options', () => {
         it('creates a class component with all options', () => {
             const result =
-                execSync(`${PACKAGE_NAME} generate -i false --path ./ --name ${componentName}` +
+                execSync(`${PACKAGE_NAME} generate -i false --path ./ --dirName ${componentDirName}` +
                     ' --withState --withRedux --withStyledComponents --isClass --ts');
-            expect(result.toString()).toContain(`${componentName} was created successfully!`);
-            verifyComponentIsCreated(componentName);
-            expect(fs.existsSync(`./${componentName}/Styled${componentName}.js`)).toBeTruthy();
+            verifyComponentIsCreated(result, componentDirName, componentName);
+            expect(fs.existsSync(`./${componentDirName}/Styled${componentDirName}.js`)).toBeTruthy();
         });
     });
 });
