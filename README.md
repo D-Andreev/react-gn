@@ -44,8 +44,8 @@ or with alias
 react-gn g
 ```
 Then several prompts will appear asking you for the different options you may want to use for your new component:
- * Component name
  * Target directory for the component
+ * Component directory name
  * Will you be using typescript
  * Is it a class or functional component
  * What will you use for styling of the new component i.e css, sass, less, styled components etc...
