@@ -75,7 +75,7 @@ describe('generate command', () => {
                 execSync(`${PACKAGE_NAME} generate -i false --path ./ --dirName ${componentDirName}` +
                     ' --withState --withRedux --withStyledComponents --isClass --ts');
             verifyComponentIsCreated(result, componentDirName, componentName);
-            expect(fs.existsSync(`./${componentDirName}/Styled${componentDirName}.js`)).toBeTruthy();
+            expect(fs.existsSync(`./${componentDirName}/Styled${componentName}.js`)).toBeTruthy();
         });
     });
 });
