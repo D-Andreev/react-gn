@@ -26,7 +26,7 @@ describe('template command', () => {
 
     it('creates all the files based on given template', () => {
         const result =
-            execSync(`${PACKAGE_NAME} template -i false --path ./ --dirName ${componentName}` +
+            execSync(`${PACKAGE_NAME} template -i false --path ./ --dirName ${componentDirName}` +
                 ' --template ./test/feature/templates/component');
         expect(result.toString()).toContain(`${componentName} was created successfully!`);
         verifyComponentIsCreated(componentName, componentDirName);
