@@ -18,6 +18,7 @@ describe('generate command', () => {
         componentName = 'MyCounter';
         componentDirName = 'my-counter';
         buildPackage();
+        execSync(`rm -rf ./${componentDirName}`);
     });
 
     afterEach(() => {
