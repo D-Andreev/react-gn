@@ -22,7 +22,13 @@ export function getEditDistance(
 }
 
 export function toPascalCase(input: string): string {
-    return input.match(/[a-z]+/gi)
-        .map(word => word.charAt(0).toUpperCase() + word.substr(1).toLowerCase())
-        .join('')
+    return `${input}`
+        .replace(new RegExp(/[-_]+/, 'g'), ' ')
+        .replace(new RegExp(/[^\w\s]/, 'g'), '')
+        .replace(
+            new RegExp(/\s+(.)(\w+)/, 'g'),
+            ($1, $2, $3) => `${$2.toUpperCase() + $3.toLowerCase()}`
+        )
+        .replace(new RegExp(/\s/, 'g'), '')
+        .replace(new RegExp(/\w/), s => s.toUpperCase());
 }

@@ -33,7 +33,7 @@ describe('utils', () => {
         it('transforms the input to PascalCase', () => {
             expect(toPascalCase('my-component')).toEqual('MyComponent');
             expect(toPascalCase('my_component')).toEqual('MyComponent');
-            expect(toPascalCase('myComponent')).toEqual('Mycomponent');
+            expect(toPascalCase('myComponent')).toEqual('MyComponent');
         });
     });
 });
