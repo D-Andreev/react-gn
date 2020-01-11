@@ -39,7 +39,7 @@ describe('generate command', () => {
                     ' --withHooks --withPropTypes --withCss');
 
             verifyComponentIsCreated(result, componentDirName, componentName);
-            expect(fs.existsSync(`./${componentDirName}/${componentDirName}.styles.css`)).toBeTruthy();
+            expect(fs.existsSync(`./${componentDirName}/${componentName}.styles.css`)).toBeTruthy();
         });
     });
 
@@ -57,7 +57,7 @@ describe('generate command', () => {
                 execSync(`${PACKAGE_NAME} generate -i false --path ./ --dirName ${componentDirName}` +
                     ' --withHooks --withRedux --withPropTypes --isClass  --withCss');
             verifyComponentIsCreated(result, componentDirName, componentName);
-            expect(fs.existsSync(`./${componentDirName}/${componentDirName}.styles.css`)).toBeTruthy();
+            expect(fs.existsSync(`./${componentDirName}/${componentName}.styles.css`)).toBeTruthy();
         });
     });
 
