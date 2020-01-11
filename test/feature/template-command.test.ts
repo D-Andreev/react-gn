@@ -6,8 +6,8 @@ import {
 import {buildPackage} from './utils';
 
 function verifyComponentIsCreated(componentName: string, componentDirName: string, isJs = true) {
-    expect(fs.existsSync(`./${componentName}/${componentDirName}.${isJs ? 'jsx' : 'tsx'}`)).toBeTruthy();
-    expect(fs.existsSync(`./${componentName}/${componentDirName}.test.${isJs ? 'js' : 'ts'}`)).toBeTruthy();
+    expect(fs.existsSync(`./${componentDirName}/${componentName}.${isJs ? 'jsx' : 'tsx'}`)).toBeTruthy();
+    expect(fs.existsSync(`./${componentDirName}/${componentName}.test.${isJs ? 'js' : 'ts'}`)).toBeTruthy();
 }
 
 describe('template command', () => {

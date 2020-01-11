@@ -127,7 +127,7 @@ export default class TemplateCommand extends BaseGenerateCommand implements ICom
 
     private generateFilePath(templateFile: string): string {
         const fileName = templateFile.split('.').slice(0, -1).join('.');
-        return path.join(this.answers.targetPath, this.answers.componentName, `${fileName}`)
+        return path.join(this.answers.targetPath, this.answers.componentDirName, `${fileName}`)
             .replace(COMPONENT_NAME_PLACEHOLDER, this.answers.componentName);
     }
 
@@ -159,12 +159,12 @@ export default class TemplateCommand extends BaseGenerateCommand implements ICom
     }
 
     private checkIfDirectoryAlreadyExists(done: Function): void {
-        const targetPath = path.join(this.answers.targetPath, this.answers.componentName);
+        const targetPath = path.join(this.answers.targetPath, this.answers.componentDirName);
         this.storage.directoryExists(targetPath, (err: Error) => {
             if (err) {
                 return done();
             }
-            done(new Error(`${this.answers.componentName} directory already exists`));
+            done(new Error(`${this.answers.componentDirName} directory already exists`));
         });
     }
 

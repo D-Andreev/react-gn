@@ -131,7 +131,7 @@ export const GENERATE_COMMAND_QUESTIONS: any[] = [
 export const TEMPLATE_QUESTION_NAME = {
     TEMPLATE_PATH: 'templatePath',
     TARGET_DIR: 'targetPath',
-    COMPONENT_DIR_NAME: 'EnterComponentDirectoryName.',
+    COMPONENT_DIR_NAME: 'componentDirName',
 };
 
 export const TEMPLATE_COMMAND_QUESTION_MESSAGES = {
@@ -169,7 +169,7 @@ export const TEMPLATE_COMMAND_QUESTIONS: any[] = [
     {
         type: 'input',
         name: TEMPLATE_QUESTION_NAME.COMPONENT_DIR_NAME,
-        message: TEMPLATE_QUESTION_NAME.COMPONENT_DIR_NAME,
+        message: TEMPLATE_COMMAND_QUESTION_MESSAGES.COMPONENT_DIR_NAME,
         default: DEFAULT_COMPONENT_DIR_NAME
     },
 ];

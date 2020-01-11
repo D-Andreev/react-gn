@@ -257,7 +257,7 @@ export default class GenerateCommand extends BaseGenerateCommand implements ICom
             (next: Function) =>
                 steed.mapSeries(this.renderedTemplates, (template: IRenderedTemplate, next: Function) => {
                     this.storage.create(template.path, template.content, next);
-                }, (err: Error) => next(err)),
+                }, (err: Error) => next(err))
         ], (err: Error) => {
             if (err) {
                 return this.onError(err, done);
