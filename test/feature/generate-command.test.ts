@@ -7,8 +7,8 @@ import {buildPackage} from './utils';
 
 function verifyComponentIsCreated(output: Buffer, componentDirName: string, componentName: string, isJs = true) {
     expect(output.toString()).toContain(`${componentName} was created successfully!`);
-    expect(fs.existsSync(`./${componentDirName}/${componentDirName}.${isJs ? 'jsx' : 'tsx'}`)).toBeTruthy();
-    expect(fs.existsSync(`./${componentDirName}/${componentDirName}.test.${isJs ? 'js' : 'ts'}`)).toBeTruthy();
+    expect(fs.existsSync(`./${componentDirName}/${componentName}.${isJs ? 'jsx' : 'tsx'}`)).toBeTruthy();
+    expect(fs.existsSync(`./${componentDirName}/${componentName}.test.${isJs ? 'js' : 'ts'}`)).toBeTruthy();
 }
 
 describe('generate command', () => {
