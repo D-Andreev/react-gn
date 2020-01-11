@@ -190,7 +190,7 @@ export default class GenerateCommand extends BaseGenerateCommand implements ICom
         const fileName = templateFile.path.split('.').slice(0, -1).join('.');
         return path
             .join(this.answers.targetPath, this.answers.componentDirName, `${fileName}`)
-            .replace(COMPONENT_NAME_PLACEHOLDER, this.answers.componentDirName);
+            .replace(COMPONENT_NAME_PLACEHOLDER, this.answers.componentName);
     }
 
     private renderTemplates(done: Function): void {
