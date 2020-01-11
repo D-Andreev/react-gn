@@ -59,7 +59,7 @@ export default class GenerateCommand extends BaseGenerateCommand implements ICom
         return super.extractFileNameFromPath(path);
     }
 
-    protected onError(err: Error | Error, done: Function): void {
+    protected onError(err: Error, done: Function): void {
         return super.onError(err, done);
     }
 
@@ -257,7 +257,7 @@ export default class GenerateCommand extends BaseGenerateCommand implements ICom
             (next: Function) =>
                 steed.mapSeries(this.renderedTemplates, (template: IRenderedTemplate, next: Function) => {
                     this.storage.create(template.path, template.content, next);
-                }, (err: Error) => next(err)),
+                }, (err: Error) => next(err))
         ], (err: Error) => {
             if (err) {
                 return this.onError(err, done);

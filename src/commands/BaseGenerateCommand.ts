@@ -24,7 +24,7 @@ export default class BaseGenerateCommand {
         return splitPath[splitPath.length - 1];
     }
 
-    protected onError(err: Error | Error, done: Function): void {
+    protected onError(err: Error, done: Function): void {
         const output: Output[] = [new Output(err.message, OUTPUT_TYPE.ERROR)];
         this.userInterface.showOutput(output, noop);
         return done(err);

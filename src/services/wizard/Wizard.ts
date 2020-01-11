@@ -84,7 +84,8 @@ class Wizard implements IWizard {
                 templatePath: results[TEMPLATE_QUESTION_NAME.TEMPLATE_PATH],
                 targetPath: results[TEMPLATE_QUESTION_NAME.TARGET_DIR] !== './' ?
                     results[TEMPLATE_QUESTION_NAME.TARGET_DIR] : process.cwd(),
-                componentName: results[TEMPLATE_QUESTION_NAME.COMPONENT_NAME]
+                componentDirName: results[TEMPLATE_QUESTION_NAME.COMPONENT_DIR_NAME],
+                componentName: toPascalCase(results[TEMPLATE_QUESTION_NAME.COMPONENT_DIR_NAME]),
             };
             done(null, answers);
         });
