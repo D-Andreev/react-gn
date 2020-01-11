@@ -1,6 +1,6 @@
 import {CheckboxQuestion} from 'inquirer';
 import * as fs from 'fs';
-import {DEFAULT_COMPONENT_DIR_NAME, DEFAULT_COMPONENT_NAME} from '../../constants';
+import {DEFAULT_COMPONENT_DIR_NAME} from '../../constants';
 
 export const NEW_COMMAND_QUESTION_MESSAGES = {
     USE_TS: 'Use Typescript',
@@ -131,13 +131,13 @@ export const GENERATE_COMMAND_QUESTIONS: any[] = [
 export const TEMPLATE_QUESTION_NAME = {
     TEMPLATE_PATH: 'templatePath',
     TARGET_DIR: 'targetPath',
-    COMPONENT_NAME: 'componentName'
+    COMPONENT_DIR_NAME: 'EnterComponentDirectoryName.',
 };
 
 export const TEMPLATE_COMMAND_QUESTION_MESSAGES = {
     TEMPLATE_PATH: 'Enter path to your template.',
     TARGET_DIR: 'Enter the target dir for the component.',
-    COMPONENT_NAME: 'Enter component name.',
+    COMPONENT_DIR_NAME: 'Enter component directory name.',
 };
 
 export const TEMPLATE_COMMAND_QUESTIONS: any[] = [
@@ -168,8 +168,8 @@ export const TEMPLATE_COMMAND_QUESTIONS: any[] = [
     },
     {
         type: 'input',
-        name: TEMPLATE_QUESTION_NAME.COMPONENT_NAME,
-        message: TEMPLATE_COMMAND_QUESTION_MESSAGES.COMPONENT_NAME,
-        default: DEFAULT_COMPONENT_NAME
+        name: TEMPLATE_QUESTION_NAME.COMPONENT_DIR_NAME,
+        message: TEMPLATE_QUESTION_NAME.COMPONENT_DIR_NAME,
+        default: DEFAULT_COMPONENT_DIR_NAME
     },
 ];

@@ -11,7 +11,7 @@ import IWizard from '../../services/interfaces/IWizard';
 import IRenderedTemplate from '../interfaces/IRenderedTemplate';
 import Output from '../../lib/Output';
 import {COMMAND_FLAG, COMPONENT_NAME_PLACEHOLDER, OUTPUT_TYPE} from '../../constants';
-import {noop} from '../../utils';
+import {noop, toPascalCase} from '../../utils';
 import BaseGenerateCommand from '../BaseGenerateCommand';
 
 export default class TemplateCommand extends BaseGenerateCommand implements ICommand {
@@ -50,7 +50,7 @@ export default class TemplateCommand extends BaseGenerateCommand implements ICom
         return super.extractFileNameFromPath(path);
     }
 
-    protected onError(err: Error | Error, done: Function): void {
+    protected onError(err: Error, done: Function): void {
         return super.onError(err, done);
     }
 
@@ -67,7 +67,8 @@ export default class TemplateCommand extends BaseGenerateCommand implements ICom
             this.answers = {
                 templatePath: this.getFlagValue(COMMAND_FLAG.TEMPLATE_PATH),
                 targetPath: this.getFlagValue(COMMAND_FLAG.COMPONENT_TARGET_PATH),
-                componentName: this.getFlagValue(COMMAND_FLAG.COMPONENT_NAME)
+                componentName: toPascalCase(this.getFlagValue(COMMAND_FLAG.COMPONENT_DIR_NAME)),
+                componentDirName: this.getFlagValue(COMMAND_FLAG.COMPONENT_DIR_NAME),
             };
             return done();
         }

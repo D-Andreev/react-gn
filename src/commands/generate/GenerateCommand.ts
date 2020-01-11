@@ -59,7 +59,7 @@ export default class GenerateCommand extends BaseGenerateCommand implements ICom
         return super.extractFileNameFromPath(path);
     }
 
-    protected onError(err: Error | Error, done: Function): void {
+    protected onError(err: Error, done: Function): void {
         return super.onError(err, done);
     }
 
