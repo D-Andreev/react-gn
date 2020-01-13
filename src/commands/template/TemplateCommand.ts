@@ -132,7 +132,7 @@ export default class TemplateCommand extends BaseGenerateCommand implements ICom
             .slice(0, -1)
             .join('.')
             .replace(COMPONENT_NAME_PLACEHOLDER, this.answers.componentName);
-        console.log('asd', path.join(this.answers.targetPath, this.answers.componentDirName, `${fileName}`))
+
         return path.join(this.answers.targetPath, this.answers.componentDirName, `${fileName}`);
     }
 
@@ -194,12 +194,10 @@ export default class TemplateCommand extends BaseGenerateCommand implements ICom
                 this.storage.createDirectory(path.join(this.answers.targetPath, this.answers.componentDirName), next),
             (next: Function) => {
                 const paths: string[] = this.renderedTemplates.map((template: IRenderedTemplate) => template.path);
-                console.log('paths', paths);
                 this.storage.createPaths(process.cwd(), paths, next);
             },
             (next: Function) => {
                 steed.mapSeries(this.renderedTemplates, (template: IRenderedTemplate, next: Function) => {
-                    console.log('creating', template.path)
                     this.storage.create(template.path, template.content, next);
                 }, (err: Error) => next(err))
             },
