@@ -1,14 +1,13 @@
 # react-gn [![CircleCI](https://circleci.com/gh/NdagiStanley/python_app.svg?style=svg)](https://circleci.com/gh/D-Andreev/react-gn) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-green.svg)](https://github.com/D-Andreev/react-gn/blob/master/CONTRIBUTING.md)
 
-Create and develop react apps and components using a convenient CLI.
+Create and develop react apps and components using a CLI.
 
-- [Installation](#install) - Installing react-gn.
-- [Creating an App](#creating-an-app) – How to create a new app.
-- [Creating new components](#creating-components) – How to create new components.
-- [Creating new components with templates](#creating-components-templates) - How to create new components using templates.
+- [Installation](#install)
+- [Creating an App](#creating-an-app)
+- [Creating new components](#creating-components)
+- [Creating new components with templates](#creating-components-templates)
 
-`react-gn` works on macOS, Windows, and Linux.<br>
-If something doesn’t work, please [file an issue](https://github.com/D-Andreev/react-gn/issues/new).<br>
+If something doesnt’t work, please [file an issue](https://github.com/D-Andreev/react-gn/issues/new).<br>
 
 <a name="install"></a>
 ## Installation
@@ -68,7 +67,7 @@ Then several prompts will appear asking you for the path to your template, targe
 For further details on how to create templates and use them please read the full [documentation](https://github.com/D-Andreev/react-gn).
 
 ## Acknowledgements
-`react-gn` would not be possible in its current form without the help from these existing projects:
+`react-gn` would not be possible without the help from these existing projects:
 * [create-react-app](https://github.com/facebook/create-react-app/)
 * [inquirer](https://github.com/SBoudrias/Inquirer.js/)
 * [ejs](https://github.com/mde/ejs)

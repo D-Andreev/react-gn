@@ -64,6 +64,7 @@ describe('new command', () => {
 
         it('sets up all the configurations', () => {
             execSync(`${PACKAGE_NAME} new ${appName} -i false --ts -wr -e`);
+            verifyAppIsCreated(appName);
         }, TIMEOUT);
     });
 
@@ -77,6 +78,7 @@ describe('new command', () => {
 
         it('sets up all the configurations', () => {
             execSync(`${PACKAGE_NAME} new ${appName} -i false -e`);
+            verifyAppIsCreated(appName);
         }, TIMEOUT);
     });
 });
