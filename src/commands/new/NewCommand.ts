@@ -1,4 +1,5 @@
 import {sep} from 'path';
+import rimraf from 'rimraf';
 import IStorage from '../../services/interfaces/IStorage';
 import IUserInterface from '../../services/interfaces/IUserInterface';
 import ICra from '../../services/interfaces/ICra';
@@ -123,18 +124,17 @@ export default class NewCommand implements ICommand {
     }
 
     private installNodeModules(done: Function): void {
-        try {
-            const output: Output[] = [
-                new Output('Installing node_modules', OUTPUT_TYPE.NORMAL)
-            ];
-            this.userInterface.showOutput(output, noop);
-            this.childProcess.execSync(
-                `cd ${this.getAppPath()}${sep} && rm -rf ./node_modules && npm install`);
-        } catch (e) {
-            return this.onError(e, done);
-        }
-
-        done();
+        const output: Output[] = [
+            new Output('Installing node_modules', OUTPUT_TYPE.NORMAL)
+        ];
+        this.userInterface.showOutput(output, noop);
+        steed.waterfall([
+            (next: Function) => rimraf(path.join(this.getAppPath(), 'node_modules'), (err: Error) => next(err)),
+            (next: Function) => {
+                const command = `cd ${this.getAppPath()}${sep} && npm install`;
+                this.childProcess.exec(command, (err: Error) => next(err));
+            }
+        ], (err: Error) => done(err));
     }
 
     private applyConfigOptions(languageType: string, done: Function): void {
