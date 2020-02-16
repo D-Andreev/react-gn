@@ -13,6 +13,7 @@ A CLI for developing react applications.
   
 `react-gn` can be installed globally:  
 `npm i @react-gn/react-gn -g `
+
 Or with yarn:  
 `yarn global add @react-gn/react-gn`  
   
@@ -156,7 +157,8 @@ Additionally you can create a `data.json` file which will contain data that will
 }
 ```  
 By using the `template` command the templates will be rendered, inserting the component name and all additional data passed from `data.json`.
-When you initially start working with the `template` command, a good approach would be to copy and paste some of your existing components and convert them into ejs templates. Then you can use them when running the `template` command to create components which are customized for your codebase.  
+When you initially start working with the `template` command, a good approach would be to copy and paste some of your existing components and convert them into ejs templates. Then you can use them when running the `template` command to create components which are customized for your codebase.
+  
 You can checkout the result of running the `template` command in the in the [demos](https://github.com/D-Andreev/react-gn/tree/master/demos/template-command-example/src/todo-list).  
   
   
