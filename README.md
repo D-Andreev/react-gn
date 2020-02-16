@@ -1,24 +1,20 @@
 
-# react-gn [![CircleCI](https://circleci.com/gh/NdagiStanley/python_app.svg?style=svg)](https://circleci.com/gh/D-Andreev/react-gn) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-green.svg)](https://github.com/D-Andreev/react-gn/blob/master/CONTRIBUTING.md)  
+# react-gn [![CircleCI](https://circleci.com/gh/NdagiStanley/python_app.svg?style=svg)](https://circleci.com/gh/D-Andreev/react-gn) 
   
-Create and develop react apps and components using a CLI.  
+A CLI for developing react applications.  
   
 - [Installation](#install)  
-- [Creating an App with `new` command](#new)  
-- [Creating new components with `generate` command](#generate)  
-- [Creating new components with `tempalate` command](#template)  
+- [Bootstrapping a new application](#new)  
+- [Creating new components](#generate)  
+- [Creating new components](#template)  
   
 <a name="install"></a>  
 ## Installation  
   
 `react-gn` can be installed globally:  
-<div class="language-sh">  
-    npm i @react-gn/react-gn -g  
-</div>  
+`npm i @react-gn/react-gn -g `
 Or with yarn:  
-<div class="language-sh">  
-    yarn global add @react-gn/react-gn  
-</div>  
+`yarn global add @react-gn/react-gn`  
   
 ## Dependencies  
 The main dependency of `react-gn` is [create-react-app](https://create-react-app.dev/), which [requires Node >= 8.10](https://create-react-app.dev/docs/getting-started#creating-an-app). You can use [nvm](https://github.com/creationix/nvm#installation) (macOS/Linux) or [nvm-windows](https://github.com/coreybutler/nvm-windows#node-version-manager-nvm-for-windows) to switch Node versions between different projects.  
@@ -81,7 +77,7 @@ Generates new components and applies different options (i.e. class or functional
 | *- -withSass* | -wsass |  Specify whether to use SASS for styling or not.              | `false`        |  
 | *- -withStyledComponents* | -wsc   |  Specify whether to use Styled Components for styling or not. | `false`        |  
   ### Demo  
-You can checkout the result from running the `generate` command with some options applied in the [demos](https://github.com/D-Andreev/react-gn/tree/master/demos/generate-command-example).  
+You can checkout the result from running the `generate` command with some options applied in the [demos](https://github.com/D-Andreev/react-gn/tree/master/demos/generate-command-example/src/todo-list).  
    
 <a name="template"></a>  
 ## template  
@@ -105,7 +101,8 @@ Creation of new components can be customized using ejs templates. Create templat
 | *- -dirName* | -      |  A name for the new component directory.       | `my-component` |  
   
 ### Demo  
-Let's create a template for a container component.  You can create a `./templates` directory in your project and put the different templates there. 
+Let's create a template for a container component.  You can create a `./templates` directory in your project and put the different templates there.
+ 
 `./templates/container/{Component}.jsx.ejs`  
 ```jsx  
 import React, { Component } from "react";  
@@ -151,15 +148,16 @@ it('renders without crashing', () => {
  color: red;
 }  
 ```  
-Additionally you can create a `data.json` file which will contain data that will be used when rendering the templates. If this file is not provided the only data being passed to the templates will be the component name. In some cases if additional data is required you can create a data file:  
+Additionally you can create a `data.json` file which will contain data that will be used when rendering the templates. If this file is not provided the only data being passed to the templates will be the component name. In some cases if additional data is required (i.e. the initial state for a component etc...), you can create a data file:  
 `./templates/container/data.json`  
 ```javascript  
 {
   "state": {"count": 0}
 }
 ```  
-By using the `template` command the templates will be rendered, inserting the component name and all additional data passed from `data.json`.  
-You can checkout the result of running the `template` command in the in the [demos](https://github.com/D-Andreev/react-gn/tree/master/demos/template-command-example).  
+By using the `template` command the templates will be rendered, inserting the component name and all additional data passed from `data.json`.
+When you initially start working with the `template` command, a good approach would be to copy and paste some of your existing components and convert them into ejs templates. Then you can use them when running the `template` command to create components which are customized for your codebase.  
+You can checkout the result of running the `template` command in the in the [demos](https://github.com/D-Andreev/react-gn/tree/master/demos/template-command-example/src/todo-list).  
   
   
 ## Acknowledgements  
@@ -170,7 +168,7 @@ You can checkout the result of running the `template` command in the in the [dem
   
 ## Contributing  
 If something doesnt’t work, please [file an issue](https://github.com/D-Andreev/react-gn/issues/new).<br>  
-If you have any ideas for features or improvements, PRs are welcome.  
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-green.svg)](https://github.com/D-Andreev/react-gn/blob/master/CONTRIBUTING.md) 
   
 ## License  
 `react-gn` is open source software [licensed as MIT](https://github.com/D-Andreev/react-gn/blob/master/LICENSE).
