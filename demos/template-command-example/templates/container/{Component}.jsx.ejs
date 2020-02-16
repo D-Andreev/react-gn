@@ -1,0 +1,23 @@
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import "./<%= Component %>.css";
+import * as PropTypes from "prop-types";
+
+class <%= Component %> extends Component {
+constructor(props) {
+super(props); this.state = <%- JSON.stringify(state) %>;
+}
+render() {
+return ( <div><%= Component %></div> );
+}
+}
+
+const mapDispatchToProps = dispatch => ({});
+
+const mapStateToProps = state => ({});
+
+<%= Component %>.propTypes = {
+className: PropTypes.string
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(<%= Component %>);

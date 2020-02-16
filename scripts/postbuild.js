@@ -1,5 +1,5 @@
 // This script copies non-typescript files to the dist directory after build.
-// Because they are not typescript files `tsc` does not include them when building.
+// Because they are not imported, but only read from the file system, tsc does not include them in the build.
 const ncp = require('ncp').ncp;
 const path = require('path');
 

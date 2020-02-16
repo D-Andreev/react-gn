@@ -71,6 +71,7 @@ class Wizard implements IWizard {
                 withHooks: results[GENERATE_QUESTION_NAME.OPTIONS]
                     .indexOf(GENERATE_COMMAND_QUESTION_MESSAGES.WITH_HOOKS) !== -1,
             };
+
             done(null, answers);
         });
     }

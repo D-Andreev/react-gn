@@ -56,7 +56,7 @@ describe('generate command', () => {
         it('creates a class component with all options', () => {
             const result =
                 execSync(`${PACKAGE_NAME} generate -i false --path ./ --dirName ${componentDirName}` +
-                    ' --withHooks --withRedux --withPropTypes --isClass  --withCss');
+                    ' --withHooks --withPropTypes --isClass  --withCss');
             verifyComponentIsCreated(result, componentDirName, componentName);
             expect(fs.existsSync(`./${componentDirName}/${componentName}.styles.css`)).toBeTruthy();
         });
@@ -74,7 +74,7 @@ describe('generate command', () => {
         it('creates a class component with all options', () => {
             const result =
                 execSync(`${PACKAGE_NAME} generate -i false --path ./ --dirName ${componentDirName}` +
-                    ' --withState --withRedux --withStyledComponents --isClass --ts');
+                    ' --withState --withStyledComponents --isClass --ts');
             verifyComponentIsCreated(result, componentDirName, componentName);
             expect(fs.existsSync(`./${componentDirName}/Styled${componentName}.js`)).toBeTruthy();
         });
