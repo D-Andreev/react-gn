@@ -16,10 +16,7 @@ A CLI for developing react applications.
 
 Or with yarn:  
 `yarn global add @react-gn/react-gn`  
-  
-## Dependencies  
-The main dependency of `react-gn` is [create-react-app](https://create-react-app.dev/), which [requires Node >= 8.10](https://create-react-app.dev/docs/getting-started#creating-an-app). You can use [nvm](https://github.com/creationix/nvm#installation) (macOS/Linux) or [nvm-windows](https://github.com/coreybutler/nvm-windows#node-version-manager-nvm-for-windows) to switch Node versions between different projects.  
-  
+
 <a name="new"></a>  
 ## new  
   
@@ -31,7 +28,7 @@ react-gn **n** *\<name\>* [*options*]
   ![Farmers Market Finder Demo](https://i.imgur.com/UCGN1mA.gif)<br>  
   
 ### Description  
-`react-gn` uses [create-react-app](https://create-react-app.dev/) under the hood to create a react application. You can see the current file structure of a new create-react-app [here](https://create-react-app.dev/docs/getting-started#output).  
+`react-gn` uses [create-react-app](https://create-react-app.dev/) under the hood, which you need to install globally in order to use the `new` command. You can see the current file structure of a new create-react-app [here](https://create-react-app.dev/docs/getting-started#output).  
   
 ### Arguments  
 | Argument      | Description                            |  
