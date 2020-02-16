@@ -1,6 +1,6 @@
 {
   "name": "@react-gn/react-gn",
-  "version": "1.0.23",
+  "version": "1.0.24",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
@@ -21,7 +21,8 @@
     "test-unit-ci": "export TEST_ENV=CI && npm run test ./test/unit/",
     "test-feature": "npm run test ./test/feature/",
     "test-feature-ci": "export TEST_ENV=CI && sudo npm link && npm run test ./test/feature/",
-    "watch-test": "npm run test -- --watchAll"
+    "watch-test": "npm run test -- --watchAll",
+    "postpublish": "npm run postbuild"
   },
   "devDependencies": {
     "@types/ejs": "^3.0.0",

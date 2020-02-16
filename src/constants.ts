@@ -1,5 +1,5 @@
 export const PACKAGE_NAME = 'react-gn';
-export const PACKAGE_VERSION = '1.0.23';
+export const PACKAGE_VERSION = '1.0.24';
 export const DEFAULT_COMPONENT_DIR_NAME = 'my-component';
 export const COMPONENT_NAME_PLACEHOLDER = '{Component}';
 
