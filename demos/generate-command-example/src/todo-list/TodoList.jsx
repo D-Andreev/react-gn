@@ -19,7 +19,7 @@ function TodoList({ children }) {
       <button onClick={() => setCount(count + 1)} primary>
         Click me
       </button>
-      <pre>{count}</pre>
+      <pre>{result}</pre>
     </div>
   );
 }
