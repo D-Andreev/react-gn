@@ -1,6 +1,5 @@
 export const PACKAGE_NAME = 'react-gn';
-export const PACKAGE_VERSION = '1.0.22';
-export const DEFAULT_COMPONENT_NAME = 'MyComponent';
+export const PACKAGE_VERSION = '1.0.23';
 export const DEFAULT_COMPONENT_DIR_NAME = 'my-component';
 export const COMPONENT_NAME_PLACEHOLDER = '{Component}';
 
@@ -65,7 +64,6 @@ export const ALIAS: any = {
         COMPONENT_DIR_NAME: '--name (Alias: -n) A name for the new component.',
         WITH_TS: '--ts When passed, creates the new app using typescript.',
         IS_CLASS_COMPONENT: '--isClass (Alias: -class) Specify component type (Class or functional).',
-        WITH_REDUX: '--withRedux (Alias: -wr) When passed, adds setup for redux.',
         WITH_HOOKS: '--withHooks (Alias: -wh) Specify whether to use hooks or not.',
         WITH_STATE: '--withState (Alias: -ws) Specify whether to use state or not.',
         WITH_PROP_TYPES: '--withPropTypes (Alias: -wpt) Specify whether to use prop types or not.',

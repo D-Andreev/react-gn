@@ -441,6 +441,12 @@ export interface Book {
     };
 }
 
+export interface BooksResponse {
+    items: Book[];
+    kind: string;
+    totalItems: number;
+}
+
 export interface GoogleBooksResponse {
     kind: string;
     totalItems: number;
@@ -511,17 +517,12 @@ export default function googleBooks(
             contents: 'import * as constants from \'../constants\';\n' +
                 'import {ThunkAction, ThunkDispatch} from \'redux-thunk\';\n' +
                 'import {AnyAction} from \'redux\';\n' +
-                'import {Book, GoogleBooksResponse} from \'../types/googleBooksTypes\';\n' +
+                'import {Book, BooksResponse, GoogleBooksResponse} from \'../types/googleBooksTypes\';\n' +
                 '\n' +
                 'const GOOGLE_BOOKS_URL = \'https://www.googleapis.com/books/v1/volumes?q=title:\';\n' +
-                'function get<T>(url: string): Promise<T> {\n' +
-                '    return fetch(url)\n' +
-                '        .then(response => {\n' +
-                '            if (!response.ok) {\n' +
-                '                throw new Error(response.statusText);\n' +
-                '            }\n' +
-                '            return response.json();\n' +
-                '        });\n' +
+                'async function get<T>(url: string): Promise<BooksResponse> {\n' +
+                '    const response: Response = await fetch(url);\n' +
+                '    return await response.json();\n' +
                 '}\n' +
                 '\n' +
                 'export interface SetLoading {\n' +
@@ -546,19 +547,16 @@ export default function googleBooks(
                 '}\n' +
                 '\n' +
                 'export const search = (searchQuery: string): ThunkAction<Promise<void>, {}, {}, AnyAction> => {\n' +
-                '    return async (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {\n' +
+                '    return async (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<any> => {\n' +
                 '        dispatch(setLoading(true));\n' +
-                '        return new Promise<void>(() => {\n' +
-                '            return get<GoogleBooksResponse>(`${GOOGLE_BOOKS_URL}${encodeURIComponent(searchQuery)}`)\n' +
-                '                .then((response: GoogleBooksResponse) => {\n' +
-                '                    dispatch(setLoading(false));\n' +
-                '                    return dispatch(setBooks(response.items));\n' +
-                '                })\n' +
-                '                .catch(error => {\n' +
-                '                    dispatch(setLoading(false));\n' +
-                '                    return dispatch(setBooks([]));\n' +
-                '                });\n' +
-                '        });\n' +
+                '        let books: Book[] = [];\n' +
+                '        try {\n' +
+                '            const url = `${GOOGLE_BOOKS_URL}${encodeURIComponent(searchQuery)}`;\n' +
+                '            const response: BooksResponse = await get<GoogleBooksResponse>(url);\n' +
+                '            books = response.items;\n' +
+                '        } catch (e) {}\n' +
+                '        dispatch(setLoading(false));\n' +
+                '        return dispatch(setBooks(books));\n' +
                 '    }\n' +
                 '};\n' +
                 '\n' +
