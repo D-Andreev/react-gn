@@ -66,7 +66,8 @@ Generates new components and applies different options (i.e. class or functional
 | *- -ts* | -      |  When passed, the component is created with typescript.              | `false`        |  
 | *- -path* | -p     |  A target path for the new component.                         | `./`           |  
 | *- -dirName* | -      |  A name for the new component directory.                      | `my-component` |  
-| *- -isClass* | -class |  Create a class component                                     | `false`   |  
+| *- -isClass* | -class |  Create a class component                                     | `false`   |
+| *- -withRedux* | -wr    |  Specify whether to use redux or not.                         | `false`        |    
 | *- -withHooks* | -wh    |  Specify whether to use hooks or not.                         | `false`        |  
 | *- -withState* | -ws    |  Specify whether to use state or not.                         | `false`        |  
 | *- -withPropTypes* | -wpt   |  Specify whether to use prop types or not.                    | `false`        |  
