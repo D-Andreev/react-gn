@@ -1,16 +1,21 @@
 {
   "name": "@react-gn/react-gn",
-  "version": "1.0.27",
+  "version": "1.0.28",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
     "react-gn": "./dist/index.js"
   },
+  "description": "A CLI for developing react applications",
   "keywords": [
     "react",
     "cli",
     "generator"
   ],
+  "homepage": "https://github.com/D-Andreev/react-gn",
+  "repository": "https://github.com/D-Andreev/react-gn",
+  "bugs": "https://github.com/D-Andreev/react-gn/issues",
+  "license" : "MIT",
   "scripts": {
     "build": "tsc",
     "postbuild": "node ./scripts/postbuild.js",
