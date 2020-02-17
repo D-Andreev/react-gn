@@ -119,6 +119,7 @@ export const GENERATE_COMMAND_QUESTIONS: any[] = [
         name: GENERATE_QUESTION_NAME.OPTIONS,
         choices: [
             { name: GENERATE_COMMAND_QUESTION_MESSAGES.WITH_STATE },
+            { name: GENERATE_COMMAND_QUESTION_MESSAGES.WITH_REDUX },
             ...GENERATE_COMMON_CHOICES
         ],
         when: function(answers: any) {
